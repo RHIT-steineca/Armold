@@ -8,3 +8,5 @@ Dylan
 your momma! ooh
 
 yo the pi is connected???!?!??!
+
+![alt text](https://github.com/steineca/Armold/UML_diagram.png?raw=true)
