@@ -6,3 +6,5 @@ making changes!!
 Dylan
 
 your momma! ooh
+
+yo the pi is connected???!?!??!
