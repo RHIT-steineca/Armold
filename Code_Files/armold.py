@@ -17,9 +17,13 @@ class ArmoldBrain:
     def recordMovement(brain, refreshRate, duration):
         frame = 0
         secDone = 0
-        if (duration != 0):
-            print()
-            while(frame < refreshRate * duration):
+        if (duration == 0):
+            print("  (Press Q or Ctrl+C to stop)")
+        print()
+        try:
+            while((duration == 0) or (frame < refreshRate * duration)):
+                if keyboard.is_pressed("q"):
+                    break
                 if (secDone == refreshRate):
                     print("\n")
                     secDone = 0
@@ -28,22 +32,8 @@ class ArmoldBrain:
                 print(".", end = "")
                 sys.stdout.flush()
                 time.sleep(1.0 / refreshRate)
-        else:
-            print("  (Press Q or Ctrl+C to stop)\n")
-            try:
-                while True:
-                    if keyboard.is_pressed("q"):
-                        break
-                    if (secDone == refreshRate):
-                        print("\n")
-                        secDone = 0
-                    frame += 1
-                    secDone += 1
-                    print(".", end = "")
-                    sys.stdout.flush()
-                    time.sleep(1.0 / refreshRate)
-            except KeyboardInterrupt:
-                pass
+        except KeyboardInterrupt:
+            pass
         print(f"\n\n{frame} frames memorized.")
         print("\nCan you describe what you just did?\n")
         moveName = input("> ")
