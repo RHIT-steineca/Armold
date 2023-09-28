@@ -1,5 +1,4 @@
 import os, sys, time, keyboard
-import RPi.GPIO as GPIO
 
 class ArmoldBrain:
     def __init__(brain):
@@ -38,6 +37,13 @@ class ArmoldBrain:
         print(f"\n\n{frame} frames memorized.")
         print("\nCan you describe what you just did?\n")
         moveName = input("> ")
+        recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
+        moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
+        moveFile = open(moveFullPath, "w")
+        moveFile.write(refreshRate)
+        moveFile.close()
+        newRecording = Recording(moveName)
+        brain.recordedMovements[moveName] = newRecording
         print("\nCool! Armold now knows how to " + moveName + ".")
         return
     
@@ -52,12 +58,22 @@ class ArmoldBrain:
 
 class Recording:
     def __init__(recording, filename):
-        recording.timeline = []
-        recording.originalRate = 1
         recording.filename = filename
+        recording.originalRate = 1
+        recording.timeline = []
         recording.readRecordingFromFile(recording.filename)
 
     def readRecordingFromFile(recording, filename):
+        recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
+        moveFullPath = os.path.join(recordingsPath, recording.filename + ".txt")
+        moveFile = open(moveFullPath, "r")
+        try:
+            rateVal = moveFile.readline()
+            print(rateVal)
+            originalRate = float(rateVal)
+        except ValueError:
+            originalRate = 1
+        moveFile.close()
         return
     
     def getServosAtTime(recording, time):
@@ -157,10 +173,6 @@ while True:
         pininput = input("> ")
         print("\nWhat value should the pin be given?")
         valinput = input("> ")
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(channel, GPIO.OUT, initial=0)
-        GPIO.output(pininput, valinput)
-        GPIO.cleanup()
     elif(command == "q"):
         print("\n- Armold says 'Bye!'\n")
         break
