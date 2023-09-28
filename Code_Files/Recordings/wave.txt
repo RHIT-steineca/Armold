@@ -1,1 +1,6 @@
-15
+15.0
+{"shoulder": 5, "elbow": 3, "wrist": 4}
+{"shoulder": 4, "elbow": 4, "wrist": 5}
+{"shoulder": 3, "elbow": 5, "wrist": 6}
+{"shoulder": 2, "elbow": 6, "wrist": 7}
+{"shoulder": 1, "elbow": 7, "wrist": 8}

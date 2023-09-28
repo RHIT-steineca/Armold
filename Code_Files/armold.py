@@ -1,4 +1,4 @@
-import os, sys, time, keyboard
+import os, sys, time, keyboard, json
 
 class ArmoldBrain:
     def __init__(brain):
@@ -15,6 +15,7 @@ class ArmoldBrain:
             brain.recordedMovements[rn] = Recording(rn)
     
     def recordMovement(brain, refreshRate, duration):
+        moveTimeline = []
         frame = 0
         secDone = 0
         if (duration == 0):
@@ -22,15 +23,16 @@ class ArmoldBrain:
         print()
         try:
             while((duration == 0) or (frame < refreshRate * duration)):
+                moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
                 if keyboard.is_pressed("q"):
                     break
                 if (secDone == refreshRate):
                     print("\n")
                     secDone = 0
-                frame += 1
-                secDone += 1
                 print(".", end = "")
                 sys.stdout.flush()
+                frame += 1
+                secDone += 1
                 time.sleep(1.0 / refreshRate)
         except KeyboardInterrupt:
             pass
@@ -40,9 +42,12 @@ class ArmoldBrain:
         recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         moveFile = open(moveFullPath, "w")
-        moveFile.write(refreshRate)
+        moveFile.write(f"{refreshRate}")
+        for frameData in moveTimeline:
+            moveFile.write(f"\n{frameData}")
         moveFile.close()
         newRecording = Recording(moveName)
+        newRecording.timeline = moveTimeline
         brain.recordedMovements[moveName] = newRecording
         print("\nCool! Armold now knows how to " + moveName + ".")
         return
@@ -54,7 +59,7 @@ class ArmoldBrain:
         return
     
     def convertToServoVals(brain, sensorVals):
-        return
+        return dict()
 
 class Recording:
     def __init__(recording, filename):
@@ -69,10 +74,13 @@ class Recording:
         moveFile = open(moveFullPath, "r")
         try:
             rateVal = moveFile.readline()
-            print(rateVal)
-            originalRate = float(rateVal)
+            recording.originalRate = float(rateVal)
+            for frame in moveFile:
+                recording.timeline.append(json.loads(frame))
+            print(recording.timeline)
         except ValueError:
-            originalRate = 1
+            recording.originalRate = 1
+            print("badval")
         moveFile.close()
         return
     
@@ -144,7 +152,7 @@ while True:
         while True:
             print("\nWhich movement should Armold repeat?")
             for rn, rec in brain.recordedMovements.items():
-                print(f"- {rn} ({len(rec.timeline)} frames, {len(rec.timeline) * (1.0 / rec.originalRate)} secs at {rec.originalRate} Hz originally)")
+                print(f"- {rn} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
             print()
             moveinput = input("> ")
             if moveinput in brain.recordedMovements:
