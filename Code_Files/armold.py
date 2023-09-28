@@ -1,4 +1,5 @@
 import os, sys, time, keyboard
+import RPi.GPIO as GPIO
 
 class ArmoldBrain:
     def __init__(brain):
@@ -152,7 +153,14 @@ while True:
         print("\n- Armold is mirroring your movements!")
     elif(command == "m"):
         print("\nYou told Armold to move a servo.")
-        print("\n- Okay.")
+        print("\nWhich pin is the servo on?")
+        pininput = input("> ")
+        print("\nWhat value should the pin be given?")
+        valinput = input("> ")
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(channel, GPIO.OUT, initial=0)
+        GPIO.output(pininput, valinput)
+        GPIO.cleanup()
     elif(command == "q"):
         print("\n- Armold says 'Bye!'\n")
         break
