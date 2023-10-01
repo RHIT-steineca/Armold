@@ -1,6 +1,6 @@
 15.0
-{"shoulder": 5, "elbow": 3, "wrist": 4}
-{"shoulder": 4, "elbow": 4, "wrist": 5}
-{"shoulder": 3, "elbow": 5, "wrist": 6}
-{"shoulder": 2, "elbow": 6, "wrist": 7}
-{"shoulder": 1, "elbow": 7, "wrist": 8}
+{"shoulder": 1500, "elbow": 500, "wrist": 1400}
+{"shoulder": 2500, "elbow": 600, "wrist": 1500}
+{"shoulder": 2400, "elbow": 1200, "wrist": 2500}
+{"shoulder": 1200, "elbow": 1100, "wrist": 700}
+{"shoulder": 500, "elbow": 700, "wrist": 800}

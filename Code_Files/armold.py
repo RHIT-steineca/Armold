@@ -1,4 +1,7 @@
 import os, sys, time, keyboard, json
+import RPi.GPIO as GPIO
+import gpiozero
+import pigpio
 
 class ArmoldBrain:
     def __init__(brain):
@@ -36,7 +39,7 @@ class ArmoldBrain:
                 time.sleep(1.0 / refreshRate)
         except KeyboardInterrupt:
             pass
-        print(f"\n\n{frame} frames memorized.")
+        print(f"\n\n{frame} frame(s) memorized.")
         print("\nCan you describe what you just did?\n")
         moveName = input("> ")
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
@@ -52,7 +55,7 @@ class ArmoldBrain:
         print("\nCool! Armold now knows how to " + moveName + ".")
         return
     
-    def playbackMovement(brain, moveName, playbackRate):
+    def playbackMovement(brain, moveName, playbackRate, loop):
         print("  (Press Q or Ctrl+C to stop)")
         print()
         frame = 0
@@ -60,15 +63,21 @@ class ArmoldBrain:
         movement = brain.recordedMovements[moveName]
         recLen = round(len(movement.timeline) * (1.0 / playbackRate), 2)
         try:
-            while(frame < len(movement.timeline)):
-                if keyboard.is_pressed("q"):
+            while True:
+                while(frame < len(movement.timeline)):
+                    if keyboard.is_pressed("q"):
+                        break
+                    if (frame % playbackRate == 0):
+                        print(f"{recLen - secDone} second(s) left...")
+                        secDone += 1
+                    brain.robot.setServos(movement.getServosAtTime(frame))
+                    frame += 1
+                    time.sleep(1.0 / refreshRate)
+                if loop:
+                    frame = 0
+                    secDone = 0
+                else:
                     break
-                if (frame % playbackRate == 0):
-                    print(f"{recLen - secDone} seconds left...")
-                    secDone += 1
-                brain.robot.setServos(brain.convertToServoVals(movement.getServosAtTime(frame)))
-                frame += 1
-                time.sleep(1.0 / refreshRate)
         except KeyboardInterrupt:
             pass
         print(f"\nArmold is done performing '{moveName}!'")
@@ -117,14 +126,20 @@ class Recording:
         return recording.timeline[time]
 
 class Robot:
+    
     def __init__(robot):
-        robot.servos = dict()
+        robot.servoPins = dict()
         robot.createServoConnections()
     
     def createServoConnections(robot):
+        robot.servoPins["shoulder"] = 4
+        robot.servoPins["elbow"] = 12
         return
 
     def setServos(robot, newVals):
+        for servoname, pin in robot.servoPins.items():
+            if servoname in newVals.keys():
+                pi.set_servo_pulsewidth(pin, newVals[servoname])
         return
 
 class Controller:
@@ -139,6 +154,7 @@ class Controller:
         return
 
 # main loop
+pi = pigpio.pi()
 brain = ArmoldBrain()
 print("Armold is awake...")
 while True:
@@ -148,7 +164,7 @@ while True:
             "\n- (s) study movement",
             "\n- (p) perform movement",
             "\n- (l) mirror live movement",
-            "\n- (m) move servo",
+            "\n- (t) test servo",
             "\n- (q) quit\n")
     command = input("> ")
     if(command == "s"):
@@ -200,8 +216,13 @@ while True:
                     print("\nThe rate needs to be at least 1.0, try again.")
             except ValueError:
                 print("\n'" + rateinput + "' isn't a number, try again.")
+        print("\nLoop the movement? (Y for yes, enter for no)\n")
+        loopinput = input("> ")
+        loop = False
+        if (loopinput == "y"):
+            loop = True
         print("\n- Armold is going to " + moveinput + "!")
-        brain.playbackMovement(moveinput, refreshRate)
+        brain.playbackMovement(moveinput, refreshRate, loop)
     elif(command == "l"):
         print("\nYou told Armold to mirror your movements in real-time.")
         while True:
@@ -217,12 +238,29 @@ while True:
                     print("\nThe rate needs to be greater than 1, try again.")
             except ValueError:
                 print("\n'" + rateinput + "' isn't a number, try again.")
-    elif(command == "m"):
-        print("\nYou told Armold to move a servo.")
+    elif(command == "t"):
+        print("\nYou told Armold to test a servo.")
         print("\nWhich pin is the servo on?")
-        pininput = input("> ")
-        print("\nWhat value should the pin be given?")
-        valinput = input("> ")
+        pininput = input("\n> ")
+        try:
+            pinnum = int(pininput)
+            val = 1500
+            rate = 20
+            pi.set_servo_pulsewidth(pinnum, val)
+            while True:
+                time.sleep(0.01)
+                pi.set_servo_pulsewidth(pinnum, val)
+                val += rate
+                if (val > 2500):
+                    val = 1500
+                    rate =-20
+                if (val < 500):
+                    val = 1500
+                    rate = 20
+        except ValueError:
+            print("\nInvalid values provided.")
+        except KeyboardInterrupt:
+            print("\nEnding loop...")
     elif(command == "q"):
         print("\n- Armold says 'Bye!'\n")
         break
