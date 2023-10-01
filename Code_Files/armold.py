@@ -107,10 +107,9 @@ class Recording:
             recording.originalRate = float(rateVal)
             for frame in moveFile:
                 recording.timeline.append(json.loads(frame))
-            print(recording.timeline)
         except ValueError:
             recording.originalRate = 1
-            print("badval")
+            print(f"unable to load recording file for {filename}")
         moveFile.close()
         return
     
