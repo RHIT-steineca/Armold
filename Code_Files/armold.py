@@ -140,6 +140,7 @@ class Controller:
 
 # main loop
 brain = ArmoldBrain()
+print("Armold is awake...")
 while True:
     time.sleep(0.25)
     print("\nTell Armold what to do!",
