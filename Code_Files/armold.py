@@ -8,7 +8,7 @@ class ArmoldBrain:
         brain.readRecordings()
     
     def readRecordings(brain):
-        recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
+        recordingsPath = "//Armold//Code_Files//Recordings//"
         recordingNames = os.listdir(recordingsPath)
         recordingNames = [rn[0:-4] for rn in recordingNames if (os.path.isfile(recordingsPath + '/' + rn)) and (rn.endswith(".txt"))]
         for rn in recordingNames:
@@ -39,7 +39,7 @@ class ArmoldBrain:
         print(f"\n\n{frame} frames memorized.")
         print("\nCan you describe what you just did?\n")
         moveName = input("> ")
-        recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
+        recordingsPath = "//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         moveFile = open(moveFullPath, "w")
         moveFile.write(f"{refreshRate}")
@@ -99,7 +99,7 @@ class Recording:
         recording.readRecordingFromFile(recording.filename)
 
     def readRecordingFromFile(recording, filename):
-        recordingsPath = "//home//csse//Armold//Code_Files//Recordings//"
+        recordingsPath = "//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, recording.filename + ".txt")
         moveFile = open(moveFullPath, "r")
         try:
