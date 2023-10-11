@@ -4,12 +4,14 @@ import gpiozero
 import pigpio
 
 class ArmoldBrain:
+    # initialization
     def __init__(brain):
         brain.robot = Robot()
         brain.controller = Controller()
         brain.recordedMovements = dict()
         brain.readRecordings()
     
+    # read all recording files
     def readRecordings(brain):
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         recordingNames = os.listdir(recordingsPath)
@@ -17,7 +19,8 @@ class ArmoldBrain:
         for rn in recordingNames:
             brain.recordedMovements[rn] = Recording(rn)
     
-    def recordMovement(brain, refreshRate, duration):
+    # record user movement to file
+    def recordMovement(brain, recordRate, duration):
         moveTimeline = []
         frame = 0
         secDone = 0
@@ -25,18 +28,18 @@ class ArmoldBrain:
             print("  (Press Q or Ctrl+C to stop)")
         print()
         try:
-            while((duration == 0) or (frame < refreshRate * duration)):
+            while((duration == 0) or (frame < recordRate * duration)):
                 moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
                 if keyboard.is_pressed("q"):
                     break
-                if (secDone == refreshRate):
+                if (secDone == recordRate):
                     print("\n")
                     secDone = 0
                 print(".", end = "")
                 sys.stdout.flush()
                 frame += 1
                 secDone += 1
-                time.sleep(1.0 / refreshRate)
+                time.sleep(1.0 / recordRate)
         except KeyboardInterrupt:
             pass
         print(f"\n\n{frame} frame(s) memorized.")
@@ -45,7 +48,7 @@ class ArmoldBrain:
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         moveFile = open(moveFullPath, "w")
-        moveFile.write(f"{refreshRate}")
+        moveFile.write(f"{recordRate}")
         for frameData in moveTimeline:
             moveFile.write(f"\n{frameData}")
         moveFile.close()
@@ -55,6 +58,7 @@ class ArmoldBrain:
         print("\nCool! Armold now knows how to " + moveName + ".")
         return
     
+    # playback movement on robot
     def playbackMovement(brain, moveName, playbackRate, loop):
         print("  (Press Q or Ctrl+C to stop)")
         print()
@@ -83,6 +87,7 @@ class ArmoldBrain:
         print(f"\nArmold is done performing '{moveName}!'")
         return
 
+    # follow user movements on robot
     def realtimeMovement(brain, refreshRate):
         print("  (Press Q or Ctrl+C to stop)")
         print()
@@ -101,12 +106,14 @@ class ArmoldBrain:
         return servoVals
 
 class Recording:
+    # initialization
     def __init__(recording, filename):
         recording.filename = filename
         recording.originalRate = 1
         recording.timeline = []
         recording.readRecordingFromFile(recording.filename)
 
+    # convert file lines to data frames
     def readRecordingFromFile(recording, filename):
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, recording.filename + ".txt")
@@ -122,20 +129,23 @@ class Recording:
         moveFile.close()
         return
     
+    # gets data frame at time
     def getServosAtTime(recording, time):
         return recording.timeline[time]
 
 class Robot:
-    
+    # initialization
     def __init__(robot):
         robot.servoPins = dict()
         robot.createServoConnections()
     
+    # establishes servo pins
     def createServoConnections(robot):
         robot.servoPins["shoulder"] = 4
         robot.servoPins["elbow"] = 12
         return
 
+    # sets servos to new positions
     def setServos(robot, newVals):
         for servoname, pin in robot.servoPins.items():
             if servoname in newVals.keys():
@@ -143,13 +153,18 @@ class Robot:
         return
 
 class Controller:
+    # initialization
     def __init__(controller):
-        controller.sensors = dict()
+        controller.sensorPins = dict()
         controller.createSensorConnections()
     
+    # establishes sensor pins
     def createSensorConnections(controller):
+        controller.sensorPins["shoulder"] = 4
+        controller.sensorPins["elbow"] = 12
         return
 
+    # gets current sensor positions
     def getSensors(controller):
         return
 
@@ -167,8 +182,10 @@ while True:
             "\n- (t) test servo",
             "\n- (q) quit\n")
     command = input("> ")
+    # study movement
     if(command == "s"):
         print("\nYou told Armold to study your movements.")
+        # get recording rate
         while True:
             print("\nRate of recording? (Hz)\n")
             try:
@@ -180,6 +197,7 @@ while True:
                     print("\nThe rate needs to be greater than 1, try again.")
             except ValueError:
                 print("\n'" + rateinput + "' isn't a number, try again.")
+        # get recording duration
         while True:
             print("\nHow many seconds should Armold watch you? (Enter '0' to do so indefinitely)\n")
             try:
@@ -193,8 +211,10 @@ while True:
                 print("\n'" + durinput + "' isn't a number, try again.")
         print("\n- Armold is studying your movements!")
         brain.recordMovement(refreshRate, duration)
+    # playback movement
     elif(command == "p"):
         print("\nYou told Armold to perform a movement.")
+        # get movement name
         while True:
             print("\nWhich movement should Armold repeat?")
             for rn, rec in brain.recordedMovements.items():
@@ -205,6 +225,7 @@ while True:
                 break
             else:
                 print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")
+        # get playback rate
         while True:
             print("\nRate of playback? (Hz)\n")
             try:
@@ -216,6 +237,7 @@ while True:
                     print("\nThe rate needs to be at least 1.0, try again.")
             except ValueError:
                 print("\n'" + rateinput + "' isn't a number, try again.")
+        # get loop
         print("\nLoop the movement? (Y for yes, enter for no)\n")
         loopinput = input("> ")
         loop = False
@@ -223,21 +245,24 @@ while True:
             loop = True
         print("\n- Armold is going to " + moveinput + "!")
         brain.playbackMovement(moveinput, refreshRate, loop)
+    # mirror movement
     elif(command == "l"):
         print("\nYou told Armold to mirror your movements in real-time.")
+        # get mirror rate
         while True:
             print("\nRate of recording? (Hz)\n")
             try:
                 rateinput = input("> ")
                 refreshRate = float(rateinput)
                 if (refreshRate > 1):
-                    print("\n- Armold is mirroring your movements!")
-                    brain.realtimeMovement(refreshRate)
                     break
                 else:
                     print("\nThe rate needs to be greater than 1, try again.")
             except ValueError:
                 print("\n'" + rateinput + "' isn't a number, try again.")
+        print("\n- Armold is mirroring your movements!")
+        brain.realtimeMovement(refreshRate)
+    # test servo pin
     elif(command == "t"):
         print("\nYou told Armold to test a servo.")
         print("\nWhich pin is the servo on?")
@@ -261,8 +286,10 @@ while True:
             print("\nInvalid values provided.")
         except KeyboardInterrupt:
             print("\nEnding loop...")
+    # quit
     elif(command == "q"):
         print("\n- Armold says 'Bye!'\n")
         break
+    # invalid command
     else:
         print("\n- Armold doesn't know what '" + command + "' means...")
