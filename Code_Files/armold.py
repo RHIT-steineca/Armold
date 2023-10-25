@@ -241,7 +241,7 @@ while True:
         print("\nLoop the movement? (Y for yes, enter for no)\n")
         loopinput = input("> ")
         loop = False
-        if (loopinput == "y"):
+        if (loopinput == "Y"):
             loop = True
         print("\n- Armold is going to " + moveinput + "!")
         brain.playbackMovement(moveinput, refreshRate, loop)
