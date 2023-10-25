@@ -269,6 +269,8 @@ while True:
         pininput = input("\n> ")
         try:
             pinnum = int(pininput)
+            print(f"\nTesting servo on pin {pinnum}...")
+            print("  (Press Ctrl+C to stop)")
             val = 1500
             rate = 20
             pi.set_servo_pulsewidth(pinnum, val)
