@@ -2,6 +2,7 @@ import os, sys, time, keyboard, json
 import RPi.GPIO as GPIO
 import gpiozero
 import pigpio
+import paramiko
 
 class ArmoldBrain:
     # initialization
@@ -147,9 +148,12 @@ class Robot:
 
     # sets servos to new positions
     def setServos(robot, newVals):
+        testfilename = ""
         for servoname, pin in robot.servoPins.items():
             if servoname in newVals.keys():
-                pi.set_servo_pulsewidth(pin, newVals[servoname])
+                # pi.set_servo_pulsewidth(pin, newVals[servoname])
+                testfilename += f"{servoname}-{pin}-{newVals[servoname]}_"
+        ssh.exec_command(f"touch Armold/Code_Files/testing/{testfilename}.txt")
         return
 
 class Controller:
@@ -171,127 +175,133 @@ class Controller:
 # main loop
 pi = pigpio.pi()
 brain = ArmoldBrain()
-print("Armold is awake...")
-while True:
-    time.sleep(0.25)
-    print("\nTell Armold what to do!",
-            "\nCommands are:",
-            "\n- (s) study movement",
-            "\n- (p) perform movement",
-            "\n- (l) mirror live movement",
-            "\n- (t) test servo",
-            "\n- (q) quit\n")
-    command = input("> ")
-    # study movement
-    if(command == "s"):
-        print("\nYou told Armold to study your movements.")
-        # get recording rate
-        while True:
-            print("\nRate of recording? (Hz)\n")
-            try:
-                rateinput = input("> ")
-                refreshRate = float(rateinput)
-                if (refreshRate > 1):
-                    break
-                else:
-                    print("\nThe rate needs to be greater than 1, try again.")
-            except ValueError:
-                print("\n'" + rateinput + "' isn't a number, try again.")
-        # get recording duration
-        while True:
-            print("\nHow many seconds should Armold watch you? (Enter '0' to do so indefinitely)\n")
-            try:
-                durinput = input("> ")
-                duration = float(durinput)
-                if (duration >= 0):
-                    break
-                else:
-                    print("\nThe duration can't be negative, try again.")
-            except ValueError:
-                print("\n'" + durinput + "' isn't a number, try again.")
-        print("\n- Armold is studying your movements!")
-        brain.recordMovement(refreshRate, duration)
-    # playback movement
-    elif(command == "p"):
-        print("\nYou told Armold to perform a movement.")
-        # get movement name
-        while True:
-            print("\nWhich movement should Armold repeat?")
-            for rn, rec in brain.recordedMovements.items():
-                print(f"- {rn} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
-            print()
-            moveinput = input("> ")
-            if moveinput in brain.recordedMovements:
-                break
-            else:
-                print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")
-        # get playback rate
-        while True:
-            print("\nRate of playback? (Hz)\n")
-            try:
-                rateinput = input("> ")
-                refreshRate = float(rateinput)
-                if (refreshRate >= 1):
-                    break
-                else:
-                    print("\nThe rate needs to be at least 1.0, try again.")
-            except ValueError:
-                print("\n'" + rateinput + "' isn't a number, try again.")
-        # get loop
-        print("\nLoop the movement? (Y for yes, enter for no)\n")
-        loopinput = input("> ")
-        loop = False
-        if (loopinput == "Y"):
-            loop = True
-        print("\n- Armold is going to " + moveinput + "!")
-        brain.playbackMovement(moveinput, refreshRate, loop)
-    # mirror movement
-    elif(command == "l"):
-        print("\nYou told Armold to mirror your movements in real-time.")
-        # get mirror rate
-        while True:
-            print("\nRate of recording? (Hz)\n")
-            try:
-                rateinput = input("> ")
-                refreshRate = float(rateinput)
-                if (refreshRate > 1):
-                    break
-                else:
-                    print("\nThe rate needs to be greater than 1, try again.")
-            except ValueError:
-                print("\n'" + rateinput + "' isn't a number, try again.")
-        print("\n- Armold is mirroring your movements!")
-        brain.realtimeMovement(refreshRate)
-    # test servo pin
-    elif(command == "t"):
-        print("\nYou told Armold to test a servo.")
-        print("\nWhich pin is the servo on?")
-        pininput = input("\n> ")
-        try:
-            pinnum = int(pininput)
-            print(f"\nTesting servo on pin {pinnum}...")
-            print("  (Press Ctrl+C to stop)")
-            val = 1500
-            rate = 20
-            pi.set_servo_pulsewidth(pinnum, val)
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+try:
+    ssh.connect("137.112.203.157", username="pi", password="Armold")
+    print("Armold is awake...")
+    while True:
+        time.sleep(0.25)
+        print("\nTell Armold what to do!",
+                "\nCommands are:",
+                "\n- (s) study movement",
+                "\n- (p) perform movement",
+                "\n- (l) mirror live movement",
+                "\n- (t) test servo",
+                "\n- (q) quit\n")
+        command = input("> ")
+        # study movement
+        if(command == "s"):
+            print("\nYou told Armold to study your movements.")
+            # get recording rate
             while True:
-                time.sleep(0.01)
+                print("\nRate of recording? (Hz)\n")
+                try:
+                    rateinput = input("> ")
+                    refreshRate = float(rateinput)
+                    if (refreshRate > 1):
+                        break
+                    else:
+                        print("\nThe rate needs to be greater than 1, try again.")
+                except ValueError:
+                    print("\n'" + rateinput + "' isn't a number, try again.")
+            # get recording duration
+            while True:
+                print("\nHow many seconds should Armold watch you? (Enter '0' to do so indefinitely)\n")
+                try:
+                    durinput = input("> ")
+                    duration = float(durinput)
+                    if (duration >= 0):
+                        break
+                    else:
+                        print("\nThe duration can't be negative, try again.")
+                except ValueError:
+                    print("\n'" + durinput + "' isn't a number, try again.")
+            print("\n- Armold is studying your movements!")
+            brain.recordMovement(refreshRate, duration)
+        # playback movement
+        elif(command == "p"):
+            print("\nYou told Armold to perform a movement.")
+            # get movement name
+            while True:
+                print("\nWhich movement should Armold repeat?")
+                for rn, rec in brain.recordedMovements.items():
+                    print(f"- {rn} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
+                print()
+                moveinput = input("> ")
+                if moveinput in brain.recordedMovements:
+                    break
+                else:
+                    print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")
+            # get playback rate
+            while True:
+                print("\nRate of playback? (Hz)\n")
+                try:
+                    rateinput = input("> ")
+                    refreshRate = float(rateinput)
+                    if (refreshRate >= 1):
+                        break
+                    else:
+                        print("\nThe rate needs to be at least 1.0, try again.")
+                except ValueError:
+                    print("\n'" + rateinput + "' isn't a number, try again.")
+            # get loop
+            print("\nLoop the movement? (Y for yes, enter for no)\n")
+            loopinput = input("> ")
+            loop = False
+            if (loopinput == "Y"):
+                loop = True
+            print("\n- Armold is going to " + moveinput + "!")
+            brain.playbackMovement(moveinput, refreshRate, loop)
+        # mirror movement
+        elif(command == "l"):
+            print("\nYou told Armold to mirror your movements in real-time.")
+            # get mirror rate
+            while True:
+                print("\nRate of recording? (Hz)\n")
+                try:
+                    rateinput = input("> ")
+                    refreshRate = float(rateinput)
+                    if (refreshRate > 1):
+                        break
+                    else:
+                        print("\nThe rate needs to be greater than 1, try again.")
+                except ValueError:
+                    print("\n'" + rateinput + "' isn't a number, try again.")
+            print("\n- Armold is mirroring your movements!")
+            brain.realtimeMovement(refreshRate)
+        # test servo pin
+        elif(command == "t"):
+            print("\nYou told Armold to test a servo.")
+            print("\nWhich pin is the servo on?")
+            pininput = input("\n> ")
+            try:
+                pinnum = int(pininput)
+                print(f"\nTesting servo on pin {pinnum}...")
+                print("  (Press Ctrl+C to stop)")
+                val = 1500
+                rate = 20
                 pi.set_servo_pulsewidth(pinnum, val)
-                val += rate
-                if (val > 2500):
-                    val = 1500
-                    rate =-20
-                if (val < 500):
-                    val = 1500
-                    rate = 20
-        except ValueError:
-            print("\nInvalid values provided.")
-        except KeyboardInterrupt:
-            print("\nEnding loop...")
-    # quit
-    elif(command == "q"):
-        print("\n- Armold says 'Bye!'\n")
-        break
-    # invalid command
-    else:
-        print("\n- Armold doesn't know what '" + command + "' means...")
+                while True:
+                    time.sleep(0.01)
+                    pi.set_servo_pulsewidth(pinnum, val)
+                    val += rate
+                    if (val > 2500):
+                        val = 1500
+                        rate =-20
+                    if (val < 500):
+                        val = 1500
+                        rate = 20
+            except ValueError:
+                print("\nInvalid values provided.")
+            except KeyboardInterrupt:
+                print("\nEnding loop...")
+        # quit
+        elif(command == "q"):
+            print("\n- Armold says 'Bye!'\n")
+            break
+        # invalid command
+        else:
+            print("\n- Armold doesn't know what '" + command + "' means...")
+finally:
+    ssh.close()
