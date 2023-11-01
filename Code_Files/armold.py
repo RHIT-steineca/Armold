@@ -204,7 +204,7 @@ try:
                 "\n- (s) study movement",
                 "\n- (p) perform movement",
                 "\n- (l) mirror live movement",
-                "\n- (t) test servo",
+                "\n- (t) test pin connection",
                 "\n- (q) quit\n")
         command = input("> ")
         # study movement
@@ -289,26 +289,34 @@ try:
             brain.realtimeMovement(refreshRate)
         # test servo pin
         elif(command == "t"):
-            print("\nYou told Armold to test a servo.")
-            print("\nWhich pin is the servo on?")
+            print("\nYou told Armold to test a pin.")
+            print("\nWhich pin should be tested?")
             pininput = input("\n> ")
+            print("\nIs the pin connected to a sensor or servo?")
+            pintype = input("\n> ")
             try:
                 pinnum = int(pininput)
-                print(f"\nTesting servo on pin {pinnum}...")
+                print(f"\nTesting pin #{pinnum}...")
                 print("  (Press Ctrl+C to stop)")
-                val = 1500
-                rate = 20
-                pi.set_servo_pulsewidth(pinnum, val)
-                while True:
-                    time.sleep(0.01)
+                if (pintype == "sensor"):
+                    while True:
+                        print(f"{pi.read(pinnum)}")
+                elif (pintype == "servo"):
+                    val = 1500
+                    rate = 20
                     pi.set_servo_pulsewidth(pinnum, val)
-                    val += rate
-                    if (val > 2500):
-                        val = 1500
-                        rate =-20
-                    if (val < 500):
-                        val = 1500
-                        rate = 20
+                    while True:
+                        time.sleep(0.01)
+                        pi.set_servo_pulsewidth(pinnum, val)
+                        val += rate
+                        if (val > 2500):
+                            val = 1500
+                            rate =-20
+                        if (val < 500):
+                            val = 1500
+                            rate = 20
+                else:
+                    print("Huh?")
             except ValueError:
                 print("\nInvalid values provided.")
             except KeyboardInterrupt:
@@ -323,4 +331,5 @@ try:
 except Exception:
     print("\nSorry, Armold is having trouble finding its arm... try again later!")
 finally:
+    pi.stop()
     ssh.close()
