@@ -75,7 +75,10 @@ class ArmoldBrain:
                     if (frame % playbackRate == 0):
                         print(f"{recLen - secDone} second(s) left...")
                         secDone += 1
-                    brain.robot.setServos(movement.getServosAtTime(frame))
+                    try:
+                        brain.robot.setServos(movement.getServosAtTime(frame))
+                    except Exception:
+                        raise Exception("SSH Disconnected.")
                     frame += 1
                     time.sleep(1.0 / refreshRate)
                 if loop:
@@ -96,8 +99,11 @@ class ArmoldBrain:
             while(True):
                 if keyboard.is_pressed("q"):
                     break
+            try:
                 brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()))
-                time.sleep(1.0 / refreshRate)
+            except Exception:
+                raise Exception("SSH Disconnected.") 
+            time.sleep(1.0 / refreshRate)
         except KeyboardInterrupt:
             pass
         return
@@ -153,7 +159,11 @@ class Robot:
             if servoname in newVals.keys():
                 # pi.set_servo_pulsewidth(pin, newVals[servoname])
                 testfilename += f"{servoname}-{pin}-{newVals[servoname]}_"
-        ssh.exec_command(f"touch Armold/Code_Files/testing/{testfilename}.txt")
+        try:
+            checkSSHconnection(ssh)
+            ssh.exec_command(f"touch Armold/Code_Files/testing/{testfilename}.txt", timeout=1)
+        except Exception:
+            raise Exception("SSH Disconnected.") 
         return
 
 class Controller:
@@ -172,15 +182,22 @@ class Controller:
     def getSensors(controller):
         return
 
+def checkSSHconnection(ssh):
+    if not ssh.get_transport().is_active():
+        raise Exception("SSH disconnected")
+    return
+
 # main loop
 pi = pigpio.pi()
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 try:
-    ssh.connect("137.112.203.157", username="pi", password="Armold")
-    print("Armold is awake...")
+    print("Armold is awake! \nNow looking for its arm...")
+    ssh.connect("ArmoldSecondary", username="pi", password="Armold", timeout=5)
+    print("\nArm found! Armold is ready to go!")
     while True:
+        checkSSHconnection(ssh)
         time.sleep(0.25)
         print("\nTell Armold what to do!",
                 "\nCommands are:",
@@ -303,5 +320,7 @@ try:
         # invalid command
         else:
             print("\n- Armold doesn't know what '" + command + "' means...")
+except Exception:
+    print("\nSorry, Armold is having trouble finding its arm... try again later!")
 finally:
     ssh.close()
