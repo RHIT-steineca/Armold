@@ -1,7 +1,4 @@
-import os, sys, time, keyboard, json
-import RPi.GPIO as GPIO
-import gpiozero
-import pigpio
+import os, sys, time, json
 import paramiko
 
 class ArmoldBrain:
@@ -26,13 +23,11 @@ class ArmoldBrain:
         frame = 0
         secDone = 0
         if (duration == 0):
-            print("  (Press Q or Ctrl+C to stop)")
+            print("  (Press Ctrl+C to stop)")
         print()
         try:
             while((duration == 0) or (frame < recordRate * duration)):
                 moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
-                if keyboard.is_pressed("q"):
-                    break
                 if (secDone == recordRate):
                     print("\n")
                     secDone = 0
@@ -61,7 +56,7 @@ class ArmoldBrain:
     
     # playback movement on robot
     def playbackMovement(brain, moveName, playbackRate, loop):
-        print("  (Press Q or Ctrl+C to stop)")
+        print("  (Press Ctrl+C to stop)")
         print()
         frame = 0
         secDone = 0
@@ -70,8 +65,6 @@ class ArmoldBrain:
         try:
             while True:
                 while(frame < len(movement.timeline)):
-                    if keyboard.is_pressed("q"):
-                        break
                     if (frame % playbackRate == 0):
                         print(f"{recLen - secDone} second(s) left...")
                         secDone += 1
@@ -93,17 +86,15 @@ class ArmoldBrain:
 
     # follow user movements on robot
     def realtimeMovement(brain, refreshRate):
-        print("  (Press Q or Ctrl+C to stop)")
+        print("  (Press Ctrl+C to stop)")
         print()
         try:
             while(True):
-                if keyboard.is_pressed("q"):
-                    break
-            try:
-                brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()))
-            except Exception:
-                raise Exception("SSH Disconnected.") 
-            time.sleep(1.0 / refreshRate)
+                try:
+                    brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()))
+                except Exception:
+                    raise Exception("SSH Disconnected.") 
+                time.sleep(1.0 / refreshRate)
         except KeyboardInterrupt:
             pass
         return
@@ -188,7 +179,6 @@ def checkSSHconnection(ssh):
     return
 
 # main loop
-pi = pigpio.pi()
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -300,14 +290,14 @@ try:
                 print("  (Press Ctrl+C to stop)")
                 if (pintype == "sensor"):
                     while True:
-                        print(f"{pi.read(pinnum)}")
+                        print(f"print sensor val")
                 elif (pintype == "servo"):
                     val = 1500
                     rate = 20
-                    pi.set_servo_pulsewidth(pinnum, val)
+                    # set initial servo val
                     while True:
                         time.sleep(0.01)
-                        pi.set_servo_pulsewidth(pinnum, val)
+                        # set servo val
                         val += rate
                         if (val > 2500):
                             val = 1500
@@ -331,5 +321,4 @@ try:
 except Exception:
     print("\nSorry, Armold is having trouble finding its arm... try again later!")
 finally:
-    pi.stop()
     ssh.close()
