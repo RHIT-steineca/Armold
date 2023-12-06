@@ -1,5 +1,6 @@
 import os, sys, time, json
 import paramiko
+import tkinter as tk
 
 class ArmoldBrain:
     # initialization
@@ -139,8 +140,16 @@ class Robot:
     
     # establishes servo pins
     def createServoConnections(robot):
-        robot.servoPins["shoulder"] = 4
-        robot.servoPins["elbow"] = 12
+        robot.servoPins["shoulderCB"] = 0
+        robot.servoPins["shoulderR"] = 1
+        robot.servoPins["shoulderLR"] = 2
+        robot.servoPins["elbow"] = 3
+        robot.servoPins["wrist"] = 4
+        robot.servoPins["finger1"] = 5
+        robot.servoPins["finger2"] = 6
+        robot.servoPins["finger3"] = 7
+        robot.servoPins["finger4"] = 8
+        robot.servoPins["finger5"] = 9
         return
 
     # sets servos to new positions
@@ -148,10 +157,10 @@ class Robot:
         testfilename = ""
         for servoname, pin in robot.servoPins.items():
             if servoname in newVals.keys():
-                # pi.set_servo_pulsewidth(pin, newVals[servoname])
                 testfilename += f"{servoname}-{pin}-{newVals[servoname]}_"
         try:
             checkSSHconnection(ssh)
+            testEnv.updateVals(newVals)
             ssh.exec_command(f"touch Armold/Code_Files/testing/{testfilename}.txt", timeout=1)
         except Exception:
             raise Exception("SSH Disconnected.") 
@@ -165,8 +174,16 @@ class Controller:
     
     # establishes sensor pins
     def createSensorConnections(controller):
-        controller.sensorPins["shoulder"] = 4
-        controller.sensorPins["elbow"] = 12
+        controller.sensorPins["shoulderCB"] = 0
+        controller.sensorPins["shoulderR"] = 1
+        controller.sensorPins["shoulderLR"] = 2
+        controller.sensorPins["elbow"] = 3
+        controller.sensorPins["wrist"] = 4
+        controller.sensorPins["finger1"] = 5
+        controller.sensorPins["finger2"] = 6
+        controller.sensorPins["finger3"] = 7
+        controller.sensorPins["finger4"] = 8
+        controller.sensorPins["finger5"] = 9
         return
 
     # gets current sensor positions
@@ -178,10 +195,94 @@ def checkSSHconnection(ssh):
         raise Exception("SSH disconnected")
     return
 
+class TestEnvironment:
+    def __init__(testenv):
+        testenv.valpairs = dict()
+        testenv.labelpairs = dict()
+        for servoName, val in brain.robot.servoPins.items():
+            testenv.valpairs[servoName] = 2500
+        testenv.setupWindow()
+    
+    def setupWindow(testenv):
+        testenv.window = tk.Tk()
+        testenv.window.title("Armold Testing Environment")
+        rebootButton = tk.Button(testenv.window, text="Reboot Armold\n(Restart Pi)", padx=30, pady=30, command=lambda : os.system("sudo reboot")).pack()
+        closeButton = tk.Button(testenv.window, text="Close Testing Window", padx=30, pady=30, command=lambda : testenv.closeWindow()).pack()
+        testenv.frame = tk.Frame(testenv.window)
+        testenv.frame.pack(side="top", expand=True, fill="both")
+        tk.Label(testenv.frame, text="").pack()
+        tk.Label(testenv.frame, text="").pack()
+        for servoName, servoVal in testenv.valpairs.items():
+            label = tk.Label(testenv.frame, text=f"{servoName}: {servoVal} Volts, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+            testenv.labelpairs[servoName] = label
+            label.pack()
+        testenv.window.geometry('300x450+0+0')
+        testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
+        testenv.window.withdraw()
+    
+    def updateVals(testenv, newVals):
+        for servoname, val in testenv.valpairs.items():
+            if servoname in newVals.keys():
+                testenv.valpairs[servoname] = newVals[servoname]
+        testenv.updateWindow()
+    
+    def updateWindow(testenv):
+        for servoName, servoVal in testenv.valpairs.items():
+            if servoName in testenv.labelpairs.keys():
+                label = testenv.labelpairs[servoName]
+                label.config(text=f"{servoName}: {servoVal} Volts, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+                label.pack()
+        testenv.frame.pack()
+        testenv.window.update()
+
+    def convertValToAngle(testenv, servoName, servoValue):
+        minVal = 500
+        maxVal = 2500
+        minDeg = 0
+        maxDeg = 360
+        if (servoName == "shoulderCB"):
+            maxDeg = 45
+        if (servoName == "shoulderR"):
+            maxDeg = 180
+        if (servoName == "shoulderLR"):
+            maxDeg = 90
+        if (servoName == "elbow"):
+            maxDeg = 150
+        if (servoName == "wrist"):
+            maxDeg = 180
+        if (servoName == "finger1"):
+            maxDeg = 1
+        if (servoName == "finger2"):
+            maxDeg = 1
+        if (servoName == "finger3"):
+            maxDeg = 1
+        if (servoName == "finger4"):
+            maxDeg = 1
+        if (servoName == "finger5"):
+            maxDeg = 1
+        valRange = maxVal-minVal
+        degRange = maxDeg-minDeg
+        percentValue = round(float((servoValue - minVal) / valRange), 1)
+        degValue = minDeg + (percentValue * degRange)
+        return degValue
+    
+    def showWindow(testenv):
+        testenv.window.deiconify()
+        testenv.updateWindow()
+    
+    def closeWindow(testenv):
+        testenv.window.withdraw()
+        
+    def forcedWindowClosed(testenv):
+        testenv.window.destroy()
+        testenv.setupWindow()
+        
+
 # main loop
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+testEnv = TestEnvironment()
 try:
     print("Armold is awake! \nNow looking for its arm...")
     ssh.connect("ArmoldSecondary", username="pi", password="Armold", timeout=5)
@@ -195,6 +296,7 @@ try:
                 "\n- (p) perform movement",
                 "\n- (l) mirror live movement",
                 "\n- (t) test pin connection",
+                "\n- (e) show testing environment",
                 "\n- (q) quit\n")
         command = input("> ")
         # study movement
@@ -311,6 +413,10 @@ try:
                 print("\nInvalid values provided.")
             except KeyboardInterrupt:
                 print("\nEnding loop...")
+        # show testing environment
+        elif(command == "e"):
+            print("\nYou told Armold to show its testing environment.")
+            testEnv.showWindow()
         # quit
         elif(command == "q"):
             print("\n- Armold says 'Bye!'\n")
