@@ -44,11 +44,10 @@ class ArmoldBrain:
         moveName = input("> ")
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
-        moveFile = open(moveFullPath, "w")
-        moveFile.write(f"{recordRate}")
-        for frameData in moveTimeline:
-            moveFile.write(f"\n{frameData}")
-        moveFile.close()
+        with open(moveFullPath, "w") as moveFile:
+            moveFile.write(f"{recordRate}")
+            for frameData in moveTimeline:
+                moveFile.write(f"\n{frameData}")
         newRecording = Recording(moveName)
         newRecording.timeline = moveTimeline
         brain.recordedMovements[moveName] = newRecording
@@ -116,16 +115,15 @@ class Recording:
     def readRecordingFromFile(recording, filename):
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, recording.filename + ".txt")
-        moveFile = open(moveFullPath, "r")
         try:
-            rateVal = moveFile.readline()
-            recording.originalRate = float(rateVal)
-            for frame in moveFile:
-                recording.timeline.append(json.loads(frame))
+            with open(moveFullPath, "r") as moveFile:
+                rateVal = moveFile.readline()
+                recording.originalRate = float(rateVal)
+                for frame in moveFile:
+                    recording.timeline.append(json.loads(frame))
         except ValueError:
             recording.originalRate = 1
             print(f"unable to load recording file for {filename}")
-        moveFile.close()
         return
     
     # gets data frame at time
