@@ -28,8 +28,9 @@ while True:
                                     targetVals[jointPin] = jointVal
                             with open(fullValPath, "w") as valFile:
                                 valFile.write("-1")
-                    except Exception:
                         break
+                    except Exception:
+                        continue
             for pin, actualVal in actualVals.items():
                 startVal = startVals[pin]
                 targetVal = targetVals[pin]
