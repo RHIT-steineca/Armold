@@ -40,7 +40,7 @@ while True:
                     deltaVal = targetVal - startVal
                     deltaInt = deltaVal / smoothingRate
                     interpolated = actualVal + deltaInt
-                    if (interpolated + deltaInt - targetVal <= deltaInt):
+                    if (interpolated - targetVal - deltaVal <= 0):
                         interpolated = targetVal
                     actualVals[pin] = interpolated
                     # TODO should set the arduino pin to the interpolated value HERE
