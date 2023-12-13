@@ -17,17 +17,17 @@ while True:
                     try:
                         refreshRate = float(firstLine)
                         if (refreshRate > 0):
-                        timeleft = 1.0 / refreshRate
-                        reader = csv.reader(valFile)
-                        for row in reader:
-                            jointName = row[0]
-                            jointVal = float(row[1])
-                            if jointName in mapping.keys():
-                                jointPin = mapping[jointName]
-                                startVals[jointPin] = actualVals[jointPin]
-                                targetVals[jointPin] = jointVal
-                        with open(fullValPath, "w") as valFile:
-                            valFile.write("-1")
+                            timeleft = 1.0 / refreshRate
+                            reader = csv.reader(valFile)
+                            for row in reader:
+                                jointName = row[0]
+                                jointVal = float(row[1])
+                                if jointName in mapping.keys():
+                                    jointPin = mapping[jointName]
+                                    startVals[jointPin] = actualVals[jointPin]
+                                    targetVals[jointPin] = jointVal
+                            with open(fullValPath, "w") as valFile:
+                                valFile.write("-1")
                     except Exception:
                         break
             for pin, actualVal in actualVals.items():
