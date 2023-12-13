@@ -40,7 +40,7 @@ while True:
                     interpolated = targetVal
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the interpolated value HERE
-                print(actualVals)
+                print(actualVals["0"])
             time.sleep(timeleft / smoothingRate)
         except Exception:
             raise Exception("Error occurred.")
