@@ -41,7 +41,8 @@ class ArmoldBrain:
             pass
         print(f"\n\n{frame} frame(s) memorized.")
         print("\nCan you describe what you just did?\n")
-        moveName = input("> ")
+        rawMoveName = input("> ")
+        moveName = rawmoveinput.replace(" ", "_")
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         with open(moveFullPath, "w") as moveFile:
@@ -51,7 +52,7 @@ class ArmoldBrain:
         newRecording = Recording(moveName)
         newRecording.timeline = moveTimeline
         brain.recordedMovements[moveName] = newRecording
-        print("\nCool! Armold now knows how to " + moveName + ".")
+        print("\nCool! Armold now knows how to " + rawMoveName + ".")
         return
     
     # playback movement on robot
@@ -276,7 +277,7 @@ while (quitCommanded):
             defaultRobotVals = dict()
             for servoname in brain.robot.servoPins:
                 defaultRobotVals[servoname] = 2500
-            brain.robot.setServos(defaultRobotVals, 1)
+            brain.robot.setServos(defaultRobotVals, 4)
             time.sleep(0.25)
             print("\nTell Armold what to do!",
                     "\nCommands are:",
@@ -323,10 +324,11 @@ while (quitCommanded):
                 while True:
                     print("\nWhich movement should Armold repeat?")
                     for rn, rec in brain.recordedMovements.items():
-                        print(f"- {rn} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
+                        print(f"- {rn.replace("_", " ")} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
                     print()
-                    moveinput = input("> ")
-                    if moveinput in brain.recordedMovements:
+                    rawMoveInput = input("> ")
+                    moveInput = rawmoveinput.replace(" ", "_")
+                    if moveInput in brain.recordedMovements:
                         break
                     else:
                         print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")

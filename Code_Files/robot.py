@@ -8,6 +8,7 @@ targetVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":25
 mapping = {"shoulderCB":"0","shoulderR":"1","shoulderLR":"2","elbow":"3","wrist":"4","finger1":"5","finger2":"6","finger3":"7","finger4":"8","finger5":"9"}
 timeleft = 0.0
 smoothingRate = 60
+lastFrame = 0.0
 while True:
         try:
             # checking for new target values assigned
@@ -31,16 +32,18 @@ while True:
                         break
                     except Exception:
                         continue
-            for pin, actualVal in actualVals.items():
-                startVal = startVals[pin]
-                targetVal = targetVals[pin]
-                deltaVal = targetVal - startVal
-                interpolated = actualVal + (deltaVal / smoothingRate)
-                if (abs(interpolated - targetVal) < abs(deltaVal / smoothingRate)):
-                    interpolated = targetVal
-                actualVals[pin] = interpolated
-                # TODO should set the arduino pin to the interpolated value HERE
-                print(actualVals["0"])
-            time.sleep(timeleft / smoothingRate)
+            if (time.time() - lastFrame >= (timeleft / smoothingRate)):
+                lastFrame = time.time()
+                for pin, actualVal in actualVals.items():
+                    startVal = startVals[pin]
+                    targetVal = targetVals[pin]
+                    deltaVal = targetVal - startVal
+                    deltaInt = deltaVal / smoothingRate
+                    interpolated = actualVal + deltaInt
+                    if (interpolated + deltaInt - targetVal <= deltaInt):
+                        interpolated = targetVal
+                    actualVals[pin] = interpolated
+                    # TODO should set the arduino pin to the interpolated value HERE
+                    print(actualVals["0"])
         except Exception:
             raise Exception("Error occurred.")
