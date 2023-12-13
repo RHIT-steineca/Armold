@@ -7,7 +7,7 @@ actualVals = {"0":0, "1":0, "2":0, "3":0, "4":0, "5":0, "6":0, "7":0, "8":0, "9"
 targetVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
 mapping = {"shoulderCB":"0","shoulderR":"1","shoulderLR":"2","elbow":"3","wrist":"4","finger1":"5","finger2":"6","finger3":"7","finger4":"8","finger5":"9"}
 timeleft = 0.0
-smoothingRate = 60
+smoothingRate = 10
 lastFrame = 0.0
 while True:
         try:
@@ -40,7 +40,7 @@ while True:
                     deltaVal = targetVal - startVal
                     deltaInt = deltaVal / smoothingRate
                     interpolated = actualVal + deltaInt
-                    if (interpolated - targetVal - deltaVal <= 0):
+                    if (abs(interpolated - targetVal) - abs(deltaVal) <= 0):
                         interpolated = targetVal
                     actualVals[pin] = interpolated
                     # TODO should set the arduino pin to the interpolated value HERE
