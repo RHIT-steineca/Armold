@@ -133,29 +133,14 @@ class Recording:
 class Robot:
     # initialization
     def __init__(robot):
-        robot.servoPins = dict()
-        robot.createServoConnections()
-    
-    # establishes servo pins
-    def createServoConnections(robot):
-        robot.servoPins["shoulderCB"] = 0
-        robot.servoPins["shoulderR"] = 1
-        robot.servoPins["shoulderLR"] = 2
-        robot.servoPins["elbow"] = 3
-        robot.servoPins["wrist"] = 4
-        robot.servoPins["finger1"] = 5
-        robot.servoPins["finger2"] = 6
-        robot.servoPins["finger3"] = 7
-        robot.servoPins["finger4"] = 8
-        robot.servoPins["finger5"] = 9
-        return
+        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","finger1","finger2","finger3","finger4","finger5"]
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
         robovalString = str(refreshRate)
-        for servoname, pin in robot.servoPins.items():
+        for servoname in robot.servoPins:
             if servoname in newVals.keys():
-                robovalString += f"\n{servoname} at pin {pin} set to {newVals[servoname]}"
+                robovalString += f"\n{servoname},{newVals[servoname]}"
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
@@ -197,7 +182,7 @@ class TestEnvironment:
     def __init__(testenv):
         testenv.valpairs = dict()
         testenv.labelpairs = dict()
-        for servoName, val in brain.robot.servoPins.items():
+        for servoName in brain.robot.servoPins:
             testenv.valpairs[servoName] = 2500
         testenv.setupWindow()
     
@@ -289,7 +274,7 @@ while (quitCommanded):
         while True:
             checkSSHconnection(ssh)
             defaultRobotVals = dict()
-            for servoname, pin in brain.robot.servoPins.items():
+            for servoname in brain.robot.servoPins:
                 defaultRobotVals[servoname] = 2500
             brain.robot.setServos(defaultRobotVals, 1)
             time.sleep(0.25)
