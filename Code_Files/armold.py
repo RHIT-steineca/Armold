@@ -69,7 +69,7 @@ class ArmoldBrain:
                         print(f"{recLen - secDone} second(s) left...")
                         secDone += 1
                     try:
-                        brain.robot.setServos(movement.getServosAtTime(frame))
+                        brain.robot.setServos(movement.getServosAtTime(frame), playbackRate)
                     except Exception:
                         raise Exception("SSH Disconnected.")
                     frame += 1
@@ -91,7 +91,7 @@ class ArmoldBrain:
         try:
             while(True):
                 try:
-                    brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()))
+                    brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()), refreshRate)
                 except Exception:
                     raise Exception("SSH Disconnected.") 
                 time.sleep(1.0 / refreshRate)
@@ -151,17 +151,17 @@ class Robot:
         return
 
     # sets servos to new positions
-    def setServos(robot, newVals):
-        testfilename = ""
+    def setServos(robot, newVals, refreshRate):
+        robovalString = str(refreshRate)
         for servoname, pin in robot.servoPins.items():
             if servoname in newVals.keys():
-                testfilename += f"{servoname}-{pin}-{newVals[servoname]}_"
+                robovalString += f"\n{servoname} at pin {pin} set to {newVals[servoname]}"
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
-            ssh.exec_command(f"touch Armold/Code_Files/testing/{testfilename}.txt", timeout=1)
+            ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
         except Exception:
-            raise Exception("SSH Disconnected.") 
+            raise Exception("SSH Disconnected.")
         return
 
 class Controller:
@@ -274,7 +274,6 @@ class TestEnvironment:
     def forcedWindowClosed(testenv):
         testenv.window.destroy()
         testenv.setupWindow()
-        
 
 # main loop
 brain = ArmoldBrain()
@@ -289,6 +288,10 @@ while (quitCommanded):
         print("\nArm found! Armold is ready to go!")
         while True:
             checkSSHconnection(ssh)
+            defaultRobotVals = dict()
+            for servoname, pin in brain.robot.servoPins.items():
+                defaultRobotVals[servoname] = 2500
+            brain.robot.setServos(defaultRobotVals, 1)
             time.sleep(0.25)
             print("\nTell Armold what to do!",
                     "\nCommands are:",
