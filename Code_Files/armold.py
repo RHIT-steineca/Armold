@@ -140,7 +140,7 @@ class Robot:
         robovalString = str(refreshRate)
         for servoname in robot.servoPins:
             if servoname in newVals.keys():
-                robovalString += f"\n{servoname},{newVals[servoname]}"
+                robovalString += f'\n"{servoname}",{newVals[servoname]}'
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
