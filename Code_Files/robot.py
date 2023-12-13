@@ -34,8 +34,8 @@ while True:
             for pin, actualVal in actualVals.items():
                 startVal = startVals[pin]
                 targetVal = targetVals[pin]
-                deltaVal = targetVal - actualVal
-                interpolated = startVal + (deltaVal / smoothingRate)
+                deltaVal = targetVal - startVal
+                interpolated = actualVal + (deltaVal / smoothingRate)
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the interpolated value HERE
                 print(actualVals)
