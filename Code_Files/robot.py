@@ -44,6 +44,6 @@ while True:
                         interpolated = targetVal
                     actualVals[pin] = interpolated
                     # TODO should set the arduino pin to the interpolated value HERE
-            print(f'{actualVals["0"]} target: {targetVals["0"]}')
+            print(f'{actualVals["0"]} target: {targetVals["0"]} start {startVals["0"]}')
         except Exception:
             raise Exception("Error occurred.")
