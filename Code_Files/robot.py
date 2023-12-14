@@ -25,7 +25,7 @@ while True:
                                 jointVal = float(row[1])
                                 if jointName in mapping.keys():
                                     jointPin = mapping[jointName]
-                                    startVals[jointPin] = actualVals[jointPin]
+                                    startVals[jointPin] = targetVals[jointPin]
                                     targetVals[jointPin] = jointVal
                             with open(fullValPath, "w") as valFile:
                                 valFile.write("-1")
