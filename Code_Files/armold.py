@@ -324,7 +324,7 @@ while (quitCommanded):
                 while True:
                     print("\nWhich movement should Armold repeat?")
                     for rn, rec in brain.recordedMovements.items():
-                        print(f"- {rn.replace("_", " ")} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
+                        print(f"- {str(rn).replace("_", " ")} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
                     print()
                     rawMoveInput = input("> ")
                     moveInput = rawmoveinput.replace(" ", "_")
