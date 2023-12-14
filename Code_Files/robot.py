@@ -29,7 +29,7 @@ while True:
                                     targetVals[jointPin] = jointVal
                             with open(fullValPath, "w") as valFile:
                                 valFile.write("-1")
-                        lastFrame = time.time() + (timeleft)
+                            lastFrame = time.time() - (timeleft)
                         break
                     except Exception:
                         continue
