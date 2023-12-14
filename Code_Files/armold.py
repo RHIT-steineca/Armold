@@ -145,7 +145,7 @@ class Robot:
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
-            ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
+            ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0)
         except Exception:
             raise Exception("SSH Disconnected.")
         return
