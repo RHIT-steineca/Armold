@@ -324,10 +324,11 @@ while (quitCommanded):
                 while True:
                     print("\nWhich movement should Armold repeat?")
                     for rn, rec in brain.recordedMovements.items():
-                        print(f"- {str(rn).replace("_", " ")} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
+                        name = rn.replace("_", " ")
+                        print(f"- {name} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
                     print()
                     rawMoveInput = input("> ")
-                    moveInput = rawmoveinput.replace(" ", "_")
+                    moveInput = rawMoveInput.replace(" ", "_")
                     if moveInput in brain.recordedMovements:
                         break
                     else:
@@ -350,8 +351,8 @@ while (quitCommanded):
                 loop = False
                 if (loopinput == "Y"):
                     loop = True
-                print("\n- Armold is going to " + moveinput + "!")
-                brain.playbackMovement(moveinput, refreshRate, loop)
+                print("\n- Armold is going to " + moveInput + "!")
+                brain.playbackMovement(moveInput, refreshRate, loop)
             # mirror movement
             elif(command == "l"):
                 print("\nYou told Armold to mirror your movements in real-time.")

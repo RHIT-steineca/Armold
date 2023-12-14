@@ -26,6 +26,7 @@ while True:
                                 if jointName in mapping.keys():
                                     jointPin = mapping[jointName]
                                     startVals[jointPin] = targetVals[jointPin]
+                                    actualVal[jointPin] = targetVals[jointPin]
                                     targetVals[jointPin] = jointVal
                             with open(fullValPath, "w") as valFile:
                                 valFile.write("-1")
