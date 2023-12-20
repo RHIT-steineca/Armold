@@ -9,8 +9,6 @@ mapping = {"shoulderCB":"0","shoulderR":"1","shoulderLR":"2","elbow":"3","wrist"
 frameKey = "init"
 frameLen = 0.0
 lastFrame = time.time()
-#smoothingBase = 30
-#smoothingRate = 1
 while True:
         try:
             # checking for new target values assigned
@@ -22,10 +20,6 @@ while True:
                         rateLine = valFile.readline()
                         refreshRate = float(rateLine)
                         frameLen = 1.0 / refreshRate
-                        #if (refreshRate < smoothingBase):
-                        #    smoothingRate = math.floor(smoothingBase / refreshRate)
-                        #else:
-                        #    smoothingRate = 1
                         reader = csv.reader(valFile)
                         for row in reader:
                             jointName = row[0]
@@ -35,7 +29,6 @@ while True:
                                 startVals[jointPin] = targetVals[jointPin]
                                 actualVals[jointPin] = targetVals[jointPin]
                                 targetVals[jointPin] = jointVal
-                        #lastFrame = time.time() - (timeleft)
                         lastFrame = time.time()
                         print(f"\nNEW FRAME - {keyLine}\n")
                 except Exception:
@@ -53,19 +46,5 @@ while True:
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
             print(f'{framePercent}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
-            
-            #if (time.time() - lastFrame >= (timeleft / smoothingRate)):
-            #    lastFrame = time.time()
-            #    for pin, actualVal in actualVals.items():
-            #        startVal = startVals[pin]
-            #        targetVal = targetVals[pin]
-            #        deltaVal = targetVal - startVal
-            #        deltaInterpolated = deltaVal / smoothingRate
-            #        interpolated = actualVal + deltaInterpolated
-            #        if (abs(interpolated - targetVal) - abs(deltaInterpolated) <= 0):
-            #            interpolated = targetVal
-            #        actualVals[pin] = interpolated
-            #        # TODO should set the arduino pin to the new actual value HERE
-            #    print(f'{round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
