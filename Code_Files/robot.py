@@ -19,6 +19,7 @@ while True:
                     try:
                         keyLine = valFile.readline()
                         if (keyLine != frameKey):
+                            frameKey = keyLine
                             rateLine = valFile.readline()
                             refreshRate = float(rateLine)
                             timeleft = 1.0 / refreshRate
