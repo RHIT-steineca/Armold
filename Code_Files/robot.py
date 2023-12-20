@@ -18,9 +18,9 @@ while True:
                 with open(fullValPath, "r") as valFile:
                     try:
                         keyLine = valFile.readline()
-                        rateLine = valFile.readline()
-                        refreshRate = float(rateLine)
                         if (keyLine != frameKey):
+                            rateLine = valFile.readline()
+                            refreshRate = float(rateLine)
                             timeleft = 1.0 / refreshRate
                             if (refreshRate < smoothingBase):
                                 smoothingRate = math.floor(smoothingBase / refreshRate)
@@ -45,12 +45,13 @@ while True:
                     startVal = startVals[pin]
                     targetVal = targetVals[pin]
                     deltaVal = targetVal - startVal
-                    deltaInt = deltaVal / smoothingRate
-                    interpolated = actualVal + deltaInt
-                    if (abs(interpolated - targetVal) - abs(deltaInt) <= 0):
+                    deltaInterpolated = deltaVal / smoothingRate
+                    interpolated = actualVal + deltaInterpolated
+                    if (abs(interpolated - targetVal) - abs(deltaInterpolated) <= 0):
                         interpolated = targetVal
                     actualVals[pin] = interpolated
                     # TODO should set the arduino pin to the interpolated value HERE
+                    print("UPDATE")
             print(actualVals["0"])
             #print(f'{round(actualVals["0"])} target: {round(targetVals["0"])} start {round(startVals["0"])}')
         except Exception:
