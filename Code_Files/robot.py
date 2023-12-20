@@ -52,7 +52,7 @@ while True:
                     interpolated = actualVal + deltaInterpolated
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
-            print(f'{}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
+            print(f'{framePercent}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
             
             #if (time.time() - lastFrame >= (timeleft / smoothingRate)):
             #    lastFrame = time.time()
