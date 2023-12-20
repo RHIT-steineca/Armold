@@ -293,7 +293,6 @@ while (quitCommanded):
                     "\n- (s) study movement",
                     "\n- (p) perform movement",
                     "\n- (l) mirror live movement",
-                    "\n- (t) test pin connection",
                     "\n- (e) show testing environment",
                     "\n- (q) quit\n")
             command = input("> ")
@@ -379,40 +378,6 @@ while (quitCommanded):
                         print("\n'" + rateinput + "' isn't a number, try again.")
                 print("\n- Armold is mirroring your movements!")
                 brain.realtimeMovement(refreshRate)
-            # test servo pin
-            elif(command == "t"):
-                print("\nYou told Armold to test a pin.")
-                print("\nWhich pin should be tested?")
-                pininput = input("\n> ")
-                print("\nIs the pin connected to a sensor or servo?")
-                pintype = input("\n> ")
-                try:
-                    pinnum = int(pininput)
-                    print(f"\nTesting pin #{pinnum}...")
-                    print("  (Press Ctrl+C to stop)")
-                    if (pintype == "sensor"):
-                        while True:
-                            print(f"print sensor val")
-                    elif (pintype == "servo"):
-                        val = 1500
-                        rate = 20
-                        # set initial servo val
-                        while True:
-                            time.sleep(0.01)
-                            # set servo val
-                            val += rate
-                            if (val > 2500):
-                                val = 1500
-                                rate =-20
-                            if (val < 500):
-                                val = 1500
-                                rate = 20
-                    else:
-                        print("Huh?")
-                except ValueError:
-                    print("\nInvalid values provided.")
-                except KeyboardInterrupt:
-                    print("\nEnding loop...")
             # show testing environment
             elif(command == "e"):
                 print("\nYou told Armold to show its testing environment.")
