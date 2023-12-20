@@ -1,5 +1,5 @@
 import os, sys, time, csv, math
-import pyfirmata
+import pyfirmata.pyfirmata
 
 # initialization
 board = pyfirmata.Arduino('YOUR_PORT_HERE')
