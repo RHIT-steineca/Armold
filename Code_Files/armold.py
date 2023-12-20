@@ -19,7 +19,7 @@ class ArmoldBrain:
             brain.recordedMovements[rn] = Recording(rn)
     
     # record user movement to file
-    def recordMovement(brain, recordRate, duration):
+    def recordMovement(brain, refreshRate, duration):
         moveTimeline = []
         frame = 0
         secDone = 0
@@ -27,16 +27,18 @@ class ArmoldBrain:
             print("  (Press Ctrl+C to stop)")
         print()
         try:
-            while((duration == 0) or (frame < recordRate * duration)):
-                moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
-                if (secDone == recordRate):
-                    print("\n")
-                    secDone = 0
-                print(".", end = "")
-                sys.stdout.flush()
-                frame += 1
-                secDone += 1
-                time.sleep(1.0 / recordRate)
+            lastFrame = time.time()
+            while((duration == 0) or (frame < refreshRate * duration)):
+                if (time.time() - lastFrame >= 1.0 / refreshRate):
+                    lastFrame = time.time()
+                    moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
+                    if (secDone == refreshRate):
+                        print("\n")
+                        secDone = 0
+                    print(".", end = "")
+                    sys.stdout.flush()
+                    frame += 1
+                    secDone += 1
         except KeyboardInterrupt:
             pass
         print(f"\n\n{frame} frame(s) memorized.")
@@ -56,25 +58,27 @@ class ArmoldBrain:
         return
     
     # playback movement on robot
-    def playbackMovement(brain, moveName, playbackRate, loop):
+    def playbackMovement(brain, moveName, refreshRate, loop):
         print("  (Press Ctrl+C to stop)")
         print()
         frame = 0
         secDone = 0
         movement = brain.recordedMovements[moveName]
-        recLen = round(len(movement.timeline) * (1.0 / playbackRate), 2)
+        recLen = round(len(movement.timeline) * (1.0 / refreshRate), 2)
         try:
             while True:
+                lastFrame = time.time() += 1.0 / refreshRate
                 while(frame < len(movement.timeline)):
-                    if (frame % playbackRate == 0):
-                        print(f"{recLen - secDone} second(s) left...")
-                        secDone += 1
-                    try:
-                        brain.robot.setServos(movement.getServosAtTime(frame), playbackRate)
-                    except Exception:
-                        raise Exception("SSH Disconnected.")
-                    frame += 1
-                    time.sleep(1.0 / refreshRate)
+                    if (time.time() - lastFrame >= 1.0 / refreshRate):
+                        lastFrame = time.time()
+                        if (frame % refreshRate == 0):
+                            print(f"{recLen - secDone} second(s) left...")
+                            secDone += 1
+                        try:
+                            brain.robot.setServos(movement.getServosAtTime(frame), refreshRate)
+                        except Exception:
+                            raise Exception("SSH Disconnected.")
+                        frame += 1
                 if loop:
                     frame = 0
                     secDone = 0
@@ -90,12 +94,14 @@ class ArmoldBrain:
         print("  (Press Ctrl+C to stop)")
         print()
         try:
-            while(True):
-                try:
-                    brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()), refreshRate)
-                except Exception:
-                    raise Exception("SSH Disconnected.") 
-                time.sleep(1.0 / refreshRate)
+            lastFrame = time.time()
+            while True:
+                if (time.time() - lastFrame >= 1.0 / refreshRate):
+                    lastFrame = time.time()
+                    try:
+                        brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()), refreshRate)
+                    except Exception:
+                        raise Exception("SSH Disconnected.")
         except KeyboardInterrupt:
             pass
         return
@@ -146,9 +152,11 @@ class Robot:
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
-            ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0)
+            # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
+            stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
+            exit_status = stdout.channel.recv_exit_status()
         except Exception:
-            raise Exception("SSH Disconnected.")
+            raise Exception("SSH Disconnected: " + exit_status)
         return
 
 class Controller:
