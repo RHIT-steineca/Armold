@@ -106,6 +106,7 @@ class ArmoldBrain:
             pass
         return
     
+    # convert values from sensor -> servo
     def convertToServoVals(brain, sensorVals):
         servoVals = dict()
         return servoVals

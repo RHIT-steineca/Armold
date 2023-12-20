@@ -1,5 +1,6 @@
 import os, sys, time, csv, math
 
+# initialization
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 startVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
@@ -30,9 +31,11 @@ while True:
                                 actualVals[jointPin] = targetVals[jointPin]
                                 targetVals[jointPin] = jointVal
                         lastFrame = time.time()
-                        print(f"\nNEW FRAME - {keyLine}\n")
+                        # Console log for testing
+                        # print(f"\nNEW FRAME - {keyLine}\n")
                 except Exception:
                     continue
+            # check for time passed since new frame and interpolate value
             framePercent = (time.time() - lastFrame) / frameLen
             for pin, actualVal in actualVals.items():
                 if (framePercent >= 1):
@@ -45,6 +48,7 @@ while True:
                     interpolated = startVal + deltaInterpolated
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
-            print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
+            # Console log for testing
+            # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
