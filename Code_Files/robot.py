@@ -22,7 +22,6 @@ while True:
                         frameLen = 1.0 / refreshRate
                         reader = csv.reader(valFile)
                         for row in reader:
-                            print(row)
                             jointName = row[0]
                             jointVal = float(row[1])
                             if jointName in mapping.keys():
@@ -30,6 +29,7 @@ while True:
                                 startVals[jointPin] = targetVals[jointPin]
                                 actualVals[jointPin] = targetVals[jointPin]
                                 targetVals[jointPin] = jointVal
+                            print(jointName + ": " + targetVals[jointPin])
                         lastFrame = time.time()
                         print(f"\nNEW FRAME - {keyLine}\n")
                 except Exception:
