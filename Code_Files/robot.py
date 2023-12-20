@@ -53,7 +53,6 @@ while True:
                         interpolated = targetVal
                     actualVals[pin] = interpolated
                     # TODO should set the arduino pin to the interpolated value HERE
-                #print(actualVals["0"])
-                print(f'{round(actualVals["0"])} target: {round(targetVals["0"])} start {round(startVals["0"])}')
+                print(f'{round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
