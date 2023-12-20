@@ -22,6 +22,7 @@ while True:
                         frameLen = 1.0 / refreshRate
                         reader = csv.reader(valFile)
                         for row in reader:
+                            print(row)
                             jointName = row[0]
                             jointVal = float(row[1])
                             if jointName in mapping.keys():
@@ -45,6 +46,6 @@ while True:
                     interpolated = startVal + deltaInterpolated
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
-            print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
+            # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
