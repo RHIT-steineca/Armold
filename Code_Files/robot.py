@@ -1,5 +1,5 @@
 import os, sys, time, csv, math
-import pyfirmata.pyfirmata.pyfirmata
+import pyfirmata
 
 # initialization
 board = pyfirmata.Arduino('YOUR_PORT_HERE')
@@ -60,6 +60,6 @@ while True:
 def moveArduino():
     #for name, val in actualVals.items():
     #    pin = mapping[name]
-    #    board.digital[pin].write(val)
-    #    board.analog[pin].write(val)
+    #    connection = board.get_pin('a:{pin}:p')
+    #    connection.write(val)
     return
