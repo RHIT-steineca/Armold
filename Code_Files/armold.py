@@ -301,14 +301,14 @@ while (quitCommanded):
                 print("\nYou told Armold to study your movements.")
                 # get recording rate
                 while True:
-                    print("\nRate of recording? (Hz)\n")
+                    print("\nRate of recording? (Hz < 30)\n")
                     try:
                         rateinput = input("> ")
-                        refreshRate = float(rateinput)
-                        if (refreshRate > 1):
+                        refreshRate = int(rateinput)
+                        if (refreshRate >= 1 and refreshRate < 30):
                             break
                         else:
-                            print("\nThe rate needs to be greater than 1, try again.")
+                            print("\nThe rate needs to be at least 1 but less than 30, try again.")
                     except ValueError:
                         print("\n'" + rateinput + "' isn't a number, try again.")
                 # get recording duration
@@ -343,14 +343,14 @@ while (quitCommanded):
                         print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")
                 # get playback rate
                 while True:
-                    print("\nRate of playback? (Hz)\n")
+                    print("\nRate of playback? (Hz < 30)\n")
                     try:
                         rateinput = input("> ")
-                        refreshRate = float(rateinput)
-                        if (refreshRate >= 1):
+                        refreshRate = int(rateinput)
+                        if (refreshRate >= 1 and refreshRate < 30):
                             break
                         else:
-                            print("\nThe rate needs to be at least 1.0, try again.")
+                            print("\nThe rate needs to be at least 1 but less than 30, try again.")
                     except ValueError:
                         print("\n'" + rateinput + "' isn't a number, try again.")
                 # get loop
@@ -370,10 +370,10 @@ while (quitCommanded):
                     try:
                         rateinput = input("> ")
                         refreshRate = float(rateinput)
-                        if (refreshRate > 1):
+                        if (refreshRate >= 1 and refreshRate < 30):
                             break
                         else:
-                            print("\nThe rate needs to be greater than 1, try again.")
+                            print("\nThe rate needs to be at least 1 but less than 30, try again.")
                     except ValueError:
                         print("\n'" + rateinput + "' isn't a number, try again.")
                 print("\n- Armold is mirroring your movements!")
