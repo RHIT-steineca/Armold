@@ -1,4 +1,4 @@
-import os, sys, time, csv, math, inspect
+import os, sys, time, csv, math
 import pyfirmata
 
 # initialization
