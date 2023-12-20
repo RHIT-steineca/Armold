@@ -49,7 +49,7 @@ while True:
                     targetVal = targetVals[pin]
                     deltaVal = targetVal - startVal
                     deltaInterpolated = deltaVal * framePercent
-                    interpolated = actualVal + deltaInterpolated
+                    interpolated = startVal + deltaInterpolated
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
             print(f'{framePercent}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
