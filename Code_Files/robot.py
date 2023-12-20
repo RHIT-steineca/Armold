@@ -2,7 +2,7 @@ import os, sys, time, csv, math
 import pyfirmata
 
 # initialization
-board = pyfirmata.Arduino('YOUR_PORT_HERE')
+board = pyfirmata.Arduino('/dev/ttyACM0')
 print("Communication Successfully started")
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
