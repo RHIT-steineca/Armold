@@ -1,4 +1,4 @@
-import os, sys, time, json
+import os, sys, time, json, secrets, string, math
 import paramiko
 import tkinter as tk
 
@@ -138,10 +138,10 @@ class Robot:
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
-        frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(refreshRate + 5))
-        robovalString =  f'{frameKey}\n{str(refreshRate)}'
+        frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(math.floor(refreshRate) + 5))
+        robovalString =  f'{str(frameKey)}\n{str(refreshRate)}'
         for servoname, newVal in newVals.items():
-            if servoname in servoPins:
+            if servoname in robot.servoPins:
                 robovalString += f'\n"{servoname}",{newVal}'
         try:
             checkSSHconnection(ssh)
