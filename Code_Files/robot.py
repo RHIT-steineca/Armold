@@ -36,6 +36,7 @@ while True:
                                     actualVals[jointPin] = targetVals[jointPin]
                                     targetVals[jointPin] = jointVal
                             lastFrame = time.time() - (timeleft)
+                            print("\nNEW FRAME\n")
                         break
                     except Exception:
                         continue
