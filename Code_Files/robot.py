@@ -29,7 +29,7 @@ while True:
                                 startVals[jointPin] = targetVals[jointPin]
                                 actualVals[jointPin] = targetVals[jointPin]
                                 targetVals[jointPin] = jointVal
-                                print(jointName + ": " + targetVals[jointPin])
+                                print(f"{jointName}: {targetVals[jointPin]}")
                         lastFrame = time.time()
                         print(f"\nNEW FRAME - {keyLine}\n")
                 except Exception:
