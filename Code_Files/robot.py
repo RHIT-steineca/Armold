@@ -1,12 +1,15 @@
 import os, sys, time, csv, math
+import pyfirmata
 
 # initialization
+board = pyfirmata.Arduino('YOUR_PORT_HERE')
+print("Communication Successfully started")
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
-startVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
-actualVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
-targetVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
-mapping = {"shoulderCB":"0","shoulderR":"1","shoulderLR":"2","elbow":"3","wrist":"4","finger1":"5","finger2":"6","finger3":"7","finger4":"8","finger5":"9"}
+startVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+actualVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+targetVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+mapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
 frameKey = "init"
 frameLen = 0.0
 lastFrame = time.time()
@@ -26,10 +29,9 @@ while True:
                             jointName = row[0]
                             jointVal = float(row[1])
                             if jointName in mapping.keys():
-                                jointPin = mapping[jointName]
-                                startVals[jointPin] = targetVals[jointPin]
-                                actualVals[jointPin] = targetVals[jointPin]
-                                targetVals[jointPin] = jointVal
+                                startVals[jointName] = targetVals[jointName]
+                                actualVals[jointName] = targetVals[jointName]
+                                targetVals[jointName] = jointVal
                         lastFrame = time.time()
                         # Console log for testing
                         # print(f"\nNEW FRAME - {keyLine}\n")
@@ -37,16 +39,16 @@ while True:
                     continue
             # check for time passed since new frame and interpolate value
             framePercent = (time.time() - lastFrame) / frameLen
-            for pin, actualVal in actualVals.items():
+            for joint, actualVal in actualVals.items():
                 if (framePercent >= 1):
-                    interpolated = targetVals[pin]
+                    interpolated = targetVals[joint]
                 else:
-                    startVal = startVals[pin]
-                    targetVal = targetVals[pin]
+                    startVal = startVals[joint]
+                    targetVal = targetVals[joint]
                     deltaVal = targetVal - startVal
                     deltaInterpolated = deltaVal * framePercent
                     interpolated = startVal + deltaInterpolated
-                actualVals[pin] = interpolated
+                actualVals[joint] = interpolated
             moveArduino()
             # Console log for testing
             # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
@@ -54,7 +56,10 @@ while True:
             raise Exception("Error occurred.")
         
 # TODO should set the arduino pin to the new actual value HERE
+# tutorial https://roboticsbackend.com/control-arduino-with-python-and-pyfirmata-from-raspberry-pi/
 def moveArduino():
-    #for pin, val in actualVals.items():
-    #    arduino.set(pin, val)
+    #for name, val in actualVals.items():
+    #    pin = mapping[name]
+    #    board.digital[pin].write(val)
+    #    board.analog[pin].write(val)
     return
