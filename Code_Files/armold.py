@@ -138,10 +138,11 @@ class Robot:
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
-        robovalString = str(refreshRate)
-        for servoname in robot.servoPins:
-            if servoname in newVals.keys():
-                robovalString += f'\n"{servoname}",{newVals[servoname]}'
+        frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(refreshRate + 5))
+        robovalString =  f'{frameKey}\n{str(refreshRate)}'
+        for servoname, newVal in newVals.items():
+            if servoname in servoPins:
+                robovalString += f'\n"{servoname}",{newVal}'
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)

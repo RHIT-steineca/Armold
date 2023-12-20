@@ -7,6 +7,7 @@ actualVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":25
 targetVals = {"0":2500, "1":2500, "2":2500, "3":2500, "4":2500, "5":2500, "6":2500, "7":2500, "8":2500, "9":2500}
 mapping = {"shoulderCB":"0","shoulderR":"1","shoulderLR":"2","elbow":"3","wrist":"4","finger1":"5","finger2":"6","finger3":"7","finger4":"8","finger5":"9"}
 timeleft = 0.0
+frameKey = "init"
 smoothingBase = 30
 smoothingRate = 1
 lastFrame = time.time()
@@ -15,10 +16,11 @@ while True:
             # checking for new target values assigned
             while True:
                 with open(fullValPath, "r") as valFile:
-                    firstLine = valFile.readline()
                     try:
-                        refreshRate = float(firstLine)
-                        if (refreshRate > 0):
+                        keyLine = valFile.readline()
+                        rateLine = valFile.readline()
+                        refreshRate = float(rateLine)
+                        if (keyLine != frameKey):
                             timeleft = 1.0 / refreshRate
                             if (refreshRate < smoothingBase):
                                 smoothingRate = math.floor(smoothingBase / refreshRate)
@@ -33,8 +35,6 @@ while True:
                                     startVals[jointPin] = targetVals[jointPin]
                                     actualVals[jointPin] = targetVals[jointPin]
                                     targetVals[jointPin] = jointVal
-                            with open(fullValPath, "w") as valFile:
-                                valFile.write("-1")
                             lastFrame = time.time() - (timeleft)
                         break
                     except Exception:
