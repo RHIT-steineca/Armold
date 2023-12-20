@@ -67,7 +67,7 @@ class ArmoldBrain:
         recLen = round(len(movement.timeline) * (1.0 / refreshRate), 2)
         try:
             while True:
-                lastFrame = time.time() + (1.0 / refreshRate)
+                lastFrame = time.time()
                 while(frame < len(movement.timeline)):
                     if (time.time() - lastFrame >= 1.0 / refreshRate):
                         lastFrame = time.time()
