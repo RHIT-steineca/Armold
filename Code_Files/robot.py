@@ -47,8 +47,14 @@ while True:
                     deltaInterpolated = deltaVal * framePercent
                     interpolated = startVal + deltaInterpolated
                 actualVals[pin] = interpolated
-                # TODO should set the arduino pin to the new actual value HERE
+            moveArduino()
             # Console log for testing
             # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
+        
+# TODO should set the arduino pin to the new actual value HERE
+def moveArduino():
+    #for pin, val in actualVals.items():
+    #    arduino.set(pin, val)
+    return
