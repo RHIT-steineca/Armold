@@ -36,7 +36,7 @@ while True:
             framePercent = (time.time() - lastFrame) / frameLen
             for pin, actualVal in actualVals.items():
                 if (framePercent >= 1):
-                    interpolated = targetVal
+                    interpolated = targetVals[pin]
                 else:
                     startVal = startVals[pin]
                     targetVal = targetVals[pin]
