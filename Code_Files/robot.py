@@ -29,7 +29,6 @@ while True:
                                 startVals[jointPin] = targetVals[jointPin]
                                 actualVals[jointPin] = targetVals[jointPin]
                                 targetVals[jointPin] = jointVal
-                                print(f"{jointName}: {targetVals[jointPin]}")
                         lastFrame = time.time()
                         print(f"\nNEW FRAME - {keyLine}\n")
                 except Exception:
@@ -46,6 +45,6 @@ while True:
                     interpolated = startVal + deltaInterpolated
                 actualVals[pin] = interpolated
                 # TODO should set the arduino pin to the new actual value HERE
-            # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
+            print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
