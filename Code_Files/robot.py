@@ -15,9 +15,11 @@ board = pyfirmata.Arduino('/dev/ttyACM0')
 print("Communication Successfully started")
 valPath = "//home//ArmoldSecondary//"
 fullValPath = os.path.join(valPath, "robovals.txt")
+# set intial robot values
 startVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
 actualVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
 targetVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+# map of joints to arduino pins
 mapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
 frameKey = "init"
 frameLen = 0.0
