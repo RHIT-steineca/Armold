@@ -62,4 +62,4 @@ def moveArduino():
     #    pin = mapping[name]
     #    connection = board.get_pin('a:{pin}:p')
     #    connection.write(val)
-    return
+    pass
