@@ -44,6 +44,7 @@ while True:
                         lastFrame = time.time()
                         # Console log for testing
                         print(f"\nNEW FRAME - {keyLine}\n")
+                        print(f'{round(framePercent, 2)}: {round(startVals["shoulderCB"])} -> {round(actualVals["shoulderCB"])} -> {round(targetVals["shoulderCB"])}')
                 except Exception:
                     continue
             # check for time passed since new frame and interpolate value
@@ -60,6 +61,6 @@ while True:
                 actualVals[joint] = interpolated
             moveArduino()
             # Console log for testing
-            print(f'{round(framePercent, 2)}: {round(startVals["shoulderCB"])} -> {round(actualVals["shoulderCB"])} -> {round(targetVals["shoulderCB"])}')
+            # print(f'{round(framePercent, 2)}: {round(startVals["shoulderCB"])} -> {round(actualVals["shoulderCB"])} -> {round(targetVals["shoulderCB"])}')
         except Exception:
             raise Exception("Error occurred.")
