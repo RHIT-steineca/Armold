@@ -4,7 +4,7 @@ import pyfirmata
 # initialization
 board = pyfirmata.Arduino('/dev/ttyACM0')
 print("Communication Successfully started")
-valPath = "//home//pi//"
+valPath = "//home//ArmoldSecondary//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 startVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
 actualVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
