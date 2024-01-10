@@ -2,6 +2,16 @@ import os, sys, time, json, secrets, string, math
 import paramiko
 import tkinter as tk
 
+# joint mapping
+# angle ranges
+minDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+maxDegs = {"shoulderCB":45,"shoulderR":180,"shoulderLR":90,"elbow":150,"wrist":180,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+# voltage ranges
+minSensorVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+maxSensorVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+minServoVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+maxServoVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+
 class ArmoldBrain:
     # initialization
     def __init__(brain):
@@ -108,6 +118,7 @@ class ArmoldBrain:
     
     # convert values from sensor -> servo
     def convertToServoVals(brain, sensorVals):
+        # TODO setup convertion ratios
         servoVals = dict()
         return servoVals
 
@@ -230,30 +241,10 @@ class TestEnvironment:
         testenv.window.update()
 
     def convertValToAngle(testenv, servoName, servoValue):
-        minVal = 500
-        maxVal = 2500
-        minDeg = 0
-        maxDeg = 360
-        if (servoName == "shoulderCB"):
-            maxDeg = 45
-        if (servoName == "shoulderR"):
-            maxDeg = 180
-        if (servoName == "shoulderLR"):
-            maxDeg = 90
-        if (servoName == "elbow"):
-            maxDeg = 150
-        if (servoName == "wrist"):
-            maxDeg = 180
-        if (servoName == "finger1"):
-            maxDeg = 1
-        if (servoName == "finger2"):
-            maxDeg = 1
-        if (servoName == "finger3"):
-            maxDeg = 1
-        if (servoName == "finger4"):
-            maxDeg = 1
-        if (servoName == "finger5"):
-            maxDeg = 1
+        minVal = minServoVals[servoName]
+        maxVal = maxServoVals[servoName]
+        minDeg = minDegs[servoName]
+        maxDeg = maxDegs[servoName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
         percentValue = round(float((servoValue - minVal) / valRange), 1)
