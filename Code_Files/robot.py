@@ -1,6 +1,15 @@
 import os, sys, time, csv, math
 import pyfirmata
 
+# TODO should set the arduino pin to the new actual value HERE
+# tutorial https://roboticsbackend.com/control-arduino-with-python-and-pyfirmata-from-raspberry-pi/
+def moveArduino():
+    #for name, val in actualVals.items():
+    #    pin = mapping[name]
+    #    connection = board.get_pin('a:{pin}:p')
+    #    connection.write(val)
+    pass
+
 # initialization
 board = pyfirmata.Arduino('/dev/ttyACM0')
 print("Communication Successfully started")
@@ -54,12 +63,3 @@ while True:
             # print(f'{round(framePercent, 2)}: {round(startVals["0"])} -> {round(actualVals["0"])} -> {round(targetVals["0"])}')
         except Exception:
             raise Exception("Error occurred.")
-        
-# TODO should set the arduino pin to the new actual value HERE
-# tutorial https://roboticsbackend.com/control-arduino-with-python-and-pyfirmata-from-raspberry-pi/
-def moveArduino():
-    #for name, val in actualVals.items():
-    #    pin = mapping[name]
-    #    connection = board.get_pin('a:{pin}:p')
-    #    connection.write(val)
-    pass
