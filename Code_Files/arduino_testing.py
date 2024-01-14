@@ -10,7 +10,7 @@ mapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"fing
 minDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 maxDegs = {"shoulderCB":270,"shoulderR":180,"shoulderLR":90,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 minServoVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxServoVals = {"shoulderCB":45,"shoulderR":180,"shoulderLR":90,"elbow":150,"wrist":180,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+maxServoVals = {"shoulderCB":270,"shoulderR":180,"shoulderLR":90,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 
 # TODO should set the arduino pin to the new actual value HERE
 # tutorial https://roboticsbackend.com/control-arduino-with-python-and-pyfirmata-from-raspberry-pi/
