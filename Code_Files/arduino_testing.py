@@ -3,12 +3,12 @@ import pyfirmata
 
 # set intial robot values
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-directions = {"shoulderCB":4.5,"shoulderR":18,"shoulderLR":9,"elbow":15,"wrist":18,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+directions = {"shoulderCB":1,"shoulderR":1,"shoulderLR":1,"elbow":1,"wrist":1,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 # map of joints to arduino pins
 mapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
 # acceptable ranges
 minDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxDegs = {"shoulderCB":45,"shoulderR":180,"shoulderLR":90,"elbow":150,"wrist":180,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+maxDegs = {"shoulderCB":270,"shoulderR":180,"shoulderLR":90,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 minServoVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 maxServoVals = {"shoulderCB":45,"shoulderR":180,"shoulderLR":90,"elbow":150,"wrist":180,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 
@@ -35,6 +35,9 @@ def convertValToAngle(servoName, servoValue):
 # initialization
 # board = pyfirmata.Arduino('/dev/ttyACM0')
 # board = pyfirmata.ArduinoMega('/dev/ttyACM0')
+for name, val in directions.items():
+    range = maxServoVals[name] - minServoVals[name]
+    directions[name] = math.ceil(range / 10)
 while(True):
     for name, val in actualVals.items():
         actualVals[name] += directions[name]
