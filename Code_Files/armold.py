@@ -168,7 +168,7 @@ class Robot:
             stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
             exit_status = stdout.channel.recv_exit_status()
         except Exception:
-            raise Exception("SSH Disconnected: " + exit_status)
+            raise Exception("SSH Disconnected")
         return
 
 class Controller:
@@ -266,6 +266,7 @@ class TestEnvironment:
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.set_combine_stderr = True
 testEnv = TestEnvironment()
 quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
@@ -382,7 +383,7 @@ while (quitCommanded):
             # invalid command
             else:
                 print("\n- Armold doesn't know what '" + command + "' means...")
-    except Exception:
-        print("\nSorry, Armold is having trouble finding its arm... trying again...")
+    except Exception as error:
+        print(f"\nSorry, Armold is having trouble finding its arm...\n({error})\ntrying again...")
     finally:
         ssh.close()
