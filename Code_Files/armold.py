@@ -272,7 +272,7 @@ quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
 while (quitCommanded):
     try:
-        ssh.connect("ArmoldSecondary", username="ArmoldSecondary", password="Armold", timeout=15)
+        ssh.connect("ArmoldSecondary", username="pi", password="Armold", timeout=15)
         print("\nArm found! Armold is ready to go!")
         while True:
             checkSSHconnection(ssh)
@@ -385,5 +385,6 @@ while (quitCommanded):
                 print("\n- Armold doesn't know what '" + command + "' means...")
     except Exception as error:
         print(f"\nSorry, Armold is having trouble finding its arm...\n({error})\ntrying again...")
+        time.sleep(5)
     finally:
         ssh.close()
