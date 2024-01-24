@@ -5,7 +5,7 @@ import pyfirmata
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 directions = {"shoulderCB":1,"shoulderR":1,"shoulderLR":1,"elbow":1,"wrist":1,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 # map of joints to arduino pins
-pinMapping = {"finger1":6,"elbow":9}
+pinMapping = {"elbow":9}
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
@@ -42,7 +42,14 @@ for name, val in directions.items():
     directions[name] = range / 1
     pin = pinMapping[name]
     connections[name] = board.get_pin(f'd:{pin}:s')
-    board.servo_config(pin, 500, 2430, 0)
+    # # 9g micro servos (180°)
+    # board.servo_config(pin, 500, 2430, 0)
+    # # 20kg medium servos (270°)
+    # board.servo_config(pin, 500, 2470, 0)
+    # # 25kg medium servos (270°)
+    # board.servo_config(pin, 500, 2490, 0)
+    # # 40kg medium servos (270°)
+    # board.servo_config(pin, 500, 2520, 0)
 while(True):
     for name, val in actualVals.items():
         if not (name in pinMapping):
