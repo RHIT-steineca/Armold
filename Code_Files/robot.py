@@ -7,6 +7,7 @@ actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"f
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 # map of joints to arduino pins
 pinMapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
+servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"20kg","finger2":"20kg","finger3":"20kg","finger4":"20kg","finger5":"20kg"}
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
@@ -15,16 +16,25 @@ servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 
+# map servo connections
 for name, pin in pinMapping.items():
     connections[name] = board.get_pin(f'd:{pin}:s')
-    # # 9g micro servos (180°)
-    # board.servo_config(pin, 500, 2430, 0)
-    # # 20kg medium servos (270°)
-    # board.servo_config(pin, 500, 2470, 0)
-    # # 25kg medium servos (270°)
-    # board.servo_config(pin, 500, 2490, 0)
-    # # 40kg medium servos (270°)
-    # board.servo_config(pin, 500, 2520, 0)
+    servoType = servoTypes[name]
+    # 9g micro servos (180°)
+    if(servoType == "9g"):
+        board.servo_config(pin, 500, 2430, 0)
+    # 20kg medium servos (270°)
+    elif(servoType == "20kg"):
+        board.servo_config(pin, 500, 2470, 0)
+    # 25kg medium servos (270°)
+    elif(servoType == "25kg"):
+        board.servo_config(pin, 500, 2490, 0)
+    # 40kg medium servos (270°)
+    elif(servoType == "40kg"):
+        board.servo_config(pin, 500, 2520, 0)
+    # unmapped servos
+    else:
+        board.servo_config(pin, 500, 2500, 0)
 
 # initialization
 board = pyfirmata.Arduino('/dev/ttyACM0')
