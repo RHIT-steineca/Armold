@@ -108,8 +108,8 @@ class ArmoldBrain:
                     lastFrame = time.time()
                     try:
                         brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()), refreshRate)
-                    except Exception:
-                        raise Exception("SSH Disconnected.")
+                    except Exception as error:
+                        raise error
         except KeyboardInterrupt:
             pass
         return
