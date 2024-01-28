@@ -249,7 +249,7 @@ class TestEnvironment:
         maxDeg = servoMaxRange[servoName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
-        degValue = servoValue * limitedMaxDegs[name] * valRange / degRange
+        degValue = servoValue * limitedMaxDegs[servoName] * valRange / degRange
         return degValue
     
     def showWindow(testenv):
