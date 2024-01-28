@@ -252,7 +252,7 @@ class TestEnvironment:
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
         calcVal = sensorAngle * valRange / degRange
-        return calcAngle
+        return calcVal
     
     def showWindow(testenv):
         testenv.window.deiconify()
