@@ -5,7 +5,7 @@ from gpiozero import MCP3008
 # set intial robot values
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 # map of joints to arduino pins
-pinMapping = {"elbow":9}
+pinMapping = {"shoulderLR":9}
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
@@ -18,7 +18,7 @@ arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180,
 board = pyfirmata.Arduino('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
-knob = MCP3008(0)
+knob = MCP3008(1)
 
 def moveArduino(name):
     pin = pinMapping[name]
@@ -56,7 +56,7 @@ for name, val in pinMapping.items():
     # # 9g micro servos (180°)
     # board.servo_config(pin, 500, 2430, 0)
     # # 20kg medium servos (270°)
-    board.servo_config(pin, 500, 2470, 0)
+    # board.servo_config(pin, 500, 2470, 0)
     # # 25kg medium servos (270°)
     # board.servo_config(pin, 500, 2490, 0)
     # # 40kg medium servos (270°)

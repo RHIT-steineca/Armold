@@ -1,16 +1,14 @@
 import os, sys, time, json, secrets, string, math
 import paramiko
 import tkinter as tk
+from gpiozero import MCP3008
 
 # joint mapping
-# angle ranges
-minDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxDegs = {"shoulderCB":45,"shoulderR":180,"shoulderLR":90,"elbow":150,"wrist":180,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
-# voltage ranges
-minSensorVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxSensorVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
-minServoVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxServoVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 
 class ArmoldBrain:
     # initialization
@@ -120,6 +118,15 @@ class ArmoldBrain:
     def convertToServoVals(brain, sensorVals):
         # TODO setup convertion ratios
         servoVals = dict()
+        for name, angle in sensorVals.items():
+            minVal = arduinoMinVals[servoName]
+            maxVal = arduinoMaxVals[servoName]
+            minDeg = limitedMinDegs[servoName]
+            maxDeg = servoMaxRange[servoName]
+            valRange = maxVal-minVal
+            degRange = maxDeg-minDeg
+            calcVal = sensorAngle * limitedMaxDegs[name] * valRange / degRange
+            servoVals[name] = calcVal
         return servoVals
 
 class Recording:
@@ -174,26 +181,21 @@ class Robot:
 class Controller:
     # initialization
     def __init__(controller):
-        controller.sensorPins = dict()
+        controller.sensorPins = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
+        controller.sensorConnections = dict()
         controller.createSensorConnections()
     
     # establishes sensor pins
     def createSensorConnections(controller):
-        controller.sensorPins["shoulderCB"] = 0
-        controller.sensorPins["shoulderR"] = 1
-        controller.sensorPins["shoulderLR"] = 2
-        controller.sensorPins["elbow"] = 3
-        controller.sensorPins["wrist"] = 4
-        controller.sensorPins["finger1"] = 5
-        controller.sensorPins["finger2"] = 6
-        controller.sensorPins["finger3"] = 7
-        controller.sensorPins["finger4"] = 8
-        controller.sensorPins["finger5"] = 9
+        controller.sensorConnections = {"shoulderCB":MCP3008(0),"shoulderR":MCP3008(1),"shoulderLR":MCP3008(2),"elbow":MCP3008(3),"wrist":MCP3008(4),"finger1":MCP3008(5),"finger2":MCP3008(5),"finger3":MCP3008(5),"finger4":MCP3008(5),"finger5":MCP3008(5)}
         return
 
     # gets current sensor positions
     def getSensors(controller):
-        return
+        readings = dict()
+        for name, connection in controller.sensorConnections.items():
+            readings[name] = connection.value
+        return readings
 
 def checkSSHconnection(ssh):
     if not ssh.get_transport().is_active():
@@ -205,7 +207,7 @@ class TestEnvironment:
         testenv.valpairs = dict()
         testenv.labelpairs = dict()
         for servoName in brain.robot.servoPins:
-            testenv.valpairs[servoName] = 2500
+            testenv.valpairs[servoName] = 0
         testenv.setupWindow()
     
     def setupWindow(testenv):
@@ -218,7 +220,7 @@ class TestEnvironment:
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName}: {servoVal} Volts, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+            label = tk.Label(testenv.frame, text=f"{servoName}: {servoVal}, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
             testenv.labelpairs[servoName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
@@ -235,16 +237,16 @@ class TestEnvironment:
         for servoName, servoVal in testenv.valpairs.items():
             if servoName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName}: {servoVal} Volts, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+                label.config(text=f"{servoName}: {servoVal}, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
 
     def convertValToAngle(testenv, servoName, servoValue):
-        minVal = minServoVals[servoName]
-        maxVal = maxServoVals[servoName]
-        minDeg = minDegs[servoName]
-        maxDeg = maxDegs[servoName]
+        minVal = arduinoMinVals[servoName]
+        maxVal = arduinoMaxVals[servoName]
+        minDeg = limitedMinDegs[servoName]
+        maxDeg = servoMaxRange[servoName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
         percentValue = round(float((servoValue - minVal) / valRange), 1)
@@ -278,7 +280,7 @@ while (quitCommanded):
             checkSSHconnection(ssh)
             defaultRobotVals = dict()
             for servoname in brain.robot.servoPins:
-                defaultRobotVals[servoname] = 2500
+                defaultRobotVals[servoname] = 0
             brain.robot.setServos(defaultRobotVals, 4)
             time.sleep(0.25)
             print("\nTell Armold what to do!",

@@ -2,34 +2,57 @@ import os, sys, time, csv, math
 import pyfirmata
 
 # set intial robot values
-startVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
-actualVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
-targetVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 # map of joints to arduino pins
-mapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
+pinMapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
+connections = {}
 # acceptable ranges
-minServoVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-maxServoVals = {"shoulderCB":2500,"shoulderR":2500,"shoulderLR":2500,"elbow":2500,"wrist":2500,"finger1":2500,"finger2":2500,"finger3":2500,"finger4":2500,"finger5":2500}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 
-# TODO should set the arduino pin to the new actual value HERE
-# tutorial https://roboticsbackend.com/control-arduino-with-python-and-pyfirmata-from-raspberry-pi/
-# docs https://pypi.org/project/pyFirmata/
-def moveArduino():
-    #for name, val in actualVals.items():
-    #    pin = mapping[name]
-    #    connection = board.get_pin('a:{pin}:p')
-    #    connection.write(val)
-    pass
+for name, pin in pinMapping.items():
+    connections[name] = board.get_pin(f'd:{pin}:s')
+    # # 9g micro servos (180°)
+    # board.servo_config(pin, 500, 2430, 0)
+    # # 20kg medium servos (270°)
+    # board.servo_config(pin, 500, 2470, 0)
+    # # 25kg medium servos (270°)
+    # board.servo_config(pin, 500, 2490, 0)
+    # # 40kg medium servos (270°)
+    # board.servo_config(pin, 500, 2520, 0)
 
 # initialization
 board = pyfirmata.Arduino('/dev/ttyACM0')
-# board = pyfirmata.ArduinoMega('/dev/ttyACM0')
+it = pyfirmata.util.Iterator(board)
+it.start()
 print("Communication Successfully started")
-valPath = "//home//ArmoldSecondary//"
+valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 frameKey = "init"
 frameLen = 0.0
 lastFrame = time.time()
+
+def moveArduino():
+    for name, pin in pinMapping.items():
+        connection = connections[name]
+        connection.write(convertAngleToVal(name, actualVals[name]))
+
+def convertAngleToVal(servoName, sensorAngle):
+    minVal = arduinoMinVals[servoName]
+    maxVal = arduinoMaxVals[servoName]
+    minDeg = limitedMinDegs[servoName]
+    maxDeg = servoMaxRange[servoName]
+    valRange = maxVal-minVal
+    degRange = maxDeg-minDeg
+    calcVal = sensorAngle * valRange / degRange
+    return calcVal
+
+# main loop
 while True:
         try:
             # checking for new target values assigned
@@ -50,9 +73,6 @@ while True:
                                 actualVals[jointName] = targetVals[jointName]
                                 targetVals[jointName] = jointVal
                         lastFrame = time.time()
-                        # Console log for testing
-                        print(f"\n\nNEW FRAME - {keyLine}")
-                        print(f'{round(framePercent*100)}% time: {round(startVals["shoulderCB"])} -> {round(actualVals["shoulderCB"])} -> {round(targetVals["shoulderCB"])}')
                 except Exception:
                     continue
             # check for time passed since new frame and interpolate value
@@ -68,13 +88,11 @@ while True:
                     deltaInterpolated = deltaVal * framePercent
                     interpolated = startVal + deltaInterpolated
                 # ensure value is within acceptable range
-                if(interpolated < minServoVals[joint]):
-                    interpolated = minServoVals[joint]
-                elif(interpolated > maxServoVals[joint]):
-                    interpolated = maxServoVals[joint]
+                if(interpolated < limitedMinDegs[joint]):
+                    interpolated = limitedMinDegs[joint]
+                elif(interpolated > limitedMaxDegs[joint]):
+                    interpolated = limitedMaxDegs[joint]
                 actualVals[joint] = interpolated
             moveArduino()
-            # Console log for testing
-            # print(f'{round(framePercent*100)}% time: {round(startVals["shoulderCB"])} -> {round(actualVals["shoulderCB"])} -> {round(targetVals["shoulderCB"])}')
         except Exception:
             raise Exception("Error occurred.")
