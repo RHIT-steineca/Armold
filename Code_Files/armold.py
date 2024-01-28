@@ -219,7 +219,7 @@ class TestEnvironment:
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName:12s}: {round(servoVal, 3):3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
+            label = tk.Label(testenv.frame, text=f"{servoName:12s}: {testenv.convertAngleToVal(servoName, servoVal):3.1f}%, {round(servoVal, 1):3.1f} Degrees")
             testenv.labelpairs[servoName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
@@ -236,20 +236,20 @@ class TestEnvironment:
         for servoName, servoVal in testenv.valpairs.items():
             if servoName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName:12s}: {round(servoVal, 3):3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
+                label.config(text=f"{servoName:12s}: {testenv.convertAngleToVal(servoName, servoVal):3.1f}%, {round(servoVal, 1):3.1f} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
 
-    def convertValToAngle(testenv, servoName, servoValue):
+    def convertAngleToVal(testenv, servoName, servoAngle):
         minVal = arduinoMinVals[servoName]
         maxVal = arduinoMaxVals[servoName]
         minDeg = limitedMinDegs[servoName]
         maxDeg = servoMaxRange[servoName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
-        degValue = servoValue * limitedMaxDegs[servoName] * valRange / degRange
-        return degValue
+        calcVal = servoAngle * valRange / degRange
+        return calcVal
     
     def showWindow(testenv):
         testenv.window.deiconify()
