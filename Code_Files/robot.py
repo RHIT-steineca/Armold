@@ -6,7 +6,7 @@ startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fi
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 # map of joints to arduino pins
-pinMapping = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
+pinMapping = {"elbow":9}
 servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"20kg","finger2":"20kg","finger3":"20kg","finger4":"20kg","finger5":"20kg"}
 connections = {}
 # acceptable ranges
@@ -15,6 +15,17 @@ limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+
+# initialization
+board = pyfirmata.Arduino('/dev/ttyACM0')
+it = pyfirmata.util.Iterator(board)
+it.start()
+print("Communication Successfully started")
+valPath = "//home//pi//"
+fullValPath = os.path.join(valPath, "robovals.txt")
+frameKey = "init"
+frameLen = 0.0
+lastFrame = time.time()
 
 # map servo connections
 for name, pin in pinMapping.items():
@@ -35,17 +46,6 @@ for name, pin in pinMapping.items():
     # unmapped servos
     else:
         board.servo_config(pin, 500, 2500, 0)
-
-# initialization
-board = pyfirmata.Arduino('/dev/ttyACM0')
-it = pyfirmata.util.Iterator(board)
-it.start()
-print("Communication Successfully started")
-valPath = "//home//pi//"
-fullValPath = os.path.join(valPath, "robovals.txt")
-frameKey = "init"
-frameLen = 0.0
-lastFrame = time.time()
 
 def moveArduino():
     for name, pin in pinMapping.items():
