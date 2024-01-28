@@ -119,10 +119,10 @@ class ArmoldBrain:
         # TODO setup convertion ratios
         servoVals = dict()
         for name, angle in sensorVals.items():
-            minVal = arduinoMinVals[servoName]
-            maxVal = arduinoMaxVals[servoName]
-            minDeg = limitedMinDegs[servoName]
-            maxDeg = servoMaxRange[servoName]
+            minVal = arduinoMinVals[name]
+            maxVal = arduinoMaxVals[name]
+            minDeg = limitedMinDegs[name]
+            maxDeg = servoMaxRange[name]
             valRange = maxVal-minVal
             degRange = maxDeg-minDeg
             calcVal = sensorAngle * limitedMaxDegs[name] * valRange / degRange
