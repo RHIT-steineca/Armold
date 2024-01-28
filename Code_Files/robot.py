@@ -6,7 +6,7 @@ startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fi
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 # map of joints to arduino pins
-pinMapping = {"elbow":9}
+pinMapping = {"shoulderLR":9}
 servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"20kg","finger2":"20kg","finger3":"20kg","finger4":"20kg","finger5":"20kg"}
 connections = {}
 # acceptable ranges
@@ -51,6 +51,7 @@ def moveArduino():
     for name, pin in pinMapping.items():
         connection = connections[name]
         connection.write(convertAngleToVal(name, actualVals[name]))
+        print(convertAngleToVal(name, actualVals[name]))
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -78,7 +79,7 @@ while True:
                         for row in reader:
                             jointName = row[0]
                             jointVal = float(row[1])
-                            if jointName in mapping.keys():
+                            if jointName in pinMapping.keys():
                                 startVals[jointName] = targetVals[jointName]
                                 actualVals[jointName] = targetVals[jointName]
                                 targetVals[jointName] = jointVal

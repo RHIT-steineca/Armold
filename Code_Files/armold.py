@@ -126,7 +126,8 @@ class ArmoldBrain:
             maxDeg = servoMaxRange[name]
             valRange = maxVal-minVal
             degRange = maxDeg-minDeg
-            calcVal = val * limitedMaxDegs[name] * valRange / degRange
+            percentValue = float((val - minVal) / valRange)
+            calcAngle = minDeg + (percentValue * degRange)
             servoVals[name] = calcVal
         return servoVals
 
@@ -221,7 +222,7 @@ class TestEnvironment:
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName}: {round(servoVal, 1)} Steps, {round(testenv.convertValToAngle(servoName, servoVal), 1)} Degrees")
+            label = tk.Label(testenv.frame, text=f"{servoName}: {round(convertAngleToVal(servoName, servoVal), 1)} Steps, {round(servoVal, 1)} Degrees")
             testenv.labelpairs[servoName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
@@ -238,20 +239,19 @@ class TestEnvironment:
         for servoName, servoVal in testenv.valpairs.items():
             if servoName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName}: {round(servoVal, 1)} Steps, {round(testenv.convertValToAngle(servoName, servoVal), 1)} Degrees")
+                label.config(text=f"{servoName}: {round(convertAngleToVal(servoName, servoVal), 1)} Steps, {round(servoVal, 1)} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
 
-    def convertValToAngle(testenv, servoName, servoValue):
+    def convertAngleToVal(testenv, servoName, servoValue):
         minVal = arduinoMinVals[servoName]
         maxVal = arduinoMaxVals[servoName]
         minDeg = limitedMinDegs[servoName]
         maxDeg = servoMaxRange[servoName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
-        percentValue = float((servoValue - minVal) / valRange)
-        calcAngle = minDeg + (percentValue * degRange)
+        calcVal = sensorAngle * valRange / degRange
         return calcAngle
     
     def showWindow(testenv):
