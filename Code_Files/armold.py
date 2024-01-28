@@ -126,7 +126,7 @@ class ArmoldBrain:
             maxDeg = servoMaxRange[name]
             valRange = maxVal-minVal
             degRange = maxDeg-minDeg
-            percentValue = float((val - minVal) / valRange)
+            percentValue = float(((val * limitedMaxDegs[name]) - minVal) / valRange)
             calcAngle = minDeg + (percentValue * degRange)
             servoVals[name] = calcAngle
         return servoVals
