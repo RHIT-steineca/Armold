@@ -181,7 +181,6 @@ class Robot:
 class Controller:
     # initialization
     def __init__(controller):
-        controller.sensorPins = {"shoulderCB":0,"shoulderR":1,"shoulderLR":2,"elbow":3,"wrist":4,"finger1":5,"finger2":6,"finger3":7,"finger4":8,"finger5":9}
         controller.sensorConnections = dict()
         controller.createSensorConnections()
     
@@ -220,7 +219,7 @@ class TestEnvironment:
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName:12s}: {round(servoVal, 3) * 100:3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
+            label = tk.Label(testenv.frame, text=f"{servoName:12s}: {round(servoVal, 3):3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
             testenv.labelpairs[servoName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
@@ -237,7 +236,7 @@ class TestEnvironment:
         for servoName, servoVal in testenv.valpairs.items():
             if servoName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName:12s}: {round(servoVal, 3) * 100:3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
+                label.config(text=f"{servoName:12s}: {round(servoVal, 3):3.1f}%, {testenv.convertValToAngle(servoName, servoVal):3.1f} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
