@@ -84,8 +84,8 @@ class ArmoldBrain:
                             secDone += 1
                         try:
                             brain.robot.setServos(movement.getServosAtTime(frame), refreshRate)
-                        except Exception:
-                            raise Exception("SSH Disconnected.")
+                        except Exception as error:
+                            raise error
                         frame += 1
                 if loop:
                     frame = 0
@@ -199,7 +199,7 @@ class Controller:
 
 def checkSSHconnection(ssh):
     if not ssh.get_transport().is_active():
-        raise Exception("SSH disconnected")
+        raise Exception("SSH connection severed")
     return
 
 class TestEnvironment:
