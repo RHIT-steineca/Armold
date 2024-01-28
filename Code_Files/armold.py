@@ -115,6 +115,7 @@ class ArmoldBrain:
         return
     
     # convert values from sensor -> servo
+    # returns actual servo angles, robot program handles converting to arduino steps
     def convertToServoVals(brain, sensorVals):
         # TODO setup convertion ratios
         servoVals = dict()
@@ -186,7 +187,8 @@ class Controller:
     
     # establishes sensor pins
     def createSensorConnections(controller):
-        controller.sensorConnections = {"shoulderCB":MCP3008(0),"shoulderR":MCP3008(1),"shoulderLR":MCP3008(2),"elbow":MCP3008(3),"wrist":MCP3008(4),"finger1":MCP3008(5),"finger2":MCP3008(5),"finger3":MCP3008(5),"finger4":MCP3008(5),"finger5":MCP3008(5)}
+        # TODO: update channels for potentiometer connections
+        controller.sensorConnections = {"shoulderCB":MCP3008(0),"shoulderR":MCP3008(0),"shoulderLR":MCP3008(0),"elbow":MCP3008(0),"wrist":MCP3008(0),"finger1":MCP3008(0),"finger2":MCP3008(0),"finger3":MCP3008(0),"finger4":MCP3008(0),"finger5":MCP3008(0)}
         return
 
     # gets current sensor positions
