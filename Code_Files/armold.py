@@ -244,7 +244,7 @@ class TestEnvironment:
         testenv.frame.pack()
         testenv.window.update()
 
-    def convertAngleToVal(testenv, servoName, servoValue):
+    def convertAngleToVal(testenv, servoName, sensorAngle):
         minVal = arduinoMinVals[servoName]
         maxVal = arduinoMaxVals[servoName]
         minDeg = limitedMinDegs[servoName]
