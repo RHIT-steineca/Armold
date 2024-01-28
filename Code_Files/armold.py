@@ -220,7 +220,7 @@ class TestEnvironment:
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName}: {servoVal}, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+            label = tk.Label(testenv.frame, text=f"{servoName}: {round(servoVal, 3) * 100}%, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
             testenv.labelpairs[servoName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
@@ -237,7 +237,7 @@ class TestEnvironment:
         for servoName, servoVal in testenv.valpairs.items():
             if servoName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName}: {servoVal}, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
+                label.config(text=f"{servoName}: {round(servoVal, 3) * 100}%, {testenv.convertValToAngle(servoName, servoVal)} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
