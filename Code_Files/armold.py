@@ -168,13 +168,15 @@ class Robot:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
             # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
-            # transport = ssh.get_transport()
-            # channel = transport.open_channel("session")
-            # channel.settimeout(1.0 / refreshRate)
-            # stdin, stdout, stderr = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
-            stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate)
-            exit_status = stdout.channel.recv_exit_status()
-            stdout.channel.close()
+            transport = ssh.get_transport()
+            channel = transport.open_channel("session")
+            channel.settimeout(1.0 / refreshRate)
+            channel.set_combine_stderr = True
+            channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
+            channel.recv_stderr_ready()
+            # stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate)
+            # stdout.channel.recv_stderr_ready()
+            # stdout.channel.close()
         except Exception as error:
             print(f"-dropped frame-\n{error}")
             pass 
@@ -269,7 +271,6 @@ class TestEnvironment:
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.set_combine_stderr = True
 testEnv = TestEnvironment()
 quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
