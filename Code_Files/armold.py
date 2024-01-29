@@ -172,7 +172,7 @@ class Robot:
             channel = transport.open_channel("session")
             channel.settimeout(1.0 / refreshRate)
             stdin, stdout, stderr = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
-            exit_status = stdout.channel.recv_exit_status()
+            # exit_status = stdout.channel.recv_exit_status()
         except Exception as error:
             print(f"-dropped frame-\n{error}")
             pass 
