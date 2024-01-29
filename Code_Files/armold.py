@@ -172,8 +172,9 @@ class Robot:
             channel = transport.open_channel("session")
             channel.settimeout(1.0 / refreshRate)
             channel.set_combine_stderr = True
-            channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
-            channel.recv_stderr_ready()
+            stdout = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
+            channel.recv()
+            stdout.recv_exit_status()
             # stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate)
             # stdout.channel.recv_stderr_ready()
             # stdout.channel.close()
