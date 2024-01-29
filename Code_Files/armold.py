@@ -167,16 +167,17 @@ class Robot:
         try:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
-            # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
-            # transport = ssh.get_transport()
-            # channel = transport.open_channel("session")
-            # channel.settimeout(1.0 / refreshRate)
-            # channel.set_combine_stderr = True
-            # stdout = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
-            # channel.recv(1)
-            stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate, set_combine_stderr=True)
-            stdout.channel.recv_stderr_ready()
-            stdout.channel.close()
+            # # TODO: FIX CHANNEL LATENCY / TOO MANY CHANNELS BEING CREATED
+            # # Possible shell opening, single channel https://paramiko.lag.narkive.com/JmgWmTWn/how-do-i-execute-multiple-commands-in-a-single-channel#post15
+            # # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
+            # stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate)
+            # stdout.channel.recv_stderr_ready()
+            # stdout.channel.close()
+            transport = ssh.get_transport()
+            channel = transport.open_session()
+            channel.settimeout(1.0 / refreshRate)
+            channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
+            channel.close()
         except Exception as error:
             print(f"{error}")
             pass 
@@ -271,6 +272,7 @@ class TestEnvironment:
 brain = ArmoldBrain()
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.set_combine_stderr = True
 testEnv = TestEnvironment()
 quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
