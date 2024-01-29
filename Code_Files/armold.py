@@ -172,6 +172,7 @@ class Robot:
             exit_status = stdout.channel.recv_exit_status()
         except Exception:
             print("-dropped frame-")
+            stdout.channel.close()
             # Exception("SSH timeout during target pose write")
             pass 
         return
