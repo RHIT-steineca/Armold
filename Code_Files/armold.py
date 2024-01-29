@@ -178,7 +178,7 @@ class Robot:
             # stdout.channel.recv_stderr_ready()
             # stdout.channel.close()
         except Exception as error:
-            print(f"-dropped frame-\n{error}")
+            print(f"{error}")
             pass 
         return
 
