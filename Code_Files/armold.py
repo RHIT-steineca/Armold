@@ -172,9 +172,8 @@ class Robot:
             stdin, stdout, stderr = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
             exit_status = stdout.channel.recv_exit_status()
             channel.close()
-        except Exception:
-            print("-dropped frame-")
-            # Exception("SSH timeout during target pose write")
+        except Exception as error:
+            print(f"-dropped frame-\n{error}")
             pass 
         return
 
