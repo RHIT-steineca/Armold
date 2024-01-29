@@ -174,7 +174,6 @@ class Robot:
             channel.set_combine_stderr = True
             stdout = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
             channel.recv(1)
-            stdout.recv_exit_status()
             # stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout=1.0 / refreshRate)
             # stdout.channel.recv_stderr_ready()
             # stdout.channel.close()
