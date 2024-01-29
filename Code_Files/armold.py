@@ -170,9 +170,8 @@ class Robot:
             # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
             stdin, stdout, stderr = ssh.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
             exit_status = stdout.channel.recv_exit_status()
-        except Exception as error:
-            raise error
-            # raise Exception("SSH disconnected during target write")
+        except Exception:
+            raise Exception("SSH timeout during target pose write")
         return
 
 class Controller:

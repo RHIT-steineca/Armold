@@ -24,7 +24,7 @@ print("Communication Successfully started")
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 frameKey = "init"
-frameLen = 0.0
+frameLen = 1.0
 lastFrame = time.time()
 
 # map servo connections
