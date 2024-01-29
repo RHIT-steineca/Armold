@@ -168,7 +168,8 @@ class Robot:
             checkSSHconnection(ssh)
             testEnv.updateVals(newVals)
             # help for channel block checking https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
-            channel = ssh.open_channel()
+            transport = ssh.get_transport()
+            channel = transport.open_channel()
             stdin, stdout, stderr = channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt', timeout = 1.0 / refreshRate)
             exit_status = stdout.channel.recv_exit_status()
             channel.close()
