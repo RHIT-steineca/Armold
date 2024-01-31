@@ -4,6 +4,7 @@ import tkinter as tk
 from gpiozero import MCP3008
 
 # joint mapping
+smoothingBasis = {"shoulderCB":1,"shoulderR":1,"shoulderLR":1,"elbow":1,"wrist":1,"finger1":.5,"finger2":.5,"finger3":.5,"finger4":.5,"finger5":.5}
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
@@ -122,7 +123,8 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
-            servoVals[name] = calcAngle
+            if (abs(brain.robot.previousAngles[name] - calcAngle) >= smoothingBasis[name]):
+                servoVals[name] = calcAngle
         return servoVals
 
 class Recording:
@@ -156,6 +158,7 @@ class Robot:
     # initialization
     def __init__(robot):
         robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","finger1","finger2","finger3","finger4","finger5"]
+        robot.previousAngles = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
@@ -163,6 +166,7 @@ class Robot:
         robovalString =  f'{str(frameKey)}\n{str(refreshRate)}'
         for servoname, newVal in newVals.items():
             if servoname in robot.servoPins:
+                robot.previousAngles[servoname] = newVal
                 robovalString += f'\n"{servoname}",{newVal}'
         try:
             checkSSHconnection(ssh)
