@@ -52,7 +52,6 @@ def moveArduino():
         connection = connections[name]
         newVal = convertAngleToVal(name, actualVals[name])
         connection.write(newVal)
-        print(newVal)
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -62,7 +61,7 @@ def convertAngleToVal(servoName, sensorAngle):
     valRange = maxVal-minVal
     degRange = maxDeg-minDeg
     calcVal = sensorAngle * valRange / degRange
-    return round(calcVal, 1)
+    return round(calcVal)
 
 # main loop
 while True:
@@ -91,7 +90,7 @@ while True:
             framePercent = (time.time() - lastFrame) / frameLen
             for joint, actualVal in actualVals.items():
                 # check to interpolate if within frame duration
-                if (framePercent >= 1 or actualVal == targetVals[joint]):
+                if (framePercent >= 1 or abs(convertAngleToVal(joint, actualVal) - convertAngleToVal(joint, targetVals[joint])) < 2):
                     interpolated = targetVals[joint]
                 else:
                     startVal = startVals[joint]
