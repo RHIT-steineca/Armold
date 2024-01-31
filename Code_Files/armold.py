@@ -39,7 +39,9 @@ class ArmoldBrain:
             while((duration == 0) or (frame < refreshRate * duration)):
                 if (time.time() - lastFrame >= 1.0 / refreshRate):
                     lastFrame = time.time()
-                    moveTimeline.append(brain.convertToServoVals(brain.controller.getSensors()))
+                    currentFrameData = brain.convertToServoVals(brain.controller.getSensors())
+                    brain.robot.setServos(currentFrameData, refreshRate)
+                    moveTimeline.append(currentFrameData)
                     if (secDone == refreshRate):
                         print("\n")
                         secDone = 0
@@ -58,7 +60,8 @@ class ArmoldBrain:
         with open(moveFullPath, "w") as moveFile:
             moveFile.write(f"{float(refreshRate)}")
             for frameData in moveTimeline:
-                moveFile.write(f"\n{frameData}")
+                framestring = str(frameData).replace("'", '"')
+                moveFile.write(f"\n{framestring}")
         newRecording = Recording(moveName)
         newRecording.timeline = moveTimeline
         brain.recordedMovements[moveName] = newRecording
