@@ -56,7 +56,7 @@ class ArmoldBrain:
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         with open(moveFullPath, "w") as moveFile:
-            moveFile.write(f"{recordRate}")
+            moveFile.write(f"{refreshRate}")
             for frameData in moveTimeline:
                 moveFile.write(f"\n{frameData}")
         newRecording = Recording(moveName)
