@@ -90,6 +90,11 @@ class ArmoldBrain:
                 if loop:
                     frame = 0
                     secDone = 0
+                    try:
+                        brain.robot.setServos(movement.getServosAtTime(0), 0.5)
+                    except Exception as error:
+                        raise error
+                    time.wait(1)
                 else:
                     break
         except KeyboardInterrupt:
@@ -179,7 +184,8 @@ class Robot:
             channel.exec_command(f'sudo echo "{robovalString}" > robovals.txt')
             channel.close()
         except Exception as error:
-            print(f"{error}")
+            # print(f"{error}")
+            print("-frame dropped-")
             pass 
         return
 

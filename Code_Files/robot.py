@@ -5,13 +5,14 @@ import pyfirmata
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+smoothingBasis = {"shoulderCB":2,"shoulderR":2,"shoulderLR":2,"elbow":2, "wrist":2,"finger1":45,"finger2":45,"finger3":45,"finger4":45,"finger5":45}
 # map of joints to arduino pins
 pinMapping = {"shoulderLR":9}
 servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"20kg","finger2":"20kg","finger3":"20kg","finger4":"20kg","finger5":"20kg"}
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
@@ -90,7 +91,7 @@ while True:
             framePercent = (time.time() - lastFrame) / frameLen
             for joint, actualVal in actualVals.items():
                 # check to interpolate if within frame duration
-                if (framePercent >= 1 or abs(convertAngleToVal(joint, actualVal) - convertAngleToVal(joint, targetVals[joint])) < 2):
+                if (framePercent >= 1 or abs(convertAngleToVal(joint, actualVal) - convertAngleToVal(joint, targetVals[joint])) < smoothingBasis[joint]):
                     interpolated = targetVals[joint]
                 else:
                     startVal = startVals[joint]
