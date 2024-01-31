@@ -5,14 +5,14 @@ import pyfirmata
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-smoothingBasis = {"shoulderCB":2,"shoulderR":2,"shoulderLR":2,"elbow":2, "wrist":2,"finger1":45,"finger2":45,"finger3":45,"finger4":45,"finger5":45}
+smoothingBasis = {"shoulderCB":2,"shoulderR":2,"shoulderLR":2,"elbow":2, "wrist":2,"finger1":1,"finger2":2,"finger3":2,"finger4":2,"finger5":2}
 # map of joints to arduino pins
-pinMapping = {"shoulderLR":9}
-servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"20kg","finger2":"20kg","finger3":"20kg","finger4":"20kg","finger5":"20kg"}
+pinMapping = {"shoulderLR":9,"finger1":11}
+servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"3kg","finger2":"3kg","finger3":"3kg","finger4":"3kg","finger5":"3kg"}
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":100}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
@@ -35,6 +35,9 @@ for name, pin in pinMapping.items():
     # 9g micro servos (180°)
     if(servoType == "9g"):
         board.servo_config(pin, 500, 2430, 0)
+    # 3kg small servos (180°)
+    elif(servoType == "3kg"):
+        board.servo_config(pin, 500, 1000, 0)
     # 20kg medium servos (270°)
     elif(servoType == "20kg"):
         board.servo_config(pin, 500, 2470, 0)

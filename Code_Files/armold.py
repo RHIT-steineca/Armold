@@ -5,7 +5,7 @@ from gpiozero import MCP3008
 
 # joint mapping
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":100}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
@@ -128,6 +128,11 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
+            if ("finger" in name):
+                if (calcAngle < 90):
+                    calcAngle = 0
+                else:
+                    calcAngle = 180
             servoVals[name] = calcAngle
         return servoVals
 
