@@ -5,7 +5,7 @@ from gpiozero import MCP3008
 
 # joint mapping
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
@@ -56,7 +56,7 @@ class ArmoldBrain:
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         with open(moveFullPath, "w") as moveFile:
-            moveFile.write(f"{refreshRate}")
+            moveFile.write(f"{float(refreshRate)}")
             for frameData in moveTimeline:
                 moveFile.write(f"\n{frameData}")
         newRecording = Recording(moveName)
@@ -80,7 +80,7 @@ class ArmoldBrain:
                     if (time.time() - lastFrame >= 1.0 / refreshRate):
                         lastFrame = time.time()
                         if (frame % refreshRate == 0):
-                            print(f"{recLen - secDone} second(s) left...")
+                            print(f"{round(recLen - secDone, 1)} second(s) left...")
                             secDone += 1
                         try:
                             brain.robot.setServos(movement.getServosAtTime(frame), refreshRate)
