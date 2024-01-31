@@ -50,8 +50,9 @@ for name, pin in pinMapping.items():
 def moveArduino():
     for name, pin in pinMapping.items():
         connection = connections[name]
-        connection.write(convertAngleToVal(name, actualVals[name]))
-        print(convertAngleToVal(name, actualVals[name]))
+        newVal = convertAngleToVal(name, actualVals[name])
+        connection.write(newVal)
+        print(newVal)
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -90,7 +91,7 @@ while True:
             framePercent = (time.time() - lastFrame) / frameLen
             for joint, actualVal in actualVals.items():
                 # check to interpolate if within frame duration
-                if (framePercent >= 1):
+                if (framePercent >= 1 or actualVal == targetVals[joint]):
                     interpolated = targetVals[joint]
                 else:
                     startVal = startVals[joint]
