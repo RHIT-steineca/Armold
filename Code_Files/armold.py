@@ -94,7 +94,8 @@ class ArmoldBrain:
                         brain.robot.setServos(movement.getServosAtTime(0), 0.5)
                     except Exception as error:
                         raise error
-                    time.wait(1)
+                    print(f"Looping to {moveName} start...")
+                    time.sleep(1)
                 else:
                     break
         except KeyboardInterrupt:
