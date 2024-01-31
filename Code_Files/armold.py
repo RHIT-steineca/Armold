@@ -128,11 +128,12 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
-            if ("finger" in name):
-                if (calcAngle < 90):
-                    calcAngle = 0
-                else:
-                    calcAngle = 180
+            # # finger open/closed only
+            # if ("finger" in name):
+            #     if (calcAngle < 90):
+            #         calcAngle = 0
+            #     else:
+            #         calcAngle = 180
             servoVals[name] = calcAngle
         return servoVals
 
