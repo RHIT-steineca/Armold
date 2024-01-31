@@ -52,7 +52,7 @@ class ArmoldBrain:
         print(f"\n\n{frame} frame(s) memorized.")
         print("\nCan you describe what you just did?\n")
         rawMoveName = input("> ")
-        moveName = rawmoveinput.replace(" ", "_")
+        moveName = rawMoveName.replace(" ", "_")
         recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
         moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
         with open(moveFullPath, "w") as moveFile:
