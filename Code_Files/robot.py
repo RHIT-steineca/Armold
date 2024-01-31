@@ -61,7 +61,7 @@ def convertAngleToVal(servoName, sensorAngle):
     valRange = maxVal-minVal
     degRange = maxDeg-minDeg
     calcVal = sensorAngle * valRange / degRange
-    return calcVal
+    return round(calcVal, 1)
 
 # main loop
 while True:

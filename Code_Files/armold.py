@@ -4,7 +4,7 @@ import tkinter as tk
 from gpiozero import MCP3008
 
 # joint mapping
-smoothingBasis = {"shoulderCB":1,"shoulderR":1,"shoulderLR":1,"elbow":1,"wrist":1,"finger1":.5,"finger2":.5,"finger3":.5,"finger4":.5,"finger5":.5}
+smoothingBasis = {"shoulderCB":10,"shoulderR":10,"shoulderLR":10,"elbow":10,"wrist":10,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
 limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"finger5":1}
 servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
