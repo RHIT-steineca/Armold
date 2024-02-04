@@ -2,23 +2,23 @@ import os, sys, time, csv, math
 import pyfirmata
 
 # set intial robot values
-startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
+startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
 # map of joints to arduino pins
-pinMapping = {"shoulderLR":9,"finger1":11}
-servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"3kg","finger2":"3kg","finger3":"3kg","finger4":"3kg","finger5":"3kg"}
+pinMapping = {"shoulderLR":6,"finger1":8,"finger2":9,"finger3":10,"finger4":11,"thumb":12}
+servoTypes = {"shoulderCB":"20kg","shoulderR":"20kg","shoulderLR":"20kg","elbow":"20kg","wrist":"20kg","finger1":"3kg","finger2":"3kg","finger3":"3kg","finger4":"3kg","thumb":"3kg"}
 connections = {}
 # acceptable ranges
-limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
-arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":100}
+servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":180}
+arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":180}
 
 # initialization
-board = pyfirmata.Arduino('/dev/ttyACM0')
+board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
 print("Communication Successfully started")
@@ -56,6 +56,7 @@ def moveArduino():
         connection = connections[name]
         newVal = convertAngleToVal(name, actualVals[name])
         connection.write(newVal)
+        print(f"{name:10s}: {newVal}")
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -86,7 +87,8 @@ while True:
                             if jointName in pinMapping.keys():
                                 startVals[jointName] = targetVals[jointName]
                                 actualVals[jointName] = targetVals[jointName]
-                                targetVals[jointName] = jointVal
+                                if (abs(convertAngleToVal(jointName, jointVal) - convertAngleToVal(jointName, targetVals[joint])) >= smoothingBasis[jointName]):
+                                    targetVals[jointName] = jointVal
                         lastFrame = time.time()
                 except Exception:
                     continue
@@ -94,7 +96,7 @@ while True:
             framePercent = (time.time() - lastFrame) / frameLen
             for joint, actualVal in actualVals.items():
                 # check to interpolate if within frame duration
-                if (framePercent >= 1 or abs(convertAngleToVal(joint, actualVal) - convertAngleToVal(joint, targetVals[joint])) < smoothingBasis[joint]):
+                if (framePercent >= 1 or actualVals[joint] == targetVals[joint]):
                     interpolated = targetVals[joint]
                 else:
                     startVal = startVals[joint]
