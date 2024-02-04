@@ -1,14 +1,14 @@
 import os, sys, time, json, secrets, string, math
 import paramiko
 import tkinter as tk
-from gpiozero import MCP3008
+import pyfirmata
 
 # joint mapping
-limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
-arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"finger5":0}
-arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"finger5":180}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":100}
+servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":180}
+arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"finger1":0,"finger2":0,"finger3":0,"finger4":0,"thumb":0}
+arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"finger1":180,"finger2":180,"finger3":180,"finger4":180,"thumb":180}
 
 class ArmoldBrain:
     # initialization
@@ -170,7 +170,7 @@ class Recording:
 class Robot:
     # initialization
     def __init__(robot):
-        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","finger1","finger2","finger3","finger4","finger5"]
+        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","finger1","finger2","finger3","finger4","thumb"]
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
@@ -208,14 +208,20 @@ class Controller:
     # establishes sensor pins
     def createSensorConnections(controller):
         # TODO: update channels for potentiometer connections
-        controller.sensorConnections = {"shoulderCB":MCP3008(0),"shoulderR":MCP3008(0),"shoulderLR":MCP3008(0),"elbow":MCP3008(0),"wrist":MCP3008(0),"finger1":MCP3008(0),"finger2":MCP3008(0),"finger3":MCP3008(0),"finger4":MCP3008(0),"finger5":MCP3008(0)}
+        board = pyfirmata.ArduinoMega('/dev/ttyACM0')
+        it = pyfirmata.util.Iterator(board)
+        it.start()
+        pinMapping = {"shoulderLR":0,"finger1":1,"finger2":1,"finger3":1,"finger4":1,"thumb":1}
+        connections = {0:board.get_pin(f'a:0:i'),1:board.get_pin(f'a:1:i')}
+        for name, pin in pinMapping.items():
+            controller.sensorConnections[name] = connections[pin]
         return
 
     # gets current sensor positions
     def getSensors(controller):
         readings = dict()
         for name, connection in controller.sensorConnections.items():
-            readings[name] = connection.value
+            readings[name] = connection.read()
         return readings
 
 def checkSSHconnection(ssh):
