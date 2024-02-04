@@ -131,6 +131,8 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
+            if ("finger1" in name or "finger2" in name):
+                calcAngle = limitedMaxDegs[name] - calcAngle
             # # finger open/closed only
             # if ("finger" in name):
             #     if (calcAngle < 90):
@@ -306,8 +308,8 @@ while (quitCommanded):
             checkSSHconnection(ssh)
             defaultRobotVals = dict()
             for servoname in brain.robot.servoPins:
-                defaultRobotVals[servoname] = 0
-            brain.robot.setServos(defaultRobotVals, 4)
+                defaultRobotVals[servoname] = 0.0
+            brain.robot.setServos(brain.convertToServoVals(defaultRobotVals), 4)
             time.sleep(0.25)
             print("\nTell Armold what to do!",
                     "\nCommands are:",
