@@ -213,7 +213,7 @@ class Controller:
         board = pyfirmata.Arduino('/dev/ttyACM0')
         it = pyfirmata.util.Iterator(board)
         it.start()
-        pinMapping = {"fingerPTR":1,"fingerMID":0,"fingerRNG":1,"fingerPKY":1,"fingerTHM":1}
+        pinMapping = {"shoulderLR":0,"fingerPTR":1,"fingerMID":1,"fingerRNG":1,"fingerPKY":1,"fingerTHM":1}
         connections = {0:board.get_pin(f'a:0:i'),1:board.get_pin(f'a:1:i')}
         for name, pin in pinMapping.items():
             controller.sensorConnections[name] = connections[pin]
