@@ -4,11 +4,11 @@ import tkinter as tk
 import pyfirmata
 
 # joint mapping
-limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMID":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"fingerPTR":180,"fingerMID":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMID":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
-arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMID":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMID":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":93.3,"wrist":150,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
+servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
+arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
 class ArmoldBrain:
     # initialization
@@ -131,7 +131,7 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
-            if ("fingerPTR" in name or "fingerMID" in name):
+            if ("fingerPTR" in name or "fingerMDL" in name):
                 calcAngle = limitedMaxDegs[name] - calcAngle
             # # finger open/closed only
             # if ("finger" in name):
@@ -172,7 +172,7 @@ class Recording:
 class Robot:
     # initialization
     def __init__(robot):
-        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","fingerPTR","fingerMID","fingerRNG","fingerPKY","fingerTHM"]
+        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","fingerPTR","fingerMDL","fingerRNG","fingerPKY","fingerTHM"]
 
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
@@ -213,8 +213,10 @@ class Controller:
         board = pyfirmata.Arduino('/dev/ttyACM0')
         it = pyfirmata.util.Iterator(board)
         it.start()
-        pinMapping = {"shoulderLR":0,"fingerPTR":1,"fingerMID":1,"fingerRNG":1,"fingerPKY":1,"fingerTHM":1}
-        connections = {0:board.get_pin(f'a:0:i'),1:board.get_pin(f'a:1:i')}
+        pinMapping = {"shoulderLR":5,"elbow":5,"wrist":5}
+        connections = dict()
+        for i in range(6):
+            connections[i] = board.get_pin(f'a:{i}:i')
         for name, pin in pinMapping.items():
             controller.sensorConnections[name] = connections[pin]
         return
