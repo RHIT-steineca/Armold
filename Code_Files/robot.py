@@ -56,7 +56,7 @@ def moveArduino():
         connection = connections[name]
         newVal = convertAngleToVal(name, actualVals[name])
         connection.write(newVal)
-        # print(f"{name:10s}: {newVal}")
+        print(f"{name:10s}: {newVal}")
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
