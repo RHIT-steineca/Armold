@@ -131,6 +131,7 @@ class ArmoldBrain:
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
+            # reverse directions
             if ("fingerPTR" in name or "fingerMDL" in name or "elbow" in name):
                 calcAngle = limitedMaxDegs[name] - calcAngle
             # # finger open/closed only
