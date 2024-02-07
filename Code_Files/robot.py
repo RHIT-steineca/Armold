@@ -128,8 +128,8 @@ while True:
                 rateLine = valFile.readline()
                 print(rateLine)
                 if("RESET" in str(rateLine)):
-                    for stepper in stepperActualVals:
-                        stepper = 0
+                    for name, val in stepperActualVals:
+                        stepperActualVals[name] = 0
                     with open(fullStepPath, "w") as stepFile:
                         actualValString = str(stepperActualVals).replace("'", '"')
                         stepFile.write(f"{actualValString}")
