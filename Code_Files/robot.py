@@ -1,4 +1,4 @@
-import os, sys, time, csv, math
+import os, sys, time, csv, json, math
 import pyfirmata
 
 # set intial robot values
@@ -32,15 +32,11 @@ lastFrame = time.time()
 try:
     with open(fullStepPath, "r") as stepFile:
         reader = csv.reader(stepFile)
-        for row in reader:
-            stepFile.readline()
-            stepperActualVals[row[0]] = row[1]
-            actualVals[row[0]] = row[1]
+        stepperActualVals = json.loads(stepFile.readline())
 except:
     with open(fullStepPath, "w") as stepFile:
-        for stepperVal in stepperActualVals:
-            actualValString = str(stepperVal).replace("'", '"')
-            stepFile.write(f"\n{actualValString}")
+        actualValString = str(stepperActualVals).replace("'", '"')
+        stepFile.write(f"{actualValString}")
 
 # map servo connections
 for name, pin in pinMapping.items():
@@ -102,8 +98,8 @@ def moveArduino():
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
                     for stepperVal in stepperActualVals:
-                        actualValString = str(stepperVal).replace("'", '"')
-                        stepFile.write(f"\n{actualValString}")
+                        actualValString = str(stepperActualVals).replace("'", '"')
+                        stepFile.write(f"{actualValString}")
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
