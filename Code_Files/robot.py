@@ -132,7 +132,7 @@ while True:
                             with open(fullStepPath, "w") as stepFile:
                                 actualValString = str(stepperActualVals).replace("'", '"')
                                 stepFile.write(f"{actualValString}")
-                            continue
+                            break
                         refreshRate = float(rateLine)
                         frameLen = 1.0 / refreshRate
                         reader = csv.reader(valFile)

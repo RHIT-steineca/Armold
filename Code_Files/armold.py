@@ -132,7 +132,7 @@ class ArmoldBrain:
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
             # reverse directions
-            if ("fingerPTR" in name or "fingerMDL" in name or "elbow" in name):
+            if ("fingerRNG" in name or "fingerPKY" in name or "fingerTHM" in name or "elbow" in name):
                 calcAngle = limitedMaxDegs[name] - calcAngle
             # # finger open/closed only
             # if ("finger" in name):
@@ -417,6 +417,7 @@ while (quitCommanded):
                 channel.settimeout(1.0)
                 channel.exec_command(f'sudo echo "RESET\nRESET" > robovals.txt')
                 channel.close()
+                time.sleep(1)
             # quit
             elif(command == "q"):
                 print("\n- Armold says 'Bye!'\n")
