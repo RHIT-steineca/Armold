@@ -4,6 +4,7 @@ import pyfirmata
 # set intial robot values
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+stepperActualVals = {"shoulderR":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
@@ -12,8 +13,8 @@ servoTypes = {"shoulderCB":"40kg","shoulderR":"STEP","shoulderLR":"40kg","elbow"
 connections = {}
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":2400,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":3600,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
+servoMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
@@ -24,38 +25,83 @@ it.start()
 print("Communication Successfully started")
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
+fullStepPath = os.path.join(valPath, "stepperPos.txt")
 frameKey = "init"
 frameLen = 1.0
 lastFrame = time.time()
+try:
+    with open(fullStepPath, "r") as stepFile:
+        reader = csv.reader(stepFile)
+        for row in reader:
+            stepperActualVals[row[0]] = row[1]
+except:
+    with open(fullStepPath, "w") as stepFile:
+        stepFile.write(stepperActualVals)
 
 # map servo connections
 for name, pin in pinMapping.items():
-    connections[name] = board.get_pin(f'd:{pin}:s')
     servoType = servoTypes[name]
+    # Stepper Motor
+    if(servoType == "STEP"):
+        stepperConnections = dict()
+        # pins set high
+        stepperConnections["enable"] = board.get_pin(f'd:{pin}:o')
+        stepperConnections["sl1"] = board.get_pin(f'd:{pin + 1}:o')
+        stepperConnections["sl2"] = board.get_pin(f'd:{pin + 2}:o')
+        stepperConnections["enable"].write(1)
+        stepperConnections["sl1"].write(1)
+        stepperConnections["sl2"].write(1)
+        # pins that change
+        stepperConnections["step"] = board.get_pin(f'd:{pin + 3}:o')
+        stepperConnections["direction"] = board.get_pin(f'd:{pin + 4}:o')
+        stepperConnections["step"].write(0)
+        stepperConnections["direction"].write(0)
+        connections[name] = stepperConnections
     # 9g micro servos (180°)
-    if(servoType == "9g"):
+    elif(servoType == "9g"):
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2430, 0)
     # 3kg small servos (180°)
     elif(servoType == "3kg"):
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 1000, 0)
     # 20kg medium servos (270°)
     elif(servoType == "20kg"):
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2470, 0)
     # 25kg medium servos (270°)
     elif(servoType == "25kg"):
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2490, 0)
     # 40kg medium servos (270°)
     elif(servoType == "40kg"):
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2520, 0)
     # unmapped servos
     else:
+        connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2500, 0)
 
 def moveArduino():
     for name, pin in pinMapping.items():
-        connection = connections[name]
-        newVal = convertAngleToVal(name, actualVals[name])
-        connection.write(newVal)
+        if(servoType == "STEP"):
+            stepperConnections = connections[name]
+            stepperDeltaPos = actualVals[name] - stepperActualVals[name]
+            stepperDirection = -1
+            stepperConnections["direction"].write(0)
+            if(stepperDeltaPos > 0):
+                stepperDirection = 1
+                stepperConnections["direction"].write(1)
+            for i in abs(deltaPos):
+                stepperConnections["step"].write(1)
+                stepperConnections["step"].write(0)
+                stepperActualVals[name] += stepperDirection
+                with open(fullStepPath, "w") as stepFile:
+                    stepFile.write(stepperActualVals)
+        else: 
+            connection = connections[name]
+            newVal = convertAngleToVal(name, actualVals[name])
+            connection.write(newVal)
         print(f"{name:10s}: {newVal}")
 
 def convertAngleToVal(servoName, sensorAngle):
@@ -87,7 +133,7 @@ while True:
                             if jointName in pinMapping.keys():
                                 startVals[jointName] = targetVals[jointName]
                                 actualVals[jointName] = targetVals[jointName]
-                                if (abs(convertAngleToVal(jointName, jointVal) - convertAngleToVal(jointName, targetVals[joint])) >= smoothingBasis[jointName]):
+                                if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
                                     targetVals[jointName] = jointVal
                         lastFrame = time.time()
                 except Exception:
