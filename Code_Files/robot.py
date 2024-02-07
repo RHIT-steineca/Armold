@@ -122,7 +122,6 @@ while True:
         with open(fullValPath, "r") as valFile:
             try:
                 keyLine = valFile.readline()
-                frameKey = keyLine
                 rateLine = valFile.readline()
                 if("RESET" in str(rateLine)):
                     for name, val in stepperActualVals.items():
@@ -132,6 +131,7 @@ while True:
                         stepFile.write(f"{actualValString}")
                     raise Exception("RESET")
                 if (keyLine != frameKey):
+                    frameKey = keyLine
                     refreshRate = float(rateLine)
                     frameLen = 1.0 / refreshRate
                     reader = csv.reader(valFile)
