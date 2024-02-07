@@ -7,7 +7,7 @@ actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"f
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
-pinMapping = {"shoulderLR":3,"elbow":6,"wrist":5}
+pinMapping = {"fingerPTR":6,"fingerMDL":5,"fingerRNG":4,"fingerPKY":3,"fingerTHM":7}
 servoTypes = {"shoulderCB":"40kg","shoulderR":"STEP","shoulderLR":"40kg","elbow":"40kg","wrist":"40kg","fingerPTR":"3kg","fingerMDL":"3kg","fingerRNG":"3kg","fingerPKY":"3kg","fingerTHM":"3kg"}
 connections = {}
 # acceptable ranges
