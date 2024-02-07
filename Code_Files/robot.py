@@ -4,7 +4,7 @@ import pyfirmata
 # set intial robot values
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-stepperActualVals = {"shoulderR":0,"test":0}
+stepperActualVals = {"shoulderR":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
@@ -97,15 +97,14 @@ def moveArduino():
                 stepperConnections["step"].write(0)
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
-                    for stepperVal in stepperActualVals:
-                        actualValString = str(stepperActualVals).replace("'", '"')
-                        stepFile.write(f"{actualValString}")
+                    actualValString = str(stepperActualVals).replace("'", '"')
+                    stepFile.write(f"{actualValString}")
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
             connection.write(newVal)
-        print(f"{name:10s}: {newVal}")
-        # print(str(stepperActualVals))
+        # print(f"{name:10s}: {newVal}")
+        print(str(stepperActualVals))
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -126,9 +125,8 @@ while True:
                 keyLine = valFile.readline()
                 frameKey = keyLine
                 rateLine = valFile.readline()
-                print(rateLine)
                 if("RESET" in str(rateLine)):
-                    for name, val in stepperActualVals:
+                    for name, val in stepperActualVals.items():
                         stepperActualVals[name] = 0
                     with open(fullStepPath, "w") as stepFile:
                         actualValString = str(stepperActualVals).replace("'", '"')
