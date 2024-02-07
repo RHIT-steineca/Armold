@@ -124,16 +124,16 @@ while True:
             with open(fullValPath, "r") as valFile:
                 try:
                     keyLine = valFile.readline()
+                    frameKey = keyLine
+                    rateLine = valFile.readline()
+                    if(rateLine == "RESET"):
+                        for name, val in stepperActualVals:
+                            stepperActualVals[name] = 0
+                        with open(fullStepPath, "w") as stepFile:
+                            actualValString = str(stepperActualVals).replace("'", '"')
+                            stepFile.write(f"{actualValString}")
+                        break
                     if (keyLine != frameKey):
-                        frameKey = keyLine
-                        rateLine = valFile.readline()
-                        if(rateLine == "RESET"):
-                            for name, val in stepperActualVals:
-                                stepperActualVals[name] = 0
-                            with open(fullStepPath, "w") as stepFile:
-                                actualValString = str(stepperActualVals).replace("'", '"')
-                                stepFile.write(f"{actualValString}")
-                            break
                         refreshRate = float(rateLine)
                         frameLen = 1.0 / refreshRate
                         reader = csv.reader(valFile)
