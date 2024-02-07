@@ -119,53 +119,55 @@ def convertAngleToVal(servoName, sensorAngle):
 
 # main loop
 while True:
-        try:
-            # checking for new target values assigned
-            with open(fullValPath, "r") as valFile:
-                try:
-                    keyLine = valFile.readline()
-                    frameKey = keyLine
-                    rateLine = valFile.readline()
-                    if("RESET" in rateLine):
-                        for name, val in stepperActualVals:
-                            stepperActualVals[name] = 0
-                        with open(fullStepPath, "w") as stepFile:
-                            actualValString = str(stepperActualVals).replace("'", '"')
-                            stepFile.write(f"{actualValString}")
-                        break
-                    if (keyLine != frameKey):
-                        refreshRate = float(rateLine)
-                        frameLen = 1.0 / refreshRate
-                        reader = csv.reader(valFile)
-                        for row in reader:
-                            jointName = row[0]
-                            jointVal = float(row[1])
-                            if jointName in pinMapping.keys():
-                                startVals[jointName] = targetVals[jointName]
-                                actualVals[jointName] = targetVals[jointName]
-                                if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
-                                    targetVals[jointName] = jointVal
-                        lastFrame = time.time()
-                except Exception:
-                    continue
-            # check for time passed since new frame and interpolate value
-            framePercent = (time.time() - lastFrame) / frameLen
-            for joint, actualVal in actualVals.items():
-                # check to interpolate if within frame duration
-                if (framePercent >= 1 or actualVals[joint] == targetVals[joint]):
-                    interpolated = targetVals[joint]
-                else:
-                    startVal = startVals[joint]
-                    targetVal = targetVals[joint]
-                    deltaVal = targetVal - startVal
-                    deltaInterpolated = deltaVal * framePercent
-                    interpolated = startVal + deltaInterpolated
-                # ensure value is within acceptable range
-                if(interpolated < limitedMinDegs[joint]):
-                    interpolated = limitedMinDegs[joint]
-                elif(interpolated > limitedMaxDegs[joint]):
-                    interpolated = limitedMaxDegs[joint]
-                actualVals[joint] = interpolated
-            moveArduino()
-        except Exception:
-            raise Exception("Error occurred.")
+    try:
+        # checking for new target values assigned
+        with open(fullValPath, "r") as valFile:
+            try:
+                keyLine = valFile.readline()
+                frameKey = keyLine
+                rateLine = valFile.readline()
+                print(rateLine)
+                if("RESET" in rateLine):
+                    for name, val in stepperActualVals:
+                        stepperActualVals[name] = 0
+                    with open(fullStepPath, "w") as stepFile:
+                        actualValString = str(stepperActualVals).replace("'", '"')
+                        stepFile.write(f"{actualValString}")
+                    raise Exception("RESET")
+                if (keyLine != frameKey):
+                    refreshRate = float(rateLine)
+                    frameLen = 1.0 / refreshRate
+                    reader = csv.reader(valFile)
+                    for row in reader:
+                        jointName = row[0]
+                        jointVal = float(row[1])
+                        if jointName in pinMapping.keys():
+                            startVals[jointName] = targetVals[jointName]
+                            actualVals[jointName] = targetVals[jointName]
+                            if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
+                                targetVals[jointName] = jointVal
+                    lastFrame = time.time()
+            except Exception as error:
+                print(error)
+                continue
+        # check for time passed since new frame and interpolate value
+        framePercent = (time.time() - lastFrame) / frameLen
+        for joint, actualVal in actualVals.items():
+            # check to interpolate if within frame duration
+            if (framePercent >= 1 or actualVals[joint] == targetVals[joint]):
+                interpolated = targetVals[joint]
+            else:
+                startVal = startVals[joint]
+                targetVal = targetVals[joint]
+                deltaVal = targetVal - startVal
+                deltaInterpolated = deltaVal * framePercent
+                interpolated = startVal + deltaInterpolated
+            # ensure value is within acceptable range
+            if(interpolated < limitedMinDegs[joint]):
+                interpolated = limitedMinDegs[joint]
+            elif(interpolated > limitedMaxDegs[joint]):
+                interpolated = limitedMaxDegs[joint]
+            actualVals[joint] = interpolated
+        moveArduino()
+    except Exception:
+        raise Exception("Error occurred.")
