@@ -33,12 +33,13 @@ try:
     with open(fullStepPath, "r") as stepFile:
         reader = csv.reader(stepFile)
         for row in reader:
+            stepFile.readline()
             stepperActualVals[row[0]] = row[1]
             actualVals[row[0]] = row[1]
 except:
     with open(fullStepPath, "w") as stepFile:
         for stepperVal in stepperActualVals:
-            actualValString = str(stepperVal)
+            actualValString = str(stepperVal).replace("'", '"')
             stepFile.write(f"\n{actualValString}")
 
 # map servo connections
@@ -101,7 +102,7 @@ def moveArduino():
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
                     for stepperVal in stepperActualVals:
-                        actualValString = str(stepperVal)
+                        actualValString = str(stepperVal).replace("'", '"')
                         stepFile.write(f"\n{actualValString}")
         else: 
             connection = connections[name]
