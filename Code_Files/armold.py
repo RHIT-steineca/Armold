@@ -320,6 +320,7 @@ while (quitCommanded):
                     "\n- (p) perform movement",
                     "\n- (l) mirror live movement",
                     "\n- (e) show testing environment",
+                    "\n- (z) zero stepper tracked position"
                     "\n- (q) quit\n")
             command = input("> ")
             # study movement
@@ -408,6 +409,14 @@ while (quitCommanded):
             elif(command == "e"):
                 print("\nYou told Armold to show its testing environment.")
                 testEnv.showWindow()
+            # zero stepper tracking
+            elif(command == "z"):
+                print("\nYou told Armold to zero its stepper motor tracking.")
+                transport = ssh.get_transport()
+                channel = transport.open_session()
+                channel.settimeout(1.0)
+                channel.exec_command(f'sudo echo "RESET\nRESET" > robovals.txt')
+                channel.close()
             # quit
             elif(command == "q"):
                 print("\n- Armold says 'Bye!'\n")
