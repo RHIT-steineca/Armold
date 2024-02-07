@@ -34,9 +34,12 @@ try:
         reader = csv.reader(stepFile)
         for row in reader:
             stepperActualVals[row[0]] = row[1]
+            actualVals[row[0]] = row[1]
 except:
     with open(fullStepPath, "w") as stepFile:
-        stepFile.write(stepperActualVals)
+        for stepperVal in stepperActualVals:
+            actualValString = str(stepperVal)
+            stepFile.write(f"\n{actualValString}")
 
 # map servo connections
 for name, pin in pinMapping.items():
@@ -97,7 +100,9 @@ def moveArduino():
                 stepperConnections["step"].write(0)
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
-                    stepFile.write(stepperActualVals)
+                    for stepperVal in stepperActualVals:
+                        actualValString = str(stepperVal)
+                        stepFile.write(f"\n{actualValString}")
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
