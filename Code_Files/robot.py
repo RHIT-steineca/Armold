@@ -126,7 +126,7 @@ while True:
                     keyLine = valFile.readline()
                     frameKey = keyLine
                     rateLine = valFile.readline()
-                    if(rateLine == "RESET"):
+                    if(rateLine == "\nRESET"):
                         for name, val in stepperActualVals:
                             stepperActualVals[name] = 0
                         with open(fullStepPath, "w") as stepFile:
