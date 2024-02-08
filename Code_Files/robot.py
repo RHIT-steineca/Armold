@@ -137,13 +137,16 @@ while True:
                     frameLen = 1.0 / refreshRate
                     reader = csv.reader(valFile)
                     for row in reader:
-                        jointName = row[0]
-                        jointVal = float(row[1])
-                        if jointName in pinMapping.keys():
-                            startVals[jointName] = targetVals[jointName]
-                            actualVals[jointName] = targetVals[jointName]
-                            if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
-                                targetVals[jointName] = jointVal
+                        try:
+                            jointName = row[0]
+                            jointVal = float(row[1])
+                            if jointName in pinMapping.keys():
+                                startVals[jointName] = targetVals[jointName]
+                                actualVals[jointName] = targetVals[jointName]
+                                if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
+                                    targetVals[jointName] = jointVal
+                        except:
+                            continue
                     lastFrame = time.time()
             except Exception as error:
                 print(error)
