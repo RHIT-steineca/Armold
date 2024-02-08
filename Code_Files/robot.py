@@ -133,7 +133,7 @@ while True:
                     raise Exception("RESET")
                 if (keyLine != frameKey):
                     frameKey = keyLine
-                    refreshRate = float(rateLine)
+                    refreshRate = float(strip(rateLine))
                     frameLen = 1.0 / refreshRate
                     reader = csv.reader(valFile)
                     for row in reader:
