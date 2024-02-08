@@ -312,6 +312,8 @@ while (quitCommanded):
             defaultRobotVals = dict()
             for servoname in brain.robot.servoPins:
                 defaultRobotVals[servoname] = 0.0
+                if("finger" in servoname):
+                    defaultRobotVals[servoname] = limitedMaxDegs[servoname]
             brain.robot.setServos(brain.convertToServoVals(defaultRobotVals), 4)
             time.sleep(0.25)
             print("\nTell Armold what to do!",
