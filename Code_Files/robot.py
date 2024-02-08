@@ -29,6 +29,7 @@ fullStepPath = os.path.join(valPath, "stepperPos.txt")
 frameKey = "init"
 frameLen = 1.0
 lastFrame = time.time()
+time.sleep(1)
 try:
     with open(fullStepPath, "r") as stepFile:
         reader = csv.reader(stepFile)
