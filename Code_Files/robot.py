@@ -131,22 +131,19 @@ while True:
                         actualValString = str(stepperActualVals).replace("'", '"')
                         stepFile.write(f"{actualValString}")
                     raise Exception("RESET")
-                if (keyLine != frameKey):
+                if (keyLine != frameKey and keyLine != ""):
                     frameKey = keyLine
-                    refreshRate = float(rateLine.strip())
+                    refreshRate = float(rateLine)
                     frameLen = 1.0 / refreshRate
                     reader = csv.reader(valFile)
                     for row in reader:
-                        try:
-                            jointName = row[0]
-                            jointVal = float(row[1])
-                            if jointName in pinMapping.keys():
-                                startVals[jointName] = targetVals[jointName]
-                                actualVals[jointName] = targetVals[jointName]
-                                if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
-                                    targetVals[jointName] = jointVal
-                        except:
-                            continue
+                        jointName = row[0]
+                        jointVal = float(row[1])
+                        if jointName in pinMapping.keys():
+                            startVals[jointName] = targetVals[jointName]
+                            actualVals[jointName] = targetVals[jointName]
+                            if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
+                                targetVals[jointName] = jointVal
                     lastFrame = time.time()
             except Exception as error:
                 print(error)
