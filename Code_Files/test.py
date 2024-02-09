@@ -13,7 +13,7 @@ if(runtype != ""):
 
 mqtt_client = mqtt_helper.MqttClient()
 mqtt_client.callback = lambda type, payload: mqtt_callback(type, payload)
-mqtt_client.connect(sending, receiving, use_off_campus_broker=False)
+mqtt_client.connect(sending, receiving, use_off_campus_broker=True)
 
 try:
     while True:
