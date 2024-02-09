@@ -9,8 +9,8 @@ def mqtt_callback(type_name, payload):
     #     targetVals[jointName] = float(jointVal)
     # print(f"{keyLine}@{refreshRate}\n{targetVals}")
 
-sending = "Armold/ToBrain"
-receiving = "Armold/ToDummy"
+receiving = "Armold/ToBrain"
+sending = "Armold/ToDummy"
 
 mqtt_client = mqtt_helper.MqttClient()
 mqtt_client.client.clean_session = False
