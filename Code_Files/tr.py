@@ -3,10 +3,10 @@ import mqtt_helper
 import pyfirmata
 
 # set intial robot values
-startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-stepperActualVals = {"shoulderR":0}
-targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":235,"wrist":0,"fingerPTR":180,"fingerMDL":180,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+global startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+global actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+global stepperActualVals = {"shoulderR":0}
+global targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":235,"wrist":0,"fingerPTR":180,"fingerMDL":180,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
 pinMapping = dict()
@@ -20,7 +20,7 @@ arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
 # initialization
-board = pyfirmata.ArduinoMega('/dev/ttyACM0')
+global board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
 print("Arduno connection successfully started")
@@ -32,9 +32,9 @@ with open(pinsPath, "r") as pinFile:
     pinFile.readline()
     pinFile.readline()
     pinMapping = json.loads(pinFile.readline())
-frameKey = "init"
-frameLen = 1.0
-lastFrame = time.time()
+global frameKey = "init"
+global frameLen = 1.0
+global lastFrame = time.time()
 time.sleep(1)
 try:
     with open(fullStepPath, "r") as stepFile:
