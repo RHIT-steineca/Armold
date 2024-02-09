@@ -5,9 +5,9 @@ def mqtt_callback(type_name, payload):
     keyLine = payload[0]
     rateLine = payload[1]
     refreshRate = float(rateLine)
-    # for jointName, jointVal in payload[2]:
-    #     targetVals[jointName] = float(jointVal)
-    print(f"{keyLine}@{refreshRate}\n{payload[2]}")
+    for jointName, jointVal in payload[2].items():
+        targetVals[jointName] = float(jointVal)
+    print(f"{keyLine}@{refreshRate}\n{targetVals}")
 
 sending = "Armold/ToBrain"
 receiving = "Armold/ToDummy"
