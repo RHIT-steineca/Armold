@@ -9,7 +9,7 @@ stepperActualVals = {"shoulderR":0}
 targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":235,"wrist":0,"fingerPTR":180,"fingerMDL":180,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
-pinMapping = {"fingerPTR":6,"fingerMDL":5,"fingerRNG":4,"fingerPKY":3,"fingerTHM":7,"wrist":10}
+pinMapping = {}
 servoTypes = {"shoulderCB":"40kg","shoulderR":"STEP","shoulderLR":"40kg","elbow":"40kg","wrist":"40kg","fingerPTR":"3kg","fingerMDL":"3kg","fingerRNG":"3kg","fingerPKY":"3kg","fingerTHM":"3kg"}
 connections = {}
 # acceptable ranges
@@ -26,6 +26,13 @@ it.start()
 print("Arduno connection successfully started")
 valPath = "//home//pi//"
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
+pinsPath = os.path.join(valPath, "Armold//Code_Files//pins.txt")
+with open(pinsPath, "r") as pinFile:
+    pinFile.readline()
+    pinFile.readline()
+    pinFile.readline()
+    pinMapping = json.loads(pinFile.readline())
+print(pinMapping)
 frameKey = "init"
 frameLen = 1.0
 lastFrame = time.time()
