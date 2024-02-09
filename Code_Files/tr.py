@@ -3,10 +3,6 @@ import mqtt_helper
 import pyfirmata
 
 # set intial robot values
-global startVals
-global actualVals
-global stepperActualVals
-global targetVals
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 stepperActualVals = {"shoulderR":0}
@@ -24,7 +20,6 @@ arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
 # initialization
-global board
 board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
@@ -37,11 +32,8 @@ with open(pinsPath, "r") as pinFile:
     pinFile.readline()
     pinFile.readline()
     pinMapping = json.loads(pinFile.readline())
-global frameKey
 frameKey = "init"
-global frameLen
 frameLen = 1.0
-global lastFrame
 lastFrame = time.time()
 time.sleep(1)
 try:
@@ -149,7 +141,6 @@ class Connection:
                     actualValString = str(stepperActualVals).replace("'", '"')
                     stepFile.write(f"{actualValString}")
                 raise Exception("RESET")
-            global framekey
             if (keyLine != frameKey and keyLine != ""):
                 frameKey = keyLine
                 refreshRate = float(rateLine)
