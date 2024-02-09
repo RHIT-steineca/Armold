@@ -178,16 +178,13 @@ class Robot:
     # sets servos to new positions
     def setServos(robot, newVals, refreshRate):
         frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(math.floor(refreshRate) + 5))
-        robovalString =  f'{str(frameKey)}\n{str(refreshRate)}'
-        for servoname, newVal in newVals.items():
-            if servoname in robot.servoPins:
-                robovalString += f'\n"{servoname}",{newVal}'
+        servoCommand =  [frameKey,refreshRate,newVals]
         try:
             testEnv.updateVals(newVals)
-            connection.client.send_message("command", robovalString)
+            connection.client.send_message("command", servoCommand)
             connection.client.client.loop(timeout = 1.0 / refreshRate)
-            connection.client.client.reinitialise()
-            connection.setup()
+            # connection.client.client.reinitialise()
+            # connection.setup()
         except Exception as error:
             print(error)
             print("-frame dropped-")
@@ -411,11 +408,10 @@ while (quitCommanded):
             # zero stepper tracking
             elif(command == "z"):
                 print("\nYou told Armold to zero its stepper motor tracking.")
-                transport = ssh.get_transport()
-                channel = transport.open_session()
-                channel.settimeout(1.0)
-                channel.exec_command(f'sudo echo "RESET\nRESET" > robovals.txt')
-                channel.close()
+                connection.client.send_message("command", "RESET\nRESET")
+                connection.client.client.loop(timeout = 1.0)
+                # connection.client.client.reinitialise()
+                # connection.setup()
                 time.sleep(1)
             # quit
             elif(command == "q"):

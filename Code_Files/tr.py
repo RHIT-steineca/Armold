@@ -24,7 +24,6 @@ it = pyfirmata.util.Iterator(board)
 it.start()
 print("Communication Successfully started")
 valPath = "//home//pi//"
-fullValPath = os.path.join(valPath, "robovals.txt")
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
 frameKey = "init"
 frameLen = 1.0
@@ -116,38 +115,46 @@ def convertAngleToVal(servoName, sensorAngle):
     calcVal = sensorAngle * valRange / degRange
     return round(calcVal)
 
+class Connection:
+    def __init__(connection):
+        connection.client = mqtt_helper.MqttClient()
+        connection.setup()
+        
+    def setup(connection):
+        connection.client.callback = lambda type, payload: connection.mqtt_callback(type, payload)
+        connection.client.connect("Armold/ToBrain", "Armold/ToDummy", use_off_campus_broker=True)
+    
+    def mqtt_callback(connection, type_name, payload):
+        try:
+            keyLine = payload[0]
+            rateLine = payload[1]
+            if("RESET" in str(rateLine)):
+                for name, val in stepperActualVals.items():
+                    stepperActualVals[name] = 0
+                with open(fullStepPath, "w") as stepFile:
+                    actualValString = str(stepperActualVals).replace("'", '"')
+                    stepFile.write(f"{actualValString}")
+                raise Exception("RESET")
+            if (keyLine != frameKey and keyLine != ""):
+                frameKey = keyLine
+                refreshRate = float(rateLine)
+                frameLen = 1.0 / refreshRate
+                for jointName, jointVal in payload[2]:
+                    if jointName in pinMapping.keys():
+                        startVals[jointName] = targetVals[jointName]
+                        actualVals[jointName] = targetVals[jointName]
+                        if (abs(float(jointVal) - targetVals[joint]) >= smoothingBasis[jointName]):
+                            targetVals[jointName] = float(jointVal)
+                lastFrame = time.time()
+        except Exception as error:
+            print(error)
+            continue
+
 # main loop
 while True:
     try:
         # checking for new target values assigned
-        with open(fullValPath, "r") as valFile:
-            try:
-                keyLine = valFile.readline()
-                rateLine = valFile.readline()
-                if("RESET" in str(rateLine)):
-                    for name, val in stepperActualVals.items():
-                        stepperActualVals[name] = 0
-                    with open(fullStepPath, "w") as stepFile:
-                        actualValString = str(stepperActualVals).replace("'", '"')
-                        stepFile.write(f"{actualValString}")
-                    raise Exception("RESET")
-                if (keyLine != frameKey and keyLine != ""):
-                    frameKey = keyLine
-                    refreshRate = float(rateLine)
-                    frameLen = 1.0 / refreshRate
-                    reader = csv.reader(valFile)
-                    for row in reader:
-                        jointName = row[0]
-                        jointVal = float(row[1])
-                        if jointName in pinMapping.keys():
-                            startVals[jointName] = targetVals[jointName]
-                            actualVals[jointName] = targetVals[jointName]
-                            if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
-                                targetVals[jointName] = jointVal
-                    lastFrame = time.time()
-            except Exception as error:
-                print(error)
-                continue
+        connection.client.client.loop()
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
         for joint, actualVal in actualVals.items():
