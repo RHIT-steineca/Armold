@@ -1,5 +1,7 @@
 import mqtt_helper
 
+targetVals = dict()
+
 def mqtt_callback(type_name, payload):
     # print(payload)
     keyLine = payload[0]
