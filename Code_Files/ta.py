@@ -1,5 +1,5 @@
 import os, sys, time, json, secrets, string, math
-import paramiko
+import mqtt_helper
 import tkinter as tk
 import pyfirmata
 
@@ -184,9 +184,12 @@ class Robot:
                 robovalString += f'\n"{servoname}",{newVal}'
         try:
             testEnv.updateVals(newVals)
-            connection.client.settimeout(1.0 / refreshRate)
             connection.client.send_message("command", robovalString)
+            connection.client.client.loop(timeout = 1.0 / refreshRate)
+            connection.client.client.reinitialise()
+            connection.setup()
         except Exception as error:
+            print(error)
             print("-frame dropped-")
             pass 
         return
@@ -282,10 +285,13 @@ class TestEnvironment:
 class Connection:
     def __init__(connection):
         connection.client = mqtt_helper.MqttClient()
-        connection.client.callback = lambda type, payload: mqtt_callback(type, payload)
+        connection.setup()
+        
+    def setup(connection):
+        connection.client.callback = lambda type, payload: connection.mqtt_callback(type, payload)
         connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=True)
     
-    def mqtt_callback(type_name, payload):
+    def mqtt_callback(connection, type_name, payload):
         return
 
 # main loop
@@ -296,7 +302,8 @@ quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
 while (quitCommanded):
     try:
-        connection = connection.client.reinitialise()
+        connection.client.client.reinitialise()
+        connection.setup()
         print("\nArm found! Armold is ready to go!")
         while True:
             defaultRobotVals = dict()

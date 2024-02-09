@@ -80,5 +80,4 @@ class MqttClient(object):
 
     def close(self):
         self.callback = None
-        self.client.loop_stop()
         self.client.disconnect()

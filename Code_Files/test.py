@@ -4,12 +4,8 @@ def mqtt_callback(type_name, payload):
     print("Received message type: ", type_name)
     print("Received message payload: ", payload)
 
-sending = "Armold/ToDummy"
-receiving = "Armold/ToBrain"
-runtype = input("enter if dummy")
-if(runtype != ""):
-    sending = "Armold/ToBrain"
-    receiving = "Armold/ToDummy"
+sending = "Armold/ToBrain"
+receiving = "Armold/ToDummy"
 
 mqtt_client = mqtt_helper.MqttClient()
 mqtt_client.client.clean_session = False
