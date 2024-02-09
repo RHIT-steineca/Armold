@@ -8,8 +8,8 @@ sending = "Armold/ToDummy"
 receiving = "Armold/ToBrain"
 runtype = input("enter if dummy")
 if(runtype != ""):
-    sending = "Armold/ToDummy"
-    receiving = "Armold/ToBrain"
+    sending = "Armold/ToBrain"
+    receiving = "Armold/ToDummy"
 
 mqtt_client = mqtt_helper.MqttClient()
 mqtt_client.callback = lambda type, payload: mqtt_callback(type, payload)
