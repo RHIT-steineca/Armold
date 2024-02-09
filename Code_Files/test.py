@@ -1,6 +1,7 @@
 import mqtt_helper
 
 def mqtt_callback(type_name, payload):
+    print(payload)
     keyLine = payload[0]
     rateLine = payload[1]
     refreshRate = float(rateLine)
