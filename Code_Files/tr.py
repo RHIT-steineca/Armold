@@ -23,6 +23,7 @@ arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180,
 board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
+print("Arduno connection successfully started")
 valPath = "//home//pi//"
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
 frameKey = "init"
@@ -150,7 +151,7 @@ class Connection:
             raise error
 
 connection = Connection()
-print("Communication Successfully started")
+print("Communication successfully established")
 
 # main loop
 while True:
