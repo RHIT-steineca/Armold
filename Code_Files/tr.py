@@ -149,6 +149,8 @@ class Connection:
         except Exception as error:
             raise error
 
+connection = Connection()
+
 # main loop
 while True:
     try:
