@@ -28,7 +28,7 @@ class MqttClient(object):
         # print("Connecting to mqtt broker {}".format(mqtt_broker_ip_address), end="")
         self.client.connect(mqtt_broker_ip_address)
         # self.client.connect(mqtt_broker_ip_address, 1883, 60)
-        self.client.loop_start()
+        # self.client.loop_start()
 
     def send_message(self, type_name, payload=None):
         message_dict = {"type": type_name}

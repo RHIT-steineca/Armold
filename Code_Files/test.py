@@ -12,11 +12,13 @@ if(runtype != ""):
     receiving = "Armold/ToDummy"
 
 mqtt_client = mqtt_helper.MqttClient()
+mqtt_client.client.clean_session = False
 mqtt_client.callback = lambda type, payload: mqtt_callback(type, payload)
 mqtt_client.connect(sending, receiving, use_off_campus_broker=True)
 
 try:
     while True:
+        mqtt_client.client.loop()
         message = input()
         mqtt_client.send_message("command", message)
 except KeyboardInterrupt:
