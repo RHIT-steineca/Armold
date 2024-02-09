@@ -149,6 +149,7 @@ class Connection:
                     actualValString = str(stepperActualVals).replace("'", '"')
                     stepFile.write(f"{actualValString}")
                 raise Exception("RESET")
+            global framekey
             if (keyLine != frameKey and keyLine != ""):
                 frameKey = keyLine
                 refreshRate = float(rateLine)
