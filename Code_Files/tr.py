@@ -23,7 +23,6 @@ arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180,
 board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
-print("Communication Successfully started")
 valPath = "//home//pi//"
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
 frameKey = "init"
@@ -104,7 +103,6 @@ def moveArduino():
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
             connection.write(newVal)
-        print(f"{name:10s}: {newVal}")
 
 def convertAngleToVal(servoName, sensorAngle):
     minVal = arduinoMinVals[servoName]
@@ -147,10 +145,12 @@ class Connection:
                         if (abs(float(jointVal) - targetVals[joint]) >= smoothingBasis[jointName]):
                             targetVals[jointName] = float(jointVal)
                 lastFrame = time.time()
+            print(f"{keyLine}@{refreshRate}\n{targetVals}")
         except Exception as error:
             raise error
 
 connection = Connection()
+print("Communication Successfully started")
 
 # main loop
 while True:
