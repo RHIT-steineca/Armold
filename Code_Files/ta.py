@@ -203,7 +203,12 @@ class Controller:
         board = pyfirmata.Arduino('/dev/ttyACM0')
         it = pyfirmata.util.Iterator(board)
         it.start()
-        pinMapping = {"fingerPTR":5,"fingerMDL":5,"fingerRNG":5,"fingerPKY":5,"fingerTHM":5,"elbow":5,"wrist":5}
+        pinMapping = dict()
+        valPath = "//home//pi//Armold//Code_Files//"
+        pinsPath = os.path.join(valPath, "pins.txt")
+        with open(pinsPath, "r") as pinFile:
+            pinFile.readline()
+            pinMapping = json.loads(pinFile.readline())
         connections = dict()
         for i in range(6):
             connections[i] = board.get_pin(f'a:{i}:i')

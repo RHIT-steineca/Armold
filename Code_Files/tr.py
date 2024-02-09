@@ -20,9 +20,9 @@ arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
 # initialization
-# board = pyfirmata.ArduinoMega('/dev/ttyACM0')
-# it = pyfirmata.util.Iterator(board)
-# it.start()
+board = pyfirmata.ArduinoMega('/dev/ttyACM0')
+it = pyfirmata.util.Iterator(board)
+it.start()
 print("Arduno connection successfully started")
 valPath = "//home//pi//"
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
@@ -32,7 +32,6 @@ with open(pinsPath, "r") as pinFile:
     pinFile.readline()
     pinFile.readline()
     pinMapping = json.loads(pinFile.readline())
-print(pinMapping)
 frameKey = "init"
 frameLen = 1.0
 lastFrame = time.time()
