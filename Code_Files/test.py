@@ -1,8 +1,12 @@
 import mqtt_helper
 
 def mqtt_callback(type_name, payload):
-    print("Received message type: ", type_name)
-    print("Received message payload: ", payload)
+    keyLine = payload[0]
+    rateLine = payload[1]
+    refreshRate = float(rateLine)
+    for jointName, jointVal in payload[2]:
+        targetVals[jointName] = float(jointVal)
+    print(f"{keyLine}@{refreshRate}\n{targetVals}")
 
 sending = "Armold/ToBrain"
 receiving = "Armold/ToDummy"
