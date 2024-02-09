@@ -147,8 +147,7 @@ class Connection:
                             targetVals[jointName] = float(jointVal)
                 lastFrame = time.time()
         except Exception as error:
-            print(error)
-            continue
+            raise error
 
 # main loop
 while True:
@@ -174,5 +173,5 @@ while True:
                 interpolated = limitedMaxDegs[joint]
             actualVals[joint] = interpolated
         moveArduino()
-    except Exception:
-        raise Exception("Error occurred.")
+    except Exception as error:
+        print(error)
