@@ -210,13 +210,17 @@ class Controller:
     
     # establishes sensor pins
     def createSensorConnections(controller):
-        # TODO: update channels for potentiometer connections
-        board = pyfirmata.Arduino('/dev/ttyACM0')
+        board = pyfirmata.ArduinoMega('/dev/ttyACM0')
         it = pyfirmata.util.Iterator(board)
         it.start()
-        pinMapping = {"fingerPTR":5,"fingerMDL":5,"fingerRNG":5,"fingerPKY":5,"fingerTHM":5,"elbow":5,"wrist":5}
+        pinMapping = dict()
+        valPath = "//home//pi//Armold//Code_Files//"
+        pinsPath = os.path.join(valPath, "pins.txt")
+        with open(pinsPath, "r") as pinFile:
+            pinFile.readline()
+            pinMapping = json.loads(pinFile.readline())
         connections = dict()
-        for i in range(6):
+        for i in range(16):
             connections[i] = board.get_pin(f'a:{i}:i')
         for name, pin in pinMapping.items():
             controller.sensorConnections[name] = connections[pin]
