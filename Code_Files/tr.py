@@ -140,7 +140,7 @@ class Connection:
                 frameKey = keyLine
                 refreshRate = float(rateLine)
                 frameLen = 1.0 / refreshRate
-                for jointName, jointVal in payload[2]:
+                for jointName, jointVal in payload[2].items():
                     if jointName in pinMapping.keys():
                         startVals[jointName] = targetVals[jointName]
                         actualVals[jointName] = targetVals[jointName]
