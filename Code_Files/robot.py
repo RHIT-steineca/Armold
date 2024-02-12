@@ -56,8 +56,8 @@ for name, pin in pinMapping.items():
         stepperConnections["sl1"] = board.get_pin(f'd:37:o')
         stepperConnections["sl2"] = board.get_pin(f'd:41:o')
         stepperConnections["enable"].write(1)
-        stepperConnections["sl1"].write(0)
-        stepperConnections["sl2"].write(0)
+        stepperConnections["sl1"].write(1)
+        stepperConnections["sl2"].write(1)
         # pins that change
         stepperConnections["step"] = board.get_pin(f'd:43:o')
         stepperConnections["direction"] = board.get_pin(f'd:45:o')
