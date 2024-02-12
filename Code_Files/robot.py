@@ -55,7 +55,7 @@ for name, pin in pinMapping.items():
         stepperConnections["enable"] = board.get_pin(f'd:39:o')
         stepperConnections["sl1"] = board.get_pin(f'd:37:o')
         stepperConnections["sl2"] = board.get_pin(f'd:41:o')
-        stepperConnections["enable"].write(1)
+        stepperConnections["enable"].write(0)
         stepperConnections["sl1"].write(0)
         stepperConnections["sl2"].write(0)
         # pins that change
@@ -101,12 +101,16 @@ def moveArduino():
                 stepperDirection = 1
                 stepperConnections["direction"].write(1)
             for i in range(math.floor(abs(stepperDeltaPos))):
+                stepperConnections["enable"].write(1)
                 stepperConnections["step"].write(1)
+                stepperConnections["enable"].write(0)
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
                     actualValString = str(stepperActualVals).replace("'", '"')
                     stepFile.write(f"{actualValString}")
+                stepperConnections["enable"].write(1)
                 stepperConnections["step"].write(0)
+                stepperConnections["enable"].write(0)
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
