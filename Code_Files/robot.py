@@ -5,7 +5,7 @@ import pyfirmata
 startVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 actualVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 stepperActualVals = {"shoulderR":0}
-targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":235,"wrist":0,"fingerPTR":180,"fingerMDL":180,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":210,"wrist":0,"fingerPTR":180,"fingerMDL":180,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
 pinMapping = dict()
@@ -13,7 +13,7 @@ servoTypes = {"shoulderCB":"25kg","shoulderR":"STEP","shoulderLR":"40kg","elbow"
 connections = dict()
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":210,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
 servoMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
@@ -52,15 +52,15 @@ for name, pin in pinMapping.items():
     if(servoType == "STEP"):
         stepperConnections = dict()
         # pins set high
-        stepperConnections["enable"] = board.get_pin(f'd:{pin}:o')
-        stepperConnections["sl1"] = board.get_pin(f'd:{pin + 1}:o')
-        stepperConnections["sl2"] = board.get_pin(f'd:{pin + 2}:o')
+        stepperConnections["enable"] = board.get_pin(f'd:39:o')
+        stepperConnections["sl1"] = board.get_pin(f'd:37:o')
+        stepperConnections["sl2"] = board.get_pin(f'd:41:o')
         stepperConnections["enable"].write(1)
         stepperConnections["sl1"].write(1)
         stepperConnections["sl2"].write(1)
         # pins that change
-        stepperConnections["step"] = board.get_pin(f'd:{pin + 3}:o')
-        stepperConnections["direction"] = board.get_pin(f'd:{pin + 4}:o')
+        stepperConnections["step"] = board.get_pin(f'd:43:o')
+        stepperConnections["direction"] = board.get_pin(f'd:45:o')
         stepperConnections["step"].write(0)
         stepperConnections["direction"].write(0)
         connections[name] = stepperConnections
