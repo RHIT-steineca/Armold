@@ -100,7 +100,7 @@ def moveArduino():
             if(stepperDeltaPos > 0):
                 stepperDirection = 1
                 stepperConnections["direction"].write(1)
-            for i in range(abs(stepperDeltaPos)):
+            for i in range(math.floor(abs(stepperDeltaPos))):
                 stepperConnections["step"].write(1)
                 stepperConnections["step"].write(0)
                 stepperActualVals[name] += stepperDirection
