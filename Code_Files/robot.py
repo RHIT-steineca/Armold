@@ -105,12 +105,12 @@ def moveArduino():
                 stepperConnections["step"].write(1)
                 stepperConnections["enable"].write(0)
                 stepperActualVals[name] += stepperDirection
-                with open(fullStepPath, "w") as stepFile:
-                    actualValString = str(stepperActualVals).replace("'", '"')
-                    stepFile.write(f"{actualValString}")
                 stepperConnections["enable"].write(1)
                 stepperConnections["step"].write(0)
                 stepperConnections["enable"].write(0)
+                with open(fullStepPath, "w") as stepFile:
+                    actualValString = str(stepperActualVals).replace("'", '"')
+                    stepFile.write(f"{actualValString}")
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
@@ -157,7 +157,7 @@ while True:
                                 targetVals[jointName] = jointVal
                     lastFrame = time.time()
             except Exception as error:
-                print(error)
+                raise Exception(error)
                 continue
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
