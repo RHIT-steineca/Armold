@@ -102,11 +102,11 @@ def moveArduino():
                 stepperConnections["direction"].write(1)
             for i in range(math.floor(abs(stepperDeltaPos))):
                 stepperConnections["step"].write(1)
-                stepperConnections["step"].write(0)
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
                     actualValString = str(stepperActualVals).replace("'", '"')
                     stepFile.write(f"{actualValString}")
+                stepperConnections["step"].write(0)
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
