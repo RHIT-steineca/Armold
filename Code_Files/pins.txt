@@ -1,5 +1,5 @@
 Controller pins
-{"shoulderCB":5,"shoulderR":5,"shoulderLR":5,"elbow":5,"wrist":5,"fingerPTR":5,"fingerMDL":5,"fingerRNG":5,"fingerPKY":5,"fingerTHM":5}
+{"shoulderCB":5,"shoulderR":5,"shoulderLR":5,"elbow":0,"wrist":1,"fingerPTR":5,"fingerMDL":5,"fingerRNG":5,"fingerPKY":5,"fingerTHM":5}
 Robot pins
 {"elbow":5,"wrist":6}
 
