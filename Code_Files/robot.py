@@ -149,7 +149,7 @@ while True:
                         if jointName in pinMapping.keys():
                             startVals[jointName] = targetVals[jointName]
                             actualVals[jointName] = targetVals[jointName]
-                            if (abs(jointVal - targetVals[joint]) >= smoothingBasis[jointName]):
+                            if (abs(jointVal - targetVals[jointName]) >= smoothingBasis[jointName]):
                                 targetVals[jointName] = jointVal
                     lastFrame = time.time()
             except Exception as error:
