@@ -92,7 +92,7 @@ for name, pin in pinMapping.items():
 def moveArduino():
     for name, pin in pinMapping.items():
         newVal = round(actualVals[name])
-        if(servoType == "STEP"):
+        if(servoTypes[name] == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
             stepperDirection = -1
@@ -157,7 +157,7 @@ while True:
                                 targetVals[jointName] = jointVal
                     lastFrame = time.time()
             except Exception as error:
-                raise Exception(error)
+                print(error)
                 continue
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
