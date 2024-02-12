@@ -153,7 +153,7 @@ while True:
                                 targetVals[jointName] = jointVal
                     lastFrame = time.time()
             except Exception as error:
-                raise Exception(error)
+                print(error)
                 continue
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
