@@ -8,7 +8,7 @@ fullValPath = os.path.join(valPath, "robovals.txt")
 while True:
     print("hehehe, overwrote robovals.txt file...")
     with open(fullValPath, "w") as valFile:
-        frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(math.floor(refreshRate) + 5))
+        frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(5))
         robovalString =  f'{str(frameKey)}\n1'
         for servoname, servoval in overwriteVals.items():
                 robovalString += f'\n"{servoname}",{servoval}'
