@@ -90,8 +90,8 @@ for name, pin in pinMapping.items():
         board.servo_config(pin, 500, 2500, 0)
 
 def moveArduino():
-    newVal = actualVals[name]
     for name, pin in pinMapping.items():
+        newVal = actualVals[name]
         if(servoType == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
