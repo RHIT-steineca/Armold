@@ -6,6 +6,7 @@ valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 
 while True:
+    print("hehehe, overwrote robovals.txt file...")
     with open(fullValPath, "w") as valFile:
         frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(math.floor(refreshRate) + 5))
         robovalString =  f'{str(frameKey)}\n1'
