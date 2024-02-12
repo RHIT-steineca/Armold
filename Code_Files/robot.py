@@ -91,7 +91,7 @@ for name, pin in pinMapping.items():
 
 def moveArduino():
     for name, pin in pinMapping.items():
-        newVal = actualVals[name]
+        newVal = round(actualVals[name])
         if(servoType == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
