@@ -224,7 +224,7 @@ class Controller:
         for i in range(16):
             connections[str(i)] = board.get_pin(f'a:{i}:i')
         for name, pin in pinMapping.items():
-            controller.sensorConnections[name] = connections[pin]
+            controller.sensorConnections[name] = connections[str(pin)]
         return
 
     # gets current sensor positions
