@@ -1,7 +1,7 @@
 Controller pins
-{"fingerPTR":0,"fingerMDL":1,"fingerRNG":2,"fingerPKY":3,"fingerTHM":4}
+{"shoulderCB":5,"shoulderR":1,"shoulderLR":5,"elbow":0,"wrist":1,"fingerPTR":5,"fingerMDL":5,"fingerRNG":5,"fingerPKY":5,"fingerTHM":5}
 Robot pins
-{"fingerPTR":7,"fingerMDL":8,"fingerRNG":9,"fingerPKY":10,"fingerTHM":11}
+{"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":7,"fingerMDL":8,"fingerRNG":9,"fingerPKY":10,"fingerTHM":11}
 
 
 full joint list for ez copying

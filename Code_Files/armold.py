@@ -127,7 +127,6 @@ class ArmoldBrain:
     # returns actual servo angles, robot program handles converting to arduino steps
     def convertToServoVals(brain, sensorVals):
         # TODO setup convertion ratios
-        print(sensorVals)
         servoVals = dict()
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
@@ -222,9 +221,9 @@ class Controller:
             pinMapping = json.loads(pinFile.readline())
         connections = dict()
         for i in range(16):
-            connections[str(i)] = board.get_pin(f'a:{i}:i')
+            connections[i] = board.get_pin(f'a:{i}:i')
         for name, pin in pinMapping.items():
-            controller.sensorConnections[name] = connections[str(pin)]
+            controller.sensorConnections[name] = connections[pin]
         return
 
     # gets current sensor positions
