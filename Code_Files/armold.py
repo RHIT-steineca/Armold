@@ -222,7 +222,7 @@ class Controller:
             pinMapping = json.loads(pinFile.readline())
         connections = dict()
         for i in range(16):
-            connections[i] = board.get_pin(f'a:{i}:i')
+            connections[str(i)] = board.get_pin(f'a:{i}:i')
         for name, pin in pinMapping.items():
             controller.sensorConnections[name] = connections[pin]
         return
