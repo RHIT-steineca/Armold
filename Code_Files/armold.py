@@ -127,6 +127,7 @@ class ArmoldBrain:
     # returns actual servo angles, robot program handles converting to arduino steps
     def convertToServoVals(brain, sensorVals):
         # TODO setup convertion ratios
+        print(sensorVals)
         servoVals = dict()
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
@@ -435,6 +436,6 @@ while (quitCommanded):
     except Exception as error:
         print(f"\nSorry, Armold is having trouble finding its arm...\n({error})\ntrying again...")
         time.sleep(5)
-        
+        raise Exception(error)
     finally:
         ssh.close()
