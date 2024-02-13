@@ -231,6 +231,8 @@ class Controller:
         readings = dict()
         for name, connection in controller.sensorConnections.items():
             readings[name] = connection.read()
+            if(readings[name] == None):
+                print("remember to flash FIRMATA!!!")
         return readings
 
 def checkSSHconnection(ssh):
