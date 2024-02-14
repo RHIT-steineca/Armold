@@ -437,6 +437,5 @@ while (quitCommanded):
     except Exception as error:
         print(f"\nSorry, Armold is having trouble finding its arm...\n({error})\ntrying again...")
         time.sleep(5)
-        raise Exception(error)
     finally:
         ssh.close()
