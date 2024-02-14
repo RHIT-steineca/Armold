@@ -18,8 +18,8 @@ class MqttClient(object):
         if mqtt_broker_ip_address == "mosquitto.csse.rose-hulman.edu" and use_off_campus_broker:
             #   print("Using broker.hivemq.com instead of mosquitto.csse.rose-hulman.edu")
             mqtt_broker_ip_address = "broker.hivemq.com"
-            self.subscription_topic_name = subscription_topic_name
-            self.publish_topic_name = publish_topic_name
+        self.subscription_topic_name = subscription_topic_name
+        self.publish_topic_name = publish_topic_name
 
         # Callback for when the connection to the broker is complete.
         self.client.on_connect = self._on_connect
