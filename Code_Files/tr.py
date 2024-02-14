@@ -23,7 +23,7 @@ arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180,
 board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
-print("Arduno connection successfully started")
+print("Arduino connection successfully started")
 valPath = "//home//pi//"
 fullValPath = os.path.join(valPath, "robovals.txt")
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
