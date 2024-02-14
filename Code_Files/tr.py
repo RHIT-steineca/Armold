@@ -13,8 +13,8 @@ pinMapping = dict()
 servoTypes = {"shoulderCB":"25kg","shoulderR":"STEP","shoulderLR":"40kg","elbow":"40kg","wrist":"40kg","fingerPTR":"3kg","fingerMDL":"3kg","fingerRNG":"3kg","fingerPKY":"3kg","fingerTHM":"3kg"}
 connections = dict()
 # acceptable ranges
-limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
-limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":210,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
+limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":25,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
+limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
 servoMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
@@ -132,27 +132,11 @@ class Connection:
     
     def mqtt_callback(connection, type_name, payload):
         try:
-            keyLine = payload[0]
-            rateLine = payload[1]
-            if("RESET" in str(rateLine)):
-                for name, val in stepperActualVals.items():
-                    stepperActualVals[name] = 0
-                with open(fullStepPath, "w") as stepFile:
-                    actualValString = str(stepperActualVals).replace("'", '"')
-                    stepFile.write(f"{actualValString}")
-                raise Exception("RESET")
-            if (keyLine != frameKey and keyLine != ""):
-                frameKey = keyLine
-                refreshRate = float(rateLine)
-                frameLen = 1.0 / refreshRate
+            with open(fullValPath, "w") as valFile:
+                valstring = f"{str(payload[0])}\n{str(payload[1])}"
                 for jointName, jointVal in payload[2].items():
-                    if jointName in pinMapping.keys():
-                        startVals[jointName] = targetVals[jointName]
-                        actualVals[jointName] = targetVals[jointName]
-                        if (abs(float(jointVal) - targetVals[joint]) >= smoothingBasis[jointName]):
-                            targetVals[jointName] = float(jointVal)
-                lastFrame = time.time()
-            print(f"{keyLine}@{refreshRate}\n{targetVals}")
+                    valstring += f'\n"{servoname}",{newVal}'
+                valFile.write(f"{valstring}")
         except Exception as error:
             raise error
 
@@ -164,6 +148,34 @@ while True:
     try:
         # checking for new target values assigned
         connection.client.client.loop()
+        with open(fullValPath, "r") as valFile:
+            try:
+                keyLine = valFile.readline()
+                rateLine = valFile.readline()
+                if("RESET" in str(rateLine)):
+                    for name, val in stepperActualVals.items():
+                        stepperActualVals[name] = 0
+                    with open(fullStepPath, "w") as stepFile:
+                        actualValString = str(stepperActualVals).replace("'", '"')
+                        stepFile.write(f"{actualValString}")
+                    raise Exception("RESET")
+                if (keyLine != frameKey and keyLine != ""):
+                    frameKey = keyLine
+                    refreshRate = float(rateLine)
+                    frameLen = 1.0 / refreshRate
+                    reader = csv.reader(valFile)
+                    for row in reader:
+                        jointName = row[0]
+                        jointVal = float(row[1])
+                        if jointName in pinMapping.keys():
+                            startVals[jointName] = targetVals[jointName]
+                            actualVals[jointName] = targetVals[jointName]
+                            if (abs(jointVal - targetVals[jointName]) >= smoothingBasis[jointName]):
+                                targetVals[jointName] = jointVal
+                    lastFrame = time.time()
+            except Exception as error:
+                print(error)
+                continue
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
         for joint, actualVal in actualVals.items():
