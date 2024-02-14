@@ -25,6 +25,7 @@ it = pyfirmata.util.Iterator(board)
 it.start()
 print("Arduno connection successfully started")
 valPath = "//home//pi//"
+fullValPath = os.path.join(valPath, "robovals.txt")
 fullStepPath = os.path.join(valPath, "stepperPos.txt")
 pinsPath = os.path.join(valPath, "Armold//Code_Files//pins.txt")
 with open(pinsPath, "r") as pinFile:
