@@ -136,7 +136,7 @@ class Connection:
             with open(fullValPath, "w") as valFile:
                 valstring = f"{str(payload[0])}\n{str(payload[1])}"
                 for jointName, jointVal in payload[2].items():
-                    valstring += f'\n"{servoname}",{newVal}'
+                    valstring += f'\n"{jointName}",{jointVal}'
                 valFile.write(f"{valstring}")
         except Exception as error:
             raise error
