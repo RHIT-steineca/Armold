@@ -311,7 +311,7 @@ quitCommanded = True
 print("Armold is awake! \nNow looking for its arm...")
 while (quitCommanded):
     try:
-        ssh.connect("ArmoldSecondary", username="pi", password="Armold", timeout=15)
+        ssh.connect("ArmoldSecondary", username="", password="", timeout=15)
         print("\nArm found! Armold is ready to go!")
         while True:
             checkSSHconnection(ssh)
