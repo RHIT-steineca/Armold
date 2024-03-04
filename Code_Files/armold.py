@@ -290,7 +290,7 @@ class Connection:
         
     def setup(connection):
         connection.client.callback = lambda type, payload: connection.mqtt_callback(type, payload)
-        connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=False)
+        connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=True)
     
     def mqtt_callback(connection, type_name, payload):
         return
