@@ -10,12 +10,12 @@ targetVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":210,"wrist":0,
 smoothingBasis = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 # map of joints to arduino pins
 pinMapping = dict()
-servoTypes = {"shoulderCB":"25kg","shoulderR":"STEP","shoulderLR":"40kg","elbow":"40kg","wrist":"40kg","fingerPTR":"3kg","fingerMDL":"3kg","fingerRNG":"3kg","fingerPKY":"3kg","fingerTHM":"3kg"}
+actuatorTypes = {"shoulderCB":"25kg","shoulderR":"STEP","shoulderLR":"40kg","elbow":"40kg","wrist":"40kg","fingerPTR":"3kg","fingerMDL":"3kg","fingerRNG":"3kg","fingerPKY":"3kg","fingerTHM":"3kg"}
 connections = dict()
 # acceptable ranges
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":25,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
+actuatorMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
@@ -46,11 +46,11 @@ except:
         actualValString = str(stepperActualVals).replace("'", '"')
         stepFile.write(f"{actualValString}")
 
-# map servo connections
+# map actuator connections
 for name, pin in pinMapping.items():
-    servoType = servoTypes[name]
+    actuatorType = actuatorTypes[name]
     # Stepper Motor
-    if(servoType == "STEP"):
+    if(actuatorType == "STEP"):
         stepperConnections = dict()
         # pins set high
         stepperConnections["enable"] = board.get_pin(f'd:{pin}:o')
@@ -66,33 +66,33 @@ for name, pin in pinMapping.items():
         stepperConnections["direction"].write(0)
         connections[name] = stepperConnections
     # 9g micro servos (180°)
-    elif(servoType == "9g"):
+    elif(actuatorType == "9g"):
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2430, 0)
     # 3kg small servos (180°)
-    elif(servoType == "3kg"):
+    elif(actuatorType == "3kg"):
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 1000, 0)
     # 20kg medium servos (270°)
-    elif(servoType == "20kg"):
+    elif(actuatorType == "20kg"):
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2470, 0)
     # 25kg medium servos (270°)
-    elif(servoType == "25kg"):
+    elif(actuatorType == "25kg"):
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2490, 0)
     # 40kg medium servos (270°)
-    elif(servoType == "40kg"):
+    elif(actuatorType == "40kg"):
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2520, 0)
-    # unmapped servos
+    # unmapped actuators
     else:
         connections[name] = board.get_pin(f'd:{pin}:s')
         board.servo_config(pin, 500, 2500, 0)
 
 def moveArduino():
     for name, pin in pinMapping.items():
-        if(servoType == "STEP"):
+        if(actuatorType == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
             stepperDirection = -1
@@ -112,11 +112,11 @@ def moveArduino():
             newVal = convertAngleToVal(name, actualVals[name])
             connection.write(newVal)
 
-def convertAngleToVal(servoName, sensorAngle):
-    minVal = arduinoMinVals[servoName]
-    maxVal = arduinoMaxVals[servoName]
-    minDeg = limitedMinDegs[servoName]
-    maxDeg = servoMaxRange[servoName]
+def convertAngleToVal(actuatorName, sensorAngle):
+    minVal = arduinoMinVals[actuatorName]
+    maxVal = arduinoMaxVals[actuatorName]
+    minDeg = limitedMinDegs[actuatorName]
+    maxDeg = actuatorMaxRange[actuatorName]
     valRange = maxVal-minVal
     degRange = maxDeg-minDeg
     calcVal = sensorAngle * valRange / degRange

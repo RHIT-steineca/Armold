@@ -6,7 +6,7 @@ import pyfirmata
 # joint mapping
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":25,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 limitedMaxDegs = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":235,"wrist":230,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":100}
-servoMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
+actuatorMaxRange = {"shoulderCB":270,"shoulderR":1333,"shoulderLR":270,"elbow":270,"wrist":270,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
@@ -39,8 +39,8 @@ class ArmoldBrain:
             while((duration == 0) or (frame < refreshRate * duration)):
                 if (time.time() - lastFrame >= 1.0 / refreshRate):
                     lastFrame = time.time()
-                    currentFrameData = brain.convertToServoVals(brain.controller.getSensors())
-                    brain.robot.setServos(currentFrameData, refreshRate)
+                    currentFrameData = brain.convertToActuatorVals(brain.controller.getSensors())
+                    brain.robot.setActuators(currentFrameData, refreshRate)
                     moveTimeline.append(currentFrameData)
                     if (secDone == refreshRate):
                         print("\n")
@@ -86,7 +86,7 @@ class ArmoldBrain:
                             print(f"{round(recLen - secDone, 1)} second(s) left...")
                             secDone += 1
                         try:
-                            brain.robot.setServos(movement.getServosAtTime(frame), refreshRate)
+                            brain.robot.setActuators(movement.getActuatorsAtTime(frame), refreshRate)
                         except Exception as error:
                             raise error
                         frame += 1
@@ -94,7 +94,7 @@ class ArmoldBrain:
                     frame = 0
                     secDone = 0
                     try:
-                        brain.robot.setServos(movement.getServosAtTime(0), 0.5)
+                        brain.robot.setActuators(movement.getActuatorsAtTime(0), 0.5)
                     except Exception as error:
                         raise error
                     print(f"Looping to {moveName} start...")
@@ -116,18 +116,17 @@ class ArmoldBrain:
                 if (time.time() - lastFrame >= 1.0 / refreshRate):
                     lastFrame = time.time()
                     try:
-                        brain.robot.setServos(brain.convertToServoVals(brain.controller.getSensors()), refreshRate)
+                        brain.robot.setActuators(brain.convertToActuatorVals(brain.controller.getSensors()), refreshRate)
                     except Exception as error:
                         raise error
         except KeyboardInterrupt:
             pass
         return
     
-    # convert values from sensor -> servo
-    # returns actual servo angles, robot program handles converting to arduino steps
-    def convertToServoVals(brain, sensorVals):
-        # TODO setup convertion ratios
-        servoVals = dict()
+    # convert values from sensor -> actuator
+    # returns actual actuator angles, robot program handles converting to arduino steps
+    def convertToActuatorVals(brain, sensorVals):
+        actuatorVals = dict()
         for name, val in sensorVals.items():
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
@@ -140,8 +139,8 @@ class ArmoldBrain:
             #         calcAngle = 0
             #     else:
             #         calcAngle = 180
-            servoVals[name] = calcAngle
-        return servoVals
+            actuatorVals[name] = calcAngle
+        return actuatorVals
 
 class Recording:
     # initialization
@@ -167,21 +166,21 @@ class Recording:
         return
     
     # gets data frame at time
-    def getServosAtTime(recording, time):
+    def getActuatorsAtTime(recording, time):
         return recording.timeline[time]
 
 class Robot:
     # initialization
     def __init__(robot):
-        robot.servoPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","fingerPTR","fingerMDL","fingerRNG","fingerPKY","fingerTHM"]
+        robot.actuatorPins = ["shoulderCB","shoulderR","shoulderLR","elbow","wrist","fingerPTR","fingerMDL","fingerRNG","fingerPKY","fingerTHM"]
 
-    # sets servos to new positions
-    def setServos(robot, newVals, refreshRate):
+    # sets actuators to new positions
+    def setActuators(robot, newVals, refreshRate):
         frameKey = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for i in range(math.floor(refreshRate) + 5))
-        servoCommand =  [frameKey,refreshRate,newVals]
+        actuatorCommand =  [frameKey,refreshRate,newVals]
         try:
             testEnv.updateVals(newVals)
-            connection.client.send_message("command", servoCommand)
+            connection.client.send_message("command", actuatorCommand)
             connection.client.client.loop(timeout = 1.0 / refreshRate)
             # connection.client.client.reinitialise()
             # connection.setup()
@@ -226,8 +225,8 @@ class TestEnvironment:
     def __init__(testenv):
         testenv.valpairs = dict()
         testenv.labelpairs = dict()
-        for servoName in brain.robot.servoPins:
-            testenv.valpairs[servoName] = 0
+        for actuatorName in brain.robot.actuatorPins:
+            testenv.valpairs[actuatorName] = 0
         testenv.setupWindow()
     
     def setupWindow(testenv):
@@ -239,34 +238,34 @@ class TestEnvironment:
         closeButton = tk.Button(testenv.buttonFrame, text="Close Testing Window", padx=30, pady=30, command=lambda : testenv.closeWindow()).pack(side="right", expand=True, fill="both")
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
-        for servoName, servoVal in testenv.valpairs.items():
-            label = tk.Label(testenv.frame, text=f"{servoName}: {round(testenv.convertAngleToVal(servoName, servoVal), 1)} Steps, {round(servoVal, 1)} Degrees")
-            testenv.labelpairs[servoName] = label
+        for actuatorName, actuatorVal in testenv.valpairs.items():
+            label = tk.Label(testenv.frame, text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees")
+            testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
     
     def updateVals(testenv, newVals):
-        for servoname, val in testenv.valpairs.items():
-            if servoname in newVals.keys():
-                testenv.valpairs[servoname] = newVals[servoname]
+        for actuatorname, val in testenv.valpairs.items():
+            if actuatorname in newVals.keys():
+                testenv.valpairs[actuatorname] = newVals[actuatorname]
         testenv.updateWindow()
     
     def updateWindow(testenv):
-        for servoName, servoVal in testenv.valpairs.items():
-            if servoName in testenv.labelpairs.keys():
-                label = testenv.labelpairs[servoName]
-                label.config(text=f"{servoName}: {round(testenv.convertAngleToVal(servoName, servoVal), 1)} Steps, {round(servoVal, 1)} Degrees")
+        for actuatorName, actuatorVal in testenv.valpairs.items():
+            if actuatorName in testenv.labelpairs.keys():
+                label = testenv.labelpairs[actuatorName]
+                label.config(text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees")
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
 
-    def convertAngleToVal(testenv, servoName, sensorAngle):
-        minVal = arduinoMinVals[servoName]
-        maxVal = arduinoMaxVals[servoName]
-        minDeg = limitedMinDegs[servoName]
-        maxDeg = servoMaxRange[servoName]
+    def convertAngleToVal(testenv, actuatorName, sensorAngle):
+        minVal = arduinoMinVals[actuatorName]
+        maxVal = arduinoMaxVals[actuatorName]
+        minDeg = limitedMinDegs[actuatorName]
+        maxDeg = actuatorMaxRange[actuatorName]
         valRange = maxVal-minVal
         degRange = maxDeg-minDeg
         calcVal = sensorAngle * valRange / degRange
@@ -308,11 +307,11 @@ while (quitCommanded):
         print("\nArm found! Armold is ready to go!")
         while True:
             defaultRobotVals = dict()
-            for servoname in brain.robot.servoPins:
-                defaultRobotVals[servoname] = 0.0
-                if("finger" in servoname):
-                    defaultRobotVals[servoname] = 1.0
-            brain.robot.setServos(brain.convertToServoVals(defaultRobotVals), 4)
+            for actuatorName in brain.robot.actuatorPins:
+                defaultRobotVals[actuatorName] = 0.0
+                if("finger" in actuatorName):
+                    defaultRobotVals[actuatorName] = 1.0
+            brain.robot.setActuators(brain.convertToActuatorVals(defaultRobotVals), 4)
             time.sleep(0.25)
             print("\nTell Armold what to do!",
                     "\nCommands are:",
@@ -367,7 +366,7 @@ while (quitCommanded):
                     if moveInput in brain.recordedMovements:
                         break
                     else:
-                        print("\n'" + moveinput + "' isn't a movement Armold has memorized, try again.")
+                        print("\n'" + moveInput + "' isn't a movement Armold has memorized, try again.")
                 # get playback rate
                 while True:
                     print("\nRate of playback? (Hz < 30)\n")
@@ -414,8 +413,6 @@ while (quitCommanded):
                 print("\nYou told Armold to zero its stepper motor tracking.")
                 connection.client.send_message("command", "RESET\nRESET")
                 connection.client.client.loop(timeout = 1.0)
-                # connection.client.client.reinitialise()
-                # connection.setup()
                 time.sleep(1)
             # quit
             elif(command == "q"):
