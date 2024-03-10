@@ -181,9 +181,7 @@ class Robot:
         try:
             testEnv.updateVals(newVals)
             connection.client.send_message("command", actuatorCommand)
-            connection.client.client.loop(timeout = 1.0 / refreshRate)
-            # connection.client.client.reinitialise()
-            # connection.setup()
+            connection.client.client.loop(timeout = 1.0 / (2 * refreshRate))
         except Exception as error:
             print(error)
             print("-frame dropped-")
