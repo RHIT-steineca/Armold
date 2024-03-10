@@ -42,7 +42,9 @@ def moveArduino():
         stepperDirection = 1
         stepperConnections["direction"].write(1)
     for i in range(abs(stepperDeltaPos)):
+        time.sleep(0.01)
         stepperConnections["step"].write(1)
+        time.sleep(0.01)
         stepperConnections["step"].write(0)
         stepperActualVals["shoulderR"] += stepperDirection
 
