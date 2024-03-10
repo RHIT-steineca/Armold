@@ -292,7 +292,7 @@ class Connection:
         connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=False)
     
     def mqtt_callback(connection, type_name, payload):
-        return
+        pass
 
 # main loop
 brain = ArmoldBrain()
