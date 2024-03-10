@@ -53,7 +53,7 @@ while True:
     if(actualVals["shoulderR"] == 0):
         print("going to full")
         actualVals["shoulderR"] = 1333
-    else:
+    elif(actualVals["shoulderR"] == 1333):
         print("going to 0")
         actualVals["shoulderR"] = 0
     moveArduino()
