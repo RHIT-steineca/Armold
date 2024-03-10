@@ -243,7 +243,6 @@ class TestEnvironment:
             testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
         testenv.window.geometry('450x450+0+0')
-        testenv.window.iconbitmap("Icon.xbm")
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
     
