@@ -18,6 +18,7 @@ arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180,
 board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
+print("step code started")
 # map actuator connections
 stepperConnections = dict()
 stepperConnections["enable"] = board.get_pin(f'd:39:o')
@@ -31,6 +32,7 @@ stepperConnections["step"] = board.get_pin(f'd:43:o')
 stepperConnections["direction"] = board.get_pin(f'd:45:o')
 stepperConnections["step"].write(0)
 stepperConnections["direction"].write(0)
+print("pins set up")
 
 def moveArduino():
     stepperDeltaPos = actualVals["shoulderR"] - stepperActualVals["shoulderR"]
@@ -47,7 +49,9 @@ def moveArduino():
 # main loop
 while True:
     if(actualVals["shoulderR"] == 0):
+        print("going to full")
         actualVals["shoulderR"] = 1333
     elif(actualVals["shoulderR"] == 1333):
+        print("going to 0")
         actualVals["shoulderR"] = 0
     moveArduino()
