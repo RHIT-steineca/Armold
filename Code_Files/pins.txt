@@ -3,6 +3,7 @@ Controller pins
 Robot pins
 {"shoulderCB":12,"shoulderLR":13,"elbow":5,"wrist":6,"fingerPTR":7,"fingerMDL":8,"fingerRNG":9,"fingerPKY":10,"fingerTHM":11}
 
+NOTE: step direction pin is shoulderR - 1
 
 full joint list for ez copying
 {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}

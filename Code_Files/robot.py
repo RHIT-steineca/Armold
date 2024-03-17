@@ -52,16 +52,8 @@ for name, pin in pinMapping.items():
     # Stepper Motor
     if(actuatorType == "STEP"):
         stepperConnections = dict()
-        # pins set high
-        stepperConnections["enable"] = board.get_pin(f'd:{pin}:o')
-        stepperConnections["ms1"] = board.get_pin(f'd:{pin + 1}:o')
-        stepperConnections["ms2"] = board.get_pin(f'd:{pin + 2}:o')
-        stepperConnections["enable"].write(1)
-        stepperConnections["ms1"].write(0)
-        stepperConnections["ms2"].write(0)
-        # pins that change
-        stepperConnections["step"] = board.get_pin(f'd:{pin + 3}:o')
-        stepperConnections["direction"] = board.get_pin(f'd:{pin + 4}:o')
+        stepperConnections["step"] = board.get_pin(f'd:{pin}:o')
+        stepperConnections["direction"] = board.get_pin(f'd:{pin - 1}:o')
         stepperConnections["step"].write(0)
         stepperConnections["direction"].write(0)
         connections[name] = stepperConnections
@@ -101,7 +93,9 @@ def moveArduino():
                 stepperDirection = 1
                 stepperConnections["direction"].write(1)
             for i in range(math.floor(abs(stepperDeltaPos))):
+                time.sleep(0.00001)
                 stepperConnections["step"].write(1)
+                time.sleep(0.00001)
                 stepperConnections["step"].write(0)
                 stepperActualVals[name] += stepperDirection
                 with open(fullStepPath, "w") as stepFile:
