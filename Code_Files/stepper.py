@@ -22,11 +22,7 @@ print("step code started")
 # map actuator connections
 stepperConnections = dict()
 stepperConnections["enable"] = board.get_pin(f'd:39:o')
-stepperConnections["ms1"] = board.get_pin(f'd:37:o')
-stepperConnections["ms2"] = board.get_pin(f'd:41:o')
 stepperConnections["enable"].write(1)
-stepperConnections["ms1"].write(0)
-stepperConnections["ms2"].write(0)
 # pins that change
 stepperConnections["step"] = board.get_pin(f'd:45:o')
 stepperConnections["direction"] = board.get_pin(f'd:43:o')
