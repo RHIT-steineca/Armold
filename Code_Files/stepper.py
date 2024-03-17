@@ -31,25 +31,25 @@ stepperConnections["direction"].write(0)
 print("pins set up")
 
 def moveArduino():
-    # stepperDeltaPos = actualVals["shoulderR"] - stepperActualVals["shoulderR"]
-    # stepperDirection = -1
-    # stepperConnections["direction"].write(0)
-    # if(stepperDeltaPos > 0):
-    #     stepperDirection = 1
-    #     stepperConnections["direction"].write(1)
-    # for i in range(abs(stepperDeltaPos)):
+    stepperDeltaPos = actualVals["shoulderR"] - stepperActualVals["shoulderR"]
+    stepperDirection = -1
+    stepperConnections["direction"].write(0)
+    if(stepperDeltaPos > 0):
+        stepperDirection = 1
+        stepperConnections["direction"].write(1)
+    for i in range(abs(stepperDeltaPos)):
         time.sleep(0.001)
         stepperConnections["step"].write(1)
         time.sleep(0.001)
         stepperConnections["step"].write(0)
-        # stepperActualVals["shoulderR"] += stepperDirection
+        stepperActualVals["shoulderR"] += stepperDirection
 
 # main loop
 while True:
-    # if(actualVals["shoulderR"] == 0):
-    #     print("going to full")
-    #     actualVals["shoulderR"] = 1333
-    # elif(actualVals["shoulderR"] == 1333):
-    #     print("going to 0")
-    #     actualVals["shoulderR"] = 0
+    if(actualVals["shoulderR"] == 0):
+        print("going to full")
+        actualVals["shoulderR"] = 1333
+    elif(actualVals["shoulderR"] == 1333):
+        print("going to 0")
+        actualVals["shoulderR"] = 0
     moveArduino()
