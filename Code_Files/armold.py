@@ -181,7 +181,7 @@ class Robot:
         try:
             testEnv.updateVals(newVals)
             # TODO test this timeout works
-            connection.client.setTimeToWait(timeout = 1.0 / refreshRate)
+            connection.client.setConnectionTimeout(timeout = 1.0 / refreshRate)
             connection.client.send_message("command", actuatorCommand)
         except Exception as error:
             print(error)
