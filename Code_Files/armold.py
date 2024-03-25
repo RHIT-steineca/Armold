@@ -295,10 +295,16 @@ class Connection:
 
 # main loop
 brain = ArmoldBrain()
-connection = Connection()
 testEnv = TestEnvironment()
 quitCommanded = True
-print("Armold is awake! \nNow looking for its arm...")
+while True:
+    try:
+        print("Armold is awake! \nNow looking for its arm...")
+        connection = Connection()
+        break
+    except Exception as error:
+        print(f"\nSorry, Armold is having trouble finding its arm...\n({error})\ntrying again...")
+        time.sleep(5)
 while (quitCommanded):
     try:
         connection.client.client.reinitialise()
