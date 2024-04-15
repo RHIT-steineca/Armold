@@ -132,6 +132,7 @@ class Connection:
                 for jointName, jointVal in payload[2].items():
                     valstring += f'\n"{jointName}",{jointVal}'
                 valFile.write(f"{valstring}")
+                print(valstring)
         except Exception as error:
             raise error
 
