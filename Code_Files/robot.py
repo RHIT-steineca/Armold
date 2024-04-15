@@ -140,11 +140,11 @@ print("Communication successfully established")
 
 # main loop
 while True:
-    # try:
+    try:
         # checking for new target values assigned
         connection.client.client.loop()
         with open(fullValPath, "r") as valFile:
-            # try:
+            try:
                 keyLine = valFile.readline()
                 rateLine = valFile.readline()
                 if("RESET" in str(rateLine)):
@@ -168,9 +168,9 @@ while True:
                             if (abs(jointVal - targetVals[jointName]) >= smoothingBasis[jointName]):
                                 targetVals[jointName] = jointVal
                     lastFrame = time.time()
-            # except Exception as error:
-                # print(error)
-                # continue
+            except Exception as error:
+                print(error)
+                continue
         # check for time passed since new frame and interpolate value
         framePercent = (time.time() - lastFrame) / frameLen
         for joint, actualVal in actualVals.items():
@@ -190,5 +190,5 @@ while True:
                 interpolated = limitedMaxDegs[joint]
             actualVals[joint] = interpolated
         moveArduino()
-    # except Exception as error:
-        # print(error)
+    except Exception as error:
+        print(error)
