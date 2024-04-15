@@ -128,6 +128,7 @@ class Connection:
         connection.client.connect("Armold/ToBrain", "Armold/ToDummy", use_off_campus_broker=False)
     
     def mqtt_callback(connection, type_name, payload):
+        print("\nNEW DATA\n")
         try:
             with open(fullValPath, "w") as valFile:
                 valstring = f"{str(payload[0])}\n{str(payload[1])}"
