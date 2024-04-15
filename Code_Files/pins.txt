@@ -1,7 +1,7 @@
 Controller pins
 {"shoulderCB":8,"shoulderR":12,"shoulderLR":9,"elbow":10,"wrist":11,"fingerPTR":4,"fingerMDL":2,"fingerRNG":5,"fingerPKY":0,"fingerTHM":3}
 Robot pins
-{"shoulderCB":12,"shoulderR":23,"shoulderLR":13,"elbow":5,"wrist":6,"fingerPTR":7,"fingerMDL":8,"fingerRNG":9,"fingerPKY":10,"fingerTHM":11}
+{"shoulderCB":12,"shoulderR":23,"shoulderLR":13,"elbow":5,"wrist":6,"fingerPTR":11,"fingerMDL":10,"fingerRNG":7,"fingerPKY":8,"fingerTHM":9}
 
 NOTE: step direction pin is shoulderR - 1
 
