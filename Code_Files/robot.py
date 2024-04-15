@@ -84,7 +84,7 @@ for name, pin in pinMapping.items():
 
 def moveArduino():
     for name, pin in pinMapping.items():
-        if(actuatorType == "STEP"):
+        if(actuatorTypes[name] == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
             stepperDirection = -1
