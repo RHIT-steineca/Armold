@@ -10,6 +10,9 @@ class ArmoldGUI():
         self.window.title("Armold")
         self.screenwidth = self.window.winfo_screenwidth()
         self.screenheight = self.window.winfo_screenheight()
+        self.recordingsFrameWidth = 0.7 * self.screenwidth
+        self.controlsFrameWidth = 0.3 * self.screenwidth
+        self.borderPadding = 0.01 * self.screenheight
         self.window.geometry(f'{self.screenwidth}x{self.screenheight}+0+0')
         self.window.resizable(False, False)
         self.window.attributes('-fullscreen', True)
@@ -17,33 +20,43 @@ class ArmoldGUI():
         self.fillWindow()
 
     def fillWindow(self):
-        # frames
-        self.recordingsframeborder = tk.Frame(self.window, width=0.7 * self.screenwidth, highlightbackground="#BABFC9", highlightthickness=5)
+        # recording area frames
+        self.recordingsframeborder = tk.Frame(self.window, width=self.recordingsFrameWidth, highlightbackground="#BABFC9", highlightthickness=5)
         self.recordingsframeborder.pack(side="left", expand=True, fill="both")
-        self.recordingsframe = tk.Frame(self.recordingsframeborder, highlightbackground="#BABFC9", highlightthickness=10)
-        self.recordingsframe.pack(side="left", padx=10, pady=10, expand=True, fill="both")
+        self.recordingsframe = tk.Frame(self.recordingsframeborder, background="#BABFC9")
+        self.recordingsframe.pack(side="left", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+        # recording area elements
         
-        
-        self.controlsframeborder = tk.Frame(self.window, width=0.3 * self.screenwidth, highlightbackground="#BABFC9", highlightthickness=5)
+        # controls area frames
+        self.controlsframeborder = tk.Frame(self.window, width=self.controlsFrameWidth, highlightbackground="#BABFC9", highlightthickness=5)
         self.controlsframeborder.pack(side="right", expand=False, fill="both")
-        canvas = tk.Canvas(self.controlsframeborder)
-        canvas.pack(side="top", padx=10, pady=10, expand=True, fill="both")
+        canvas = tk.Canvas(self.controlsframeborder, width=self.controlsFrameWidth, height=self.controlsFrameWidth)
+        canvas.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=False, fill="both")
         img = Image.open("gui_icons/armold_logo_glow.png")
-        img = img.resize((round(0.3 * self.screenwidth),round(0.3 * self.screenwidth)), Image.ANTIALIAS)
-        canvas.test = ImageTk.PhotoImage(img)
-        canvas.create_image(0, 0, anchor=tk.NW, image=canvas.test)
-        self.controlsframe = tk.Frame(self.controlsframeborder, width=0.3 * self.screenwidth, highlightbackground="#BABFC9", highlightthickness=10)
-        self.controlsframe.pack(side="bottom", padx=10, pady=10, expand=False, fill="x")
-
-        # TODO (need actual questions) Form questions and boxes
-        label1 = tk.Label(self.recordingsframe, text="Test Label 1").pack()
-
-        # Form submit button
-        submitButton = tk.Button(self.recordingsframe, text="Submit to SQL Server")
-        submitButton.pack(side="bottom")
+        img = img.resize((round(self.controlsFrameWidth),round(self.controlsFrameWidth)), Image.ANTIALIAS)
+        canvas.logo = ImageTk.PhotoImage(img)
+        canvas.create_image(0, 0, anchor=tk.NW, image=canvas.logo)
+        self.controlsframe = tk.Frame(self.controlsframeborder, width=self.controlsFrameWidth, background="#BABFC9")
+        self.controlsframe.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+        # controls area elements
+        self.recordButtonFrame = tk.Frame(self.controlsframe, width=self.controlsFrameWidth)
+        self.recordButtonFrame.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+        self.recordButton = tk.Button(self.recordButtonFrame, text="New Recording", command=lambda : self.closeWindow())
+        self.recordButton.pack(side="left")
+        self.recordButtonCanvas = tk.Canvas(self.recordButtonFrame, width=4+2*self.borderPadding, height=4+2*self.borderPadding)
+        self.recordButtonCanvas.pack(side="right", padx=self.borderPadding, expand=False, fill="none")
+        self.recordButtonCanvas.create_oval(2,2, 2*self.borderPadding, 2*self.borderPadding, fill="#BABFC9", outline="#BABFC9")
         
-        closeButton = tk.Button(self.recordingsframe, text="Close Window", padx=30, pady=30, command=lambda : self.closeWindow())
-        closeButton.pack(side="bottom")
+        self.mirrorButtonFrame = tk.Frame(self.controlsframe, width=self.controlsFrameWidth)
+        self.mirrorButtonFrame.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+        self.mirrorButton = tk.Button(self.mirrorButtonFrame, text="Live Control", command=lambda : self.closeWindow())
+        self.mirrorButton.pack(side="left")
+        self.mirrorButtonCanvas = tk.Canvas(self.mirrorButtonFrame, width=4+2*self.borderPadding, height=4+2*self.borderPadding)
+        self.mirrorButtonCanvas.pack(side="right", padx=self.borderPadding, expand=False, fill="none")
+        self.mirrorButtonCanvas.create_oval(2,2, 2*self.borderPadding, 2*self.borderPadding, fill="#BABFC9", outline="#BABFC9")
+        
+        self.closeButton = tk.Button(self.controlsframe, text="Close Window", command=lambda : self.closeWindow())
+        self.closeButton.pack(side="bottom")
 
         self.window.update()
 
