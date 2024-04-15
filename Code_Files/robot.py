@@ -140,7 +140,7 @@ print("Communication successfully established")
 
 # main loop
 while True:
-    try:
+    # try:
         # checking for new target values assigned
         connection.client.client.loop()
         with open(fullValPath, "r") as valFile:
@@ -190,5 +190,5 @@ while True:
                 interpolated = limitedMaxDegs[joint]
             actualVals[joint] = interpolated
         moveArduino()
-    except Exception as error:
-        print(error)
+    # except Exception as error:
+        # print(error)
