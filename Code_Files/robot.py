@@ -84,7 +84,6 @@ for name, pin in pinMapping.items():
 
 def moveArduino():
     for name, pin in pinMapping.items():
-        print(f"Moving {name}")
         if(actuatorTypes[name] == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
@@ -93,6 +92,7 @@ def moveArduino():
             if(stepperDeltaPos > 0):
                 stepperDirection = 1
                 stepperConnections["direction"].write(1)
+            print(f"Taking {stepperDeltaPos} steps")
             for i in range(math.floor(abs(stepperDeltaPos))):
                 time.sleep(0.00001)
                 stepperConnections["step"].write(1)
@@ -105,6 +105,7 @@ def moveArduino():
         else: 
             connection = connections[name]
             newVal = convertAngleToVal(name, actualVals[name])
+            print(f"Moving {name} to {newVal}")
             connection.write(newVal)
 
 def convertAngleToVal(actuatorName, sensorAngle):
