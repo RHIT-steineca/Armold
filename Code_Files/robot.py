@@ -84,6 +84,7 @@ for name, pin in pinMapping.items():
 
 def moveArduino():
     for name, pin in pinMapping.items():
+        print(f"Moving {name}")
         if(actuatorTypes[name] == "STEP"):
             stepperConnections = connections[name]
             stepperDeltaPos = actualVals[name] - stepperActualVals[name]
@@ -132,7 +133,6 @@ class Connection:
                 for jointName, jointVal in payload[2].items():
                     valstring += f'\n"{jointName}",{jointVal}'
                 valFile.write(f"{valstring}")
-                print(valstring)
         except Exception as error:
             raise error
 
