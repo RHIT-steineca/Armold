@@ -15,7 +15,7 @@ arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 
 # initialization
-board = pyfirmata.Arduino('/dev/ttyACM0')
+board = pyfirmata.ArduinoMega('/dev/ttyACM0')
 it = pyfirmata.util.Iterator(board)
 it.start()
 print("step code started")
