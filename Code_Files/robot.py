@@ -132,8 +132,9 @@ class Connection:
         try:
             with open(fullValPath, "w") as valFile:
                 valstring = f"{str(payload[0])}\n{str(payload[1])}"
-                for jointName, jointVal in payload[2].items():
-                    valstring += f'\n"{jointName}",{jointVal}'
+                if("RESET" not in str(valstring)):
+                    for jointName, jointVal in payload[2].items():
+                        valstring += f'\n"{jointName}",{jointVal}'
                 valFile.write(f"{valstring}")
                 print("\nNEW DATA\n")
         except Exception as error:
