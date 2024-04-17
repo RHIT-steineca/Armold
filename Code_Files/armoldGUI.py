@@ -8,6 +8,7 @@ class ArmoldGUI():
     def __init__(self):
         self.state = "idle"
         self.stateText = "Nothing in progress"
+        self.playbackLoop = False
         # window setup
         self.window = tk.Tk()
         self.window.title("Armold")
@@ -36,9 +37,32 @@ class ArmoldGUI():
         self.statusAreaFrame.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=False, fill="both")
         self.statusMessage = tk.Label(self.statusAreaFrame, text=self.stateText, font=("Courier New Bold", 32), background="#EAF1FF")
         self.statusMessage.pack(side="left", padx=2*self.borderPadding, pady=2*self.borderPadding, expand=False, fill="both")
+        
+        if(self.state == "playback"):
+            self.loopButtonMargin = tk.Frame(self.statusAreaFrame, width=self.controlsFrameWidth)
+            self.loopButtonMargin.pack(side="right", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+            loopButtonImg = Image.open("gui_icons/loop.png")
+            loopButtonImg = loopButtonImg.resize((7*round(self.borderPadding),7*round(self.borderPadding)), Image.ANTIALIAS)
+            loopButtonImage = ImageTk.PhotoImage(loopButtonImg)
+            if(self.playbackLoop == True):
+                self.loopButton = ctk.CTkButton(self.loopButtonMargin, image=loopButtonImage, text="Loop", font=("Courier New Bold", 32), text_color="#FFB800", fg_color="#FFD9A0", bg_color="#EAF1FF", hover_color="#FFD9A0", border_color="#FFB800", border_width=self.borderPadding, corner_radius=15, command=lambda : self.toggleLoop())
+            else:
+                self.loopButton = ctk.CTkButton(self.loopButtonMargin, image=loopButtonImage, text="Loop", font=("Courier New Bold", 32), text_color="#000000", fg_color="#FFFFFF", bg_color="#EAF1FF", hover_color="#FFD9A0", border_color="#DDDDDD", border_width=self.borderPadding, corner_radius=15, command=lambda : self.toggleLoop())
+            self.loopButton.pack(side="right", expand=True, fill="both")
+            
+            self.playbackDuration = tk.Label(self.loopButtonMargin, text="0:00/0:00", font=("Courier New Bold", 20), background="#EAF1FF")
+            self.playbackDuration.pack(side="left", expand=True, fill="both")
+        
         self.recordingsList = ctk.CTkScrollableFrame(self.recordingsframe, bg_color="#BABFC9", fg_color="#BABFC9", scrollbar_fg_color="#FFFFFF", scrollbar_button_color="#5D6D8B", scrollbar_button_hover_color="#427FF6", corner_radius=15)
-        self.recordingsList._scrollbar.configure(width=3*self.borderPadding, corner_radius=15)
+        self.recordingsList._scrollbar.configure(width=5*self.borderPadding, corner_radius=30)
         self.recordingsList.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
+        
+        if(self.state == "playback"):
+            ctk.CTkButton(self.recordingsList, text="stop", command=lambda : self.stopPlayback()).pack()
+        elif(self.state == "recording"):
+            ctk.CTkButton(self.recordingsList, text="start").pack()
+        else:
+            ctk.CTkButton(self.recordingsList, text="start", command=lambda : self.startPlayback("x")).pack()
         
         # controls area frames
         self.controlsframeborder = tk.Frame(self.windowFrame, width=self.controlsFrameWidth, background="#FFFFFF", highlightbackground="#BABFC9", highlightthickness=5)
@@ -116,25 +140,42 @@ class ArmoldGUI():
 
     def startRecording(self):
         self.state = "recording"
-        self.statetext = "Recording in progress"
+        self.stateText = "Recording in progress"
         self.fillWindow()
         pass
     
     def stopRecording(self):
         self.state = "idle"
-        self.statetext = "Nothing in progress"
+        self.stateText = "Nothing in progress"
         self.fillWindow()
         pass
     
     def startMirror(self):
         self.state = "mirror"
-        self.statetext = "Mirroring motion"
+        self.stateText = "Live control in progress"
         self.fillWindow()
         pass
     
     def stopMirror(self):
         self.state = "idle"
-        self.statetext = "Nothing in progress"
+        self.stateText = "Nothing in progress"
+        self.fillWindow()
+        pass
+    
+    def startPlayback(self, name):
+        self.state = "playback"
+        self.stateText = "Playing " + name
+        self.fillWindow()
+        pass
+    
+    def stopPlayback(self):
+        self.state = "idle"
+        self.stateText = "Nothing in progress"
+        self.fillWindow()
+        pass
+    
+    def toggleLoop(self):
+        self.playbackLoop = not self.playbackLoop
         self.fillWindow()
         pass
     
