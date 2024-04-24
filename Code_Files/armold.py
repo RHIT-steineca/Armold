@@ -670,8 +670,8 @@ class ArmoldGUI():
     
     def acceptRecording(self):
         name = self.recordingName.get()
-        if(name.len() < 1):
-            return
+        # if(name.len() < 1):
+        #     return
         if(not name.isalnum()):
             self.infoLabel.configure(text="Please make sure to only include\nalphanumeric characters in your name!")
             self.window.update()
