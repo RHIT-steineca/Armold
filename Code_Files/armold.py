@@ -753,7 +753,7 @@ stay_on_top()
 while True:
     try:
         armoldGUI.window.update()
-        
+        testEnv.window.update()
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
