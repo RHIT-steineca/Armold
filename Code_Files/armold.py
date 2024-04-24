@@ -712,7 +712,7 @@ except Exception as error:
     sys.stderr = None
     while True:
         pass
-testEnv = TestEnvironment()
+# testEnv = TestEnvironment()
 armoldGUI = ArmoldGUI()
 while True:
     try:
