@@ -156,30 +156,6 @@ class ArmoldBrain:
             #         calcAngle = 180
             actuatorVals[name] = calcAngle
         return actuatorVals
-    
-def handleConnectionError():
-    armoldGUI.state = "disabled"
-    armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
-    armoldGUI.updateGraphics()
-    while True:
-        try:
-            connection.client.client.reinitialise()
-            connection.setup()
-            break
-        except Exception as error:
-            time.sleep(1)
-    armoldGUI.state = "disabled"
-    armoldGUI.stateText = "Arm found! Armold is ready to go!\n"
-    armoldGUI.updateGraphics()
-    time.sleep(1)
-    armoldGUI.state = "disabled"
-    armoldGUI.stateText = "Returning Armold\nto home positions..."
-    armoldGUI.updateGraphics()
-    brain.robot.goHome()
-    time.sleep(1)
-    armoldGUI.state = "idle"
-    armoldGUI.stateText = "Nothing in progress\n"
-    armoldGUI.updateGraphics()
 
 class Recording:
     # initialization
@@ -327,19 +303,7 @@ class TestEnvironment:
         testenv.window.destroy()
         testenv.setupWindow()
 
-class Connection:
-    def __init__(connection):
-        connection.client = mqtt_helper.MqttClient()
-        connection.setup()
-        
-    def setup(connection):
-        connection.client.callback = lambda type, payload: connection.mqtt_callback(type, payload)
-        connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=False)
-    
-    def mqtt_callback(connection, type_name, payload):
-        pass
-
-class ArmoldGUI():
+class ArmoldGUI:
     def __init__(self):
         self.state = "disabled"
         self.stateText = "Armold is awake! \nNow looking for its arm..."
@@ -782,7 +746,44 @@ class ArmoldGUI():
         sys.exit()
         # os.system("sudo reboot")
 
-# main loop
+class Connection:
+    def __init__(connection):
+        connection.client = mqtt_helper.MqttClient()
+        connection.setup()
+        
+    def setup(connection):
+        connection.client.callback = lambda type, payload: connection.mqtt_callback(type, payload)
+        connection.client.connect("Armold/ToDummy", "Armold/ToBrain", use_off_campus_broker=False)
+    
+    def mqtt_callback(connection, type_name, payload):
+        pass
+
+# handles re-establishing wireless connection if it fails
+def handleConnectionError():
+    armoldGUI.state = "disabled"
+    armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
+    armoldGUI.updateGraphics()
+    while True:
+        try:
+            connection.client.client.reinitialise()
+            connection.setup()
+            break
+        except Exception as error:
+            time.sleep(1)
+    armoldGUI.state = "disabled"
+    armoldGUI.stateText = "Arm found! Armold is ready to go!\n"
+    armoldGUI.updateGraphics()
+    time.sleep(1)
+    armoldGUI.state = "disabled"
+    armoldGUI.stateText = "Returning Armold\nto home positions..."
+    armoldGUI.updateGraphics()
+    brain.robot.goHome()
+    time.sleep(1)
+    armoldGUI.state = "idle"
+    armoldGUI.stateText = "Nothing in progress\n"
+    armoldGUI.updateGraphics()
+
+# setup system and verify arduino working
 try:
     brain = ArmoldBrain()
 except Exception as error:
@@ -790,9 +791,12 @@ except Exception as error:
     sys.stderr = None
     while True:
         pass
+
+# create GUI elements
 root = tk.Tk()
 testEnv = TestEnvironment()
 armoldGUI = ArmoldGUI()
+# setup wireless connection
 while True:
     try:
         armoldGUI.state = "disabled"
@@ -814,102 +818,15 @@ while True:
         armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
         armoldGUI.updateGraphics()
         time.sleep(1)
-
+# main loop
 while True:
     armoldGUI.window.update()
-        
-# study movement
-if(command == "s"):
-    print("\nYou told Armold to study your movements.")
-    # get recording rate
-    while True:
-        print("\nRate of recording? (Hz < 30)\n")
-        try:
-            rateinput = input("> ")
-            refreshRate = int(rateinput)
-            if (refreshRate >= 1 and refreshRate < 30):
-                break
-            else:
-                print("\nThe rate needs to be at least 1 but less than 30, try again.")
-        except ValueError:
-            print("\n'" + rateinput + "' isn't a number, try again.")
-    # get recording duration
-    while True:
-        print("\nHow many seconds should Armold watch you? (Enter '0' to do so indefinitely)\n")
-        try:
-            durinput = input("> ")
-            duration = float(durinput)
-            if (duration >= 0):
-                break
-            else:
-                print("\nThe duration can't be negative, try again.")
-        except ValueError:
-            print("\n'" + durinput + "' isn't a number, try again.")
-    print("\n- Armold is studying your movements!")
-    brain.recordMovement(refreshRate, duration)
-# playback movement
-elif(command == "p"):
-    print("\nYou told Armold to perform a movement.")
-    # get movement name
-    while True:
-        print("\nWhich movement should Armold repeat?")
-        for rn, rec in brain.recordedMovements.items():
-            name = rn.replace("_", " ")
-            print(f"- {name} ({len(rec.timeline)} frames, {round(len(rec.timeline) * (1.0 / rec.originalRate), 2)} secs at {rec.originalRate} Hz originally)")
-        print()
-        rawMoveInput = input("> ")
-        moveInput = rawMoveInput.replace(" ", "_")
-        if moveInput in brain.recordedMovements:
-            break
-        else:
-            print("\n'" + moveInput + "' isn't a movement Armold has memorized, try again.")
-    # get playback rate
-    while True:
-        print("\nRate of playback? (Hz < 30)\n")
-        try:
-            rateinput = input("> ")
-            refreshRate = int(rateinput)
-            if (refreshRate >= 1 and refreshRate < 30):
-                break
-            else:
-                print("\nThe rate needs to be at least 1 but less than 30, try again.")
-        except ValueError:
-            print("\n'" + rateinput + "' isn't a number, try again.")
-    # get loop
-    print("\nLoop the movement? (Y for yes, enter for no)\n")
-    loopinput = input("> ")
-    loop = False
-    if (loopinput == "Y"):
-        loop = True
-    print("\n- Armold is going to " + moveInput + "!")
-    brain.playbackMovement(moveInput, refreshRate, loop)
-# mirror movement
-elif(command == "l"):
-    print("\nYou told Armold to mirror your movements in real-time.")
-    # get mirror rate
-    while True:
-        print("\nRate of recording? (Hz)\n")
-        try:
-            rateinput = input("> ")
-            refreshRate = float(rateinput)
-            if (refreshRate >= 1 and refreshRate < 30):
-                break
-            else:
-                print("\nThe rate needs to be at least 1 but less than 30, try again.")
-        except ValueError:
-            print("\n'" + rateinput + "' isn't a number, try again.")
-    print("\n- Armold is mirroring your movements!")
-    brain.realtimeMovement(refreshRate)
-# zero stepper tracking
-elif(command == "z"):
-    print("\nYou told Armold to zero its stepper motor tracking.")
-    connection.client.send_message("command", "RESET\nRESET")
-    connection.client.client.loop(timeout = 1.0)
-    time.sleep(1)
-# quit
-elif(command == "q"):
-    print("\n- Armold says 'Bye!'\n")
-    quitCommanded = True
-# invalid command
-else:
-    print("\n- Armold doesn't know what '" + command + "' means...")
+
+# extra code for use in case of needing to ZERO out the stepper motor's tracked position
+# (otherwise, should always go to "ZERO" at home; so if powered off after at home, can manually adjust gear positioning)
+# # zero stepper tracking
+# elif(command == "z"):
+#     print("\nYou told Armold to zero its stepper motor tracking.")
+#     connection.client.send_message("command", "RESET\nRESET")
+#     connection.client.client.loop(timeout = 1.0)
+#     time.sleep(1)
