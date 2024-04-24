@@ -232,7 +232,7 @@ class TestEnvironment:
         testenv.setupWindow()
     
     def setupWindow(testenv):
-        testenv.window = root.Toplevel()
+        testenv.window = tk.Toplevel()
         testenv.window.title("Armold Testing Environment")
         testenv.buttonFrame = tk.Frame(testenv.window)
         testenv.buttonFrame.pack(side="top", expand=True, fill="x")
@@ -303,7 +303,7 @@ class ArmoldGUI():
         self.playing = "NONE"
         self.playbackLoop = False
         # window setup
-        self.window = root.Toplevel()
+        self.window = tk.Toplevel()
         self.window.title("Armold")
         self.screenwidth = self.window.winfo_screenwidth()
         self.screenheight = self.window.winfo_screenheight()
