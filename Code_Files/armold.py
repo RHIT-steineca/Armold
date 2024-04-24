@@ -616,6 +616,7 @@ class ArmoldGUI():
         acceptImage = ctk.CTkImage(Image.open("gui_icons/accept.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
         acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("CourierPrime Regular", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording(recordingName.get()))
         acceptButton.pack(side="right", expand=False, fill="both")
+        self.window.attributes('-fullscreen', False)
         self.window.update()
         recordingNameEntry.focus_force()
     
@@ -624,6 +625,7 @@ class ArmoldGUI():
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.window.attributes('-fullscreen', True)
         self.fillWindow()
     
     def cancelRecording(self):
@@ -631,6 +633,7 @@ class ArmoldGUI():
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.window.attributes('-fullscreen', True)
         self.fillWindow()
     
     def startMirror(self):
@@ -677,6 +680,7 @@ class ArmoldGUI():
         cancelImage = ctk.CTkImage(Image.open("gui_icons/cancel.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
         cancelButton = ctk.CTkButton(recordingEntriesBorder, image=cancelImage, text="Cancel", font=("CourierPrime Regular", 32), text_color="#842C2C", fg_color="#F64242", bg_color="#FFFFFF", hover_color="#F64242", border_color="#842C2C", border_width=self.borderPadding, corner_radius=15, command=lambda : self.cancelDelete())
         cancelButton.pack(side="right", expand=True, fill="both", padx=5*self.borderPadding)
+        self.window.attributes('-fullscreen', False)
         self.window.update()
     
     def acceptDelete(self, name):
@@ -684,12 +688,14 @@ class ArmoldGUI():
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.window.attributes('-fullscreen', True)
         self.fillWindow()
     
     def cancelDelete(self):
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.window.attributes('-fullscreen', True)
         self.fillWindow()
     
     def toggleLoop(self):
