@@ -356,11 +356,11 @@ class ArmoldGUI():
         self.controlsframeborder = tk.Frame(self.windowFrame, width=self.controlsFrameWidth, background="#FFFFFF", highlightbackground="#BABFC9", highlightthickness=5)
         self.controlsframeborder.pack(side="right", expand=False, fill="both")
         canvas = tk.Canvas(self.controlsframeborder, width=self.controlsFrameWidth, height=self.controlsFrameWidth, bd=0, highlightthickness=0, background="#FFFFFF")
-        canvas.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=False, fill="both")
+        canvas.pack(side="top", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
         logoImg = Image.open("gui_icons/armold_logo_glow.png")
         logoImg = logoImg.resize((round(self.controlsFrameWidth),round(self.controlsFrameWidth)), Image.ANTIALIAS)
         canvas.logo = ImageTk.PhotoImage(logoImg)
-        canvas.create_image(0, 0, anchor=tk.N, image=canvas.logo)
+        canvas.create_image(canvas.winfo_width()/2, canvas.winfo_height()/2, anchor="CENTER", image=canvas.logo)
         self.controlsframe = ctk.CTkFrame(self.controlsframeborder, width=self.controlsFrameWidth, fg_color="#BABFC9", corner_radius=15)
         self.controlsframe.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
         # controls area elements
