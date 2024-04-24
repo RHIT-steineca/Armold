@@ -357,10 +357,10 @@ class ArmoldGUI():
         tekButtonMargin.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=False, fill="both")
         debugButtonImage = ctk.CTkImage(Image.open("gui_icons/debug.png"), size=(2*round(self.borderPadding),2*round(self.borderPadding)))
         debugButton = ctk.CTkButton(tekButtonMargin, image=debugButtonImage, text="Open Debug Window", font=("CourierPrime Regular", 18), text_color="#000000", fg_color="#FFFFFF", bg_color="transparent", hover_color="#EAF1FF", corner_radius=15, command=lambda : self.showDebugWindow())
-        debugButton.pack(side="left")
+        debugButton.pack(side="left", expand=True, fill="y")
         powerButtonImage = ctk.CTkImage(Image.open("gui_icons/power.png"), size=(2*round(self.borderPadding),2*round(self.borderPadding)))
         closeButton = ctk.CTkButton(tekButtonMargin, image=powerButtonImage, text="Shut Down", font=("CourierPrime Regular", 18), text_color="#000000", fg_color="#FFFFFF", bg_color="transparent", hover_color="#EAF1FF", corner_radius=15, command=lambda : self.closeWindow())
-        closeButton.pack(side="right")
+        closeButton.pack(side="right", expand=True, fill="y")
 
         self.updateGraphics()
         
