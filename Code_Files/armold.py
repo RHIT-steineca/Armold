@@ -664,7 +664,7 @@ class ArmoldGUI():
         acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("Courier Prime", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording())
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
-        recordingNameEntry.focus_force()
+        # recordingNameEntry.focus_force()
         while (self.state == "disabled"):
             self.window.update()
     
