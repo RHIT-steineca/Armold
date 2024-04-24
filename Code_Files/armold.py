@@ -75,44 +75,52 @@ class ArmoldBrain:
     # playback movement on robot
     def playbackMovement(brain, moveName, refreshRate):
         frame = 0
-        secDone = 0
         movement = brain.recordedMovements[moveName]
-        recLen = math.floor(len(movement.timeline) * (1.0 / refreshRate))
         while (armoldGUI.state == "playback"):
             lastFrame = time.time()
             while(frame < len(movement.timeline)):
                 if (time.time() - lastFrame >= 1.0 / refreshRate):
                     lastFrame = time.time()
-                    if (frame % refreshRate == 0):
-                        secDone += 1
                     try:
                         brain.robot.setActuators(movement.getActuatorsAtTime(frame), refreshRate)
                     except Exception as error:
                         handleConnectionError()
                         return
+                    curLen = math.floor(frame * (1.0 / refreshRate))
+                    displaysecs = curLen%60
+                    if(displaysecs < 10):
+                        displaysecs = f"0{displaysecs}"
+                    current = f"{math.floor(curLen/60)}:{displaysecs}"
+                    recLen = math.floor(len(movement.timeline) * (1.0 / refreshRate))
+                    displaysecs = recLen%60
+                    if(displaysecs < 10):
+                        displaysecs = f"0{displaysecs}"
+                    duration = f"{math.floor(recLen/60)}:{displaysecs}"
+                    armoldGUI.updatePlaybackDuration(f"{current}\n/{duration}")
+                    armoldGUI.window.update()
                     frame += 1
             if armoldGUI.playbackLoop:
                 frame = 0
-                secDone = 0
                 try:
                     brain.robot.setActuators(movement.getActuatorsAtTime(0), 0.5)
                 except Exception as error:
                     handleConnectionError()
                     return
+                curLen = math.floor(frame * (1.0 / refreshRate))
+                displaysecs = curLen%60
+                if(displaysecs < 10):
+                    displaysecs = f"0{displaysecs}"
+                current = f"{math.floor(curLen/60)}:{displaysecs}"
+                recLen = math.floor(len(movement.timeline) * (1.0 / refreshRate))
+                displaysecs = recLen%60
+                if(displaysecs < 10):
+                    displaysecs = f"0{displaysecs}"
+                duration = f"{math.floor(recLen/60)}:{displaysecs}"
+                armoldGUI.updatePlaybackDuration(f"{current}\n/{duration}")
+                armoldGUI.window.update()
                 time.sleep(1)
             else:
                 return
-            curLen = math.floor(frame * (1.0 / refreshRate))
-            displaysecs = curLen%60
-            if(displaysecs < 10):
-                displaysecs = f"0{displaysecs}"
-            current = f"{math.floor(curLen/60)}:{displaysecs}"
-            displaysecs = recLen%60
-            if(displaysecs < 10):
-                displaysecs = f"0{displaysecs}"
-            duration = f"{math.floor(recLen/60)}:{displaysecs}"
-            armoldGUI.updatePlaybackDuration(f"{current}\n/{duration}")
-            armoldGUI.window.update()
         return
 
     # follow user movements on robot
