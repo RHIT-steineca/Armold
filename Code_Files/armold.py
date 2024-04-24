@@ -702,7 +702,7 @@ class ArmoldGUI():
     
     def closeWindow(self):
         self.window.destroy()
-        os.system("sudo reboot")
+        # os.system("sudo reboot")
 
 # main loop
 try:
