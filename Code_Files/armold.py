@@ -234,10 +234,6 @@ class TestEnvironment:
     def setupWindow(testenv):
         testenv.window = tk.Toplevel()
         testenv.window.title("Armold Testing Environment")
-        testenv.buttonFrame = tk.Frame(testenv.window)
-        testenv.buttonFrame.pack(side="top", expand=True, fill="x")
-        rebootButton = tk.Button(testenv.buttonFrame, text="Reboot Armold\n(Restart Pi)", padx=30, pady=30, command=lambda : os.system("sudo reboot")).pack(side="left", expand=True, fill="both")
-        closeButton = tk.Button(testenv.buttonFrame, text="Close Testing Window", padx=30, pady=30, command=lambda : testenv.closeWindow()).pack(side="right", expand=True, fill="both")
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for actuatorName, actuatorVal in testenv.valpairs.items():
