@@ -623,12 +623,14 @@ class ArmoldGUI():
         # TODO save recording data
         for child in self.window.winfo_children():
             child.destroy()
+        testEnv.setupWindow()
         self.fillWindow()
     
     def cancelRecording(self):
         # TODO cancel save recording data
         for child in self.window.winfo_children():
             child.destroy()
+        testEnv.setupWindow()
         self.fillWindow()
     
     def startMirror(self):
@@ -681,11 +683,13 @@ class ArmoldGUI():
         # TODO delete recording data
         for child in self.window.winfo_children():
             child.destroy()
+        testEnv.setupWindow()
         self.fillWindow()
     
     def cancelDelete(self):
         for child in self.window.winfo_children():
             child.destroy()
+        testEnv.setupWindow()
         self.fillWindow()
     
     def toggleLoop(self):
