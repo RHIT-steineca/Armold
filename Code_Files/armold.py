@@ -360,7 +360,7 @@ class ArmoldGUI():
         logoImg = Image.open("gui_icons/armold_logo_glow.png")
         logoImg = logoImg.resize((round(self.controlsFrameWidth),round(self.controlsFrameWidth)), Image.ANTIALIAS)
         canvas.logo = ImageTk.PhotoImage(logoImg)
-        canvas.create_image(0, 0, anchor=tk.NW, image=canvas.logo)
+        canvas.create_image(0, 0, anchor=tk.N, image=canvas.logo)
         self.controlsframe = ctk.CTkFrame(self.controlsframeborder, width=self.controlsFrameWidth, fg_color="#BABFC9", corner_radius=15)
         self.controlsframe.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
         # controls area elements
