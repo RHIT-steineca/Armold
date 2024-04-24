@@ -356,7 +356,7 @@ class ArmoldGUI():
         self.controlsframeborder = tk.Frame(self.windowFrame, width=self.controlsFrameWidth, background="#FFFFFF", highlightbackground="#BABFC9", highlightthickness=5)
         self.controlsframeborder.pack(side="right", expand=False, fill="both")
         canvas = tk.Canvas(self.controlsframeborder, width=self.controlsFrameWidth, height=self.controlsFrameWidth, bd=0, highlightthickness=0, background="#FFFFFF")
-        canvas.pack(side="top", padx=(3*self.borderPadding, self.borderPadding), pady=self.borderPadding, expand=False, fill="both")
+        canvas.pack(side="top", padx=(2*self.borderPadding, self.borderPadding), pady=self.borderPadding, expand=False, fill="both")
         logoImg = Image.open("gui_icons/armold_logo_glow.png")
         logoImg = logoImg.resize((round(self.controlsFrameWidth),round(self.controlsFrameWidth)), Image.ANTIALIAS)
         canvas.logo = ImageTk.PhotoImage(logoImg)
