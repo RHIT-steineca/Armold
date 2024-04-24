@@ -276,8 +276,8 @@ class TestEnvironment:
         return calcVal
     
     def showWindow(testenv):
+        testenv.closeWindow()
         testenv.window.deiconify()
-        testenv.window.attributes('-topmost',True)
         testenv.updateWindow()
     
     def closeWindow(testenv):
