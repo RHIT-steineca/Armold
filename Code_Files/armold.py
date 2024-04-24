@@ -106,18 +106,6 @@ class ArmoldBrain:
                 except Exception as error:
                     handleConnectionError()
                     return
-                curLen = math.floor(frame * (1.0 / refreshRate))
-                displaysecs = curLen%60
-                if(displaysecs < 10):
-                    displaysecs = f"0{displaysecs}"
-                current = f"{math.floor(curLen/60)}:{displaysecs}"
-                recLen = math.floor(len(movement.timeline) * (1.0 / refreshRate))
-                displaysecs = recLen%60
-                if(displaysecs < 10):
-                    displaysecs = f"0{displaysecs}"
-                duration = f"{math.floor(recLen/60)}:{displaysecs}"
-                armoldGUI.updatePlaybackDuration(f"{current}\n/{duration}")
-                armoldGUI.window.update()
                 time.sleep(1)
             else:
                 return
