@@ -624,7 +624,7 @@ class ArmoldGUI():
     
     def stopRecording(self):
         armoldGUI.state = "disabled"
-        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.stateText = "Returning Armold\nto home positions..."
         armoldGUI.updateGraphics()
         brain.robot.goHome()
         time.sleep(1)
@@ -676,7 +676,7 @@ class ArmoldGUI():
     
     def stopMirror(self):
         armoldGUI.state = "disabled"
-        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.stateText = "Returning Armold\nto home positions..."
         armoldGUI.updateGraphics()
         brain.robot.goHome()
         time.sleep(1)
@@ -694,7 +694,7 @@ class ArmoldGUI():
     
     def stopPlayback(self):
         armoldGUI.state = "disabled"
-        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.stateText = "Returning Armold\nto home positions..."
         armoldGUI.updateGraphics()
         brain.robot.goHome()
         time.sleep(1)
