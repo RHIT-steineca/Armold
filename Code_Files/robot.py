@@ -196,4 +196,6 @@ while True:
             actualVals[joint] = interpolated
         moveArduino()
     except Exception as error:
+        connection.client.client.reinitialise()
+        connection.setup()
         print(error)
