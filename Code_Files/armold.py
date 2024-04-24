@@ -800,7 +800,7 @@ while True:
         armoldGUI.updateGraphics()
         connection = Connection()
         brain.robot.goHome()
-        time.sleep(2)
+        time.sleep(1)
         armoldGUI.state = "disabled"
         armoldGUI.stateText = "Arm found!\nArmold is ready to go!"
         armoldGUI.updateGraphics()
