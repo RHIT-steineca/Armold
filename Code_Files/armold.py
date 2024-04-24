@@ -108,6 +108,7 @@ class ArmoldBrain:
                     return
                 time.sleep(1)
             else:
+                armoldGUI.stopPlayback()
                 return
         return
 
