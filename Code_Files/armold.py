@@ -303,7 +303,7 @@ class ArmoldGUI():
         self.playing = "NONE"
         self.playbackLoop = False
         # window setup
-        self.window = tk.Toplevel()
+        self.window = root
         self.window.title("Armold")
         self.screenwidth = self.window.winfo_screenwidth()
         self.screenheight = self.window.winfo_screenheight()
