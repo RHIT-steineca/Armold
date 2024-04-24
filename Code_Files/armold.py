@@ -642,8 +642,6 @@ class ArmoldGUI():
         armoldGUI.updateGraphics()
         brain.robot.goHome()
         time.sleep(1)
-        self.state = "idle"
-        self.stateText = "Nothing in progress\n"
         for child in self.window.winfo_children():
             child.destroy()
         self.windowFrame = tk.Frame(self.window).pack()
@@ -667,7 +665,7 @@ class ArmoldGUI():
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
         recordingNameEntry.focus_force()
-        while True:
+        while (self.state == "disabled"):
             self.window.update()
     
     def acceptRecording(self):
@@ -683,6 +681,8 @@ class ArmoldGUI():
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.state = "idle"
+        self.stateText = "Nothing in progress\n"
         self.fillWindow()
     
     def cancelRecording(self):
