@@ -245,7 +245,7 @@ class TestEnvironment:
             testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
         screenwidth = root.winfo_screenwidth()
-        testenv.window.geometry(f'450x350+{screenwidth - 450}+0')
+        testenv.window.geometry(f'450x380+{screenwidth - 450}+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
     
@@ -276,7 +276,6 @@ class TestEnvironment:
     
     def showWindow(testenv):
         testenv.window.deiconify()
-        testenv.window.attributes('-topmost', True)
         testenv.updateWindow()
     
     def closeWindow(testenv):
@@ -747,6 +746,8 @@ while True:
 while True:
     try:
         armoldGUI.window.update()
+        testEnv.window.attributes('-topmost', True)
+        testEnv.updateWindow()
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
