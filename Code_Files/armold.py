@@ -655,20 +655,21 @@ class ArmoldGUI():
         self.infoLabel.pack(side="top", expand=False, fill="both")
         recordingEntriesBorder = tk.Frame(recordingframeborder, background="#FFFFFF", height=0.1*self.screenheight)
         recordingEntriesBorder.pack(side="top", expand=False, fill="both", padx=5*self.borderPadding, pady=self.borderPadding)
-        recordingName = tk.StringVar()
-        recordingNameEntry = ctk.CTkEntry(recordingEntriesBorder, textvariable=recordingName, placeholder_text="", font=("Courier Prime", 32), text_color="#000000", fg_color="#EAF1FF", bg_color="#FFFFFF", border_color="#5D6D8B", border_width=self.borderPadding, corner_radius=15)
+        self.recordingName = tk.StringVar()
+        recordingNameEntry = ctk.CTkEntry(recordingEntriesBorder, textvariable=self.recordingName, placeholder_text="", font=("Courier Prime", 32), text_color="#000000", fg_color="#EAF1FF", bg_color="#FFFFFF", border_color="#5D6D8B", border_width=self.borderPadding, corner_radius=15)
         recordingNameEntry.pack(side="left", expand=True, fill="both")
-        recordingName.trace_add("write", lambda *args: recordingNameEntry.delete(25))
+        self.recordingName.trace_add("write", lambda *args: recordingNameEntry.delete(25))
         cancelImage = ctk.CTkImage(Image.open("gui_icons/cancel.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
         cancelButton = ctk.CTkButton(recordingEntriesBorder, image=cancelImage, text="Cancel", font=("Courier Prime", 32), text_color="#842C2C", fg_color="#F64242", bg_color="#FFFFFF", hover_color="#F64242", border_color="#842C2C", border_width=self.borderPadding, corner_radius=15, command=lambda : self.cancelRecording())
         cancelButton.pack(side="right", expand=False, fill="both")
         acceptImage = ctk.CTkImage(Image.open("gui_icons/accept.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-        acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("Courier Prime", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording(recordingName.get()))
+        acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("Courier Prime", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording())
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
         recordingNameEntry.focus_force()
     
-    def acceptRecording(self, name):
+    def acceptRecording(self):
+        name = self.recordingName.get()
         if(name.len() < 1):
             return
         if(not name.isalnum()):
