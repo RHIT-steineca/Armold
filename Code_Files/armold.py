@@ -244,7 +244,8 @@ class TestEnvironment:
             label = tk.Label(testenv.frame, text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees")
             testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
-        testenv.window.geometry('450x450+0+0')
+        screenwidth = root.winfo_screenwidth()
+        testenv.window.geometry(f'450x450+{screenwidth - 450}+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
     
@@ -275,6 +276,7 @@ class TestEnvironment:
     
     def showWindow(testenv):
         testenv.window.deiconify()
+        testenv.window.attributes('-topmost', True)
         testenv.updateWindow()
     
     def closeWindow(testenv):
