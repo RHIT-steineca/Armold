@@ -34,27 +34,14 @@ class ArmoldBrain:
     def recordMovement(brain, refreshRate, duration):
         moveTimeline = []
         frame = 0
-        secDone = 0
-        if (duration == 0):
-            print("  (Press Ctrl+C to stop)")
-        print()
-        try:
-            lastFrame = time.time()
-            while((duration == 0) or (frame < refreshRate * duration)):
-                if (time.time() - lastFrame >= 1.0 / refreshRate):
-                    lastFrame = time.time()
-                    currentFrameData = brain.convertToActuatorVals(brain.controller.getSensors())
-                    brain.robot.setActuators(currentFrameData, refreshRate)
-                    moveTimeline.append(currentFrameData)
-                    if (secDone == refreshRate):
-                        print("\n")
-                        secDone = 0
-                    print(".", end = "")
-                    sys.stdout.flush()
-                    frame += 1
-                    secDone += 1
-        except KeyboardInterrupt:
-            pass
+        lastFrame = time.time()
+        while((duration == 0) or (frame < refreshRate * duration)):
+            if (time.time() - lastFrame >= 1.0 / refreshRate):
+                lastFrame = time.time()
+                currentFrameData = brain.convertToActuatorVals(brain.controller.getSensors())
+                brain.robot.setActuators(currentFrameData, refreshRate)
+                moveTimeline.append(currentFrameData)
+                frame += 1
         print(f"\n\n{frame} frame(s) memorized.")
         print("\nCan you describe what you just did?\n")
         rawMoveName = input("> ")
@@ -71,6 +58,16 @@ class ArmoldBrain:
         brain.recordedMovements[moveName] = newRecording
         print("\nCool! Armold now knows how to " + rawMoveName + ".")
         return
+    
+    def deleteMovement(brain, moveName):
+        try:
+            recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
+            moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
+            if os.path.exists(moveFullPath):
+                os.remove(moveFullPath)
+                del brain.recordedMovements[moveName]
+        except Exception as error:
+            return
     
     # playback movement on robot
     def playbackMovement(brain, moveName, refreshRate):
@@ -721,7 +718,7 @@ class ArmoldGUI():
         self.window.update()
     
     def acceptDelete(self, name):
-        # TODO delete recording data
+        brain.deleteMovement(name)
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()

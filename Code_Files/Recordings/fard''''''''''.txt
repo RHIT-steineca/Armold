@@ -1,3 +1,3 @@
-1.0
+20.0
 {"shoulderCB": 99.225, "shoulderLR": 251.262, "elbow": -25.0, "wrist": 0.0, "fingerPTR": 165.40200000000002, "fingerMDL": 148.896, "fingerRNG": 167.508, "fingerPKY": 167.508, "fingerTHM": 11.147999999999996, "shoulderR": 482.8}
 {"shoulderCB": 99.225, "shoulderLR": 251.802, "elbow": -25.0, "wrist": 0.0, "fingerPTR": 165.744, "fingerMDL": 149.216, "fingerRNG": 167.868, "fingerPKY": 167.868, "fingerTHM": 10.908000000000001, "shoulderR": 482.8}

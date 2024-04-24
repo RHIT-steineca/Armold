@@ -1,4 +1,4 @@
-10.0
+20.0
 {"shoulderCB": 270.0, "shoulderR": 2400.0, "shoulderLR": 270.0, "elbow": 93.3, "wrist": 150.0, "finger1": 180.0, "finger2": 180.0, "finger3": 180.0, "finger4": 180.0, "finger5": 100.0}
 {"shoulderCB": 270.0, "shoulderR": 2400.0, "shoulderLR": 270.0, "elbow": 93.3, "wrist": 150.0, "finger1": 180.0, "finger2": 180.0, "finger3": 180.0, "finger4": 180.0, "finger5": 100.0}
 {"shoulderCB": 270.0, "shoulderR": 2400.0, "shoulderLR": 270.0, "elbow": 93.3, "wrist": 150.0, "finger1": 180.0, "finger2": 180.0, "finger3": 180.0, "finger4": 180.0, "finger5": 100.0}
