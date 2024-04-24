@@ -664,7 +664,8 @@ class ArmoldGUI():
         acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("Courier Prime", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording())
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
-        # recordingNameEntry.focus_force()
+        recordingNameEntry.focus_force()
+        os.system("dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Show")
         while (self.state == "disabled"):
             self.window.update()
     
@@ -676,6 +677,7 @@ class ArmoldGUI():
         #     self.infoLabel.configure(text="Please make sure to only include\nalphanumeric characters in your name!")
         #     self.window.update()
         #     return
+        os.system("dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard  /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Hide")
         name = name.replace(" ", "_")
         brain.saveRecordedMovement(name, REFRESH_RATE)
         for child in self.window.winfo_children():
@@ -686,6 +688,7 @@ class ArmoldGUI():
         self.fillWindow()
     
     def cancelRecording(self):
+        os.system("dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard  /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Hide")
         brain.newMoveTimeline = []
         for child in self.window.winfo_children():
             child.destroy()
