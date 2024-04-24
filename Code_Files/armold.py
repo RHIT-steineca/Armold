@@ -745,9 +745,7 @@ while True:
 
 while True:
     try:
-        armoldGUI.window.update()
-        testEnv.window.attributes('-topmost', True)
-        testEnv.updateWindow()
+        # armoldGUI.window.update()
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
