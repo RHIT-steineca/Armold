@@ -742,17 +742,18 @@ while True:
         time.sleep(1)
 
 while True:
-    try:
-        armoldGUI.window.update()
-        connection.client.client.reinitialise()
-        connection.setup()
-    except Exception as error:
-        armoldGUI.state = "disabled"
-        armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
-        armoldGUI.updateGraphics()
-        time.sleep(1)
-    finally:
-        connection.client.close()
+    armoldGUI.window.update()
+    
+# try:
+#     connection.client.client.reinitialise()
+#     connection.setup()
+# except Exception as error:
+#     armoldGUI.state = "disabled"
+#     armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
+#     armoldGUI.updateGraphics()
+#     time.sleep(1)
+# finally:
+#     connection.client.close()
         
 # study movement
 if(command == "s"):
