@@ -392,7 +392,7 @@ class ArmoldGUI():
             child.destroy()
         
         # set status message
-        self.statusMessage = tk.Label(self.statusAreaFrame, text=self.stateText, font=("Courier Prime", 28), background="#EAF1FF", justify="left")
+        self.statusMessage = tk.Label(self.statusAreaFrame, text=self.stateText, font=("Courier Prime", 24), background="#EAF1FF", justify="left")
         self.statusMessage.pack(side="left", padx=2*self.borderPadding, pady=2*self.borderPadding, expand=False, fill="both")
         
         if(self.state == "idle"):
