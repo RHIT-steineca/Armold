@@ -733,6 +733,7 @@ class ArmoldGUI():
         self.updateGraphics()
     
     def deleteRecording(self, name):
+        displayName = name.replace("_", " ")
         for child in self.window.winfo_children():
             child.destroy()
         self.windowFrame = tk.Frame(self.window).pack()
@@ -740,7 +741,7 @@ class ArmoldGUI():
         recordingframeborder.pack(side="top", expand=True, fill="both")
         recordingInfoLabelBorder = tk.Frame(recordingframeborder, background="#FFFFFF")
         recordingInfoLabelBorder.pack(side="top", expand=False, fill="both", padx=self.borderPadding, pady=(0.25*self.screenheight,self.borderPadding))
-        infoLabel = ctk.CTkLabel(recordingInfoLabelBorder, text=f"Are you sure that you want to\ndelete the recording\n{name}?", font=("Courier Prime", 52), text_color="#000000")
+        infoLabel = ctk.CTkLabel(recordingInfoLabelBorder, text=f"Are you sure that you want to\ndelete the recording\n{displayName}?", font=("Courier Prime", 52), text_color="#000000")
         infoLabel.pack(side="top", expand=False, fill="both")
         recordingEntriesBorder = tk.Frame(recordingframeborder, background="#FFFFFF")
         recordingEntriesBorder.pack(side="top", expand=False, fill="both", padx=5*self.borderPadding, pady=5*self.borderPadding)
