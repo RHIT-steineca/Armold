@@ -667,6 +667,8 @@ class ArmoldGUI():
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
         recordingNameEntry.focus_force()
+        while True:
+            self.window.update()
     
     def acceptRecording(self):
         name = self.recordingName.get()
