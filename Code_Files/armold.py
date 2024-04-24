@@ -13,6 +13,7 @@ actuatorMaxRange = {"shoulderCB":270,"shoulderR":2000,"shoulderLR":270,"elbow":2
 arduinoMinVals = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":0,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
 arduinoMaxVals = {"shoulderCB":180,"shoulderR":180,"shoulderLR":180,"elbow":180, "wrist":180,"fingerPTR":180,"fingerMDL":180,"fingerRNG":180,"fingerPKY":180,"fingerTHM":180}
 REFRESH_RATE = 20
+RECORDING_MAX_SECS = 300
 
 class ArmoldBrain:
     # initialization
@@ -20,6 +21,7 @@ class ArmoldBrain:
         brain.robot = Robot()
         brain.controller = Controller()
         brain.recordedMovements = dict()
+        brain.newMoveTimeline = []
         brain.readRecordings()
     
     # read all recording files
@@ -30,35 +32,48 @@ class ArmoldBrain:
         for rn in recordingNames:
             brain.recordedMovements[rn] = Recording(rn)
     
-    # record user movement to file
-    def recordMovement(brain, refreshRate, duration):
-        moveTimeline = []
+    # record user movement
+    def recordMovement(brain, refreshRate):
+        brain.newMoveTimeline = []
         frame = 0
         lastFrame = time.time()
-        while((duration == 0) or (frame < refreshRate * duration)):
+        while(frame < refreshRate * RECORDING_MAX_SECS):
+            if(armoldGUI.state != "recording"):
+                return
             if (time.time() - lastFrame >= 1.0 / refreshRate):
                 lastFrame = time.time()
                 currentFrameData = brain.convertToActuatorVals(brain.controller.getSensors())
-                brain.robot.setActuators(currentFrameData, refreshRate)
-                moveTimeline.append(currentFrameData)
+                try:
+                    brain.robot.setActuators(currentFrameData, refreshRate)
+                except Exception as error:
+                    handleConnectionError()
+                    armoldGUI.stopRecording()
+                    return
+                brain.newMoveTimeline.append(currentFrameData)
                 frame += 1
-        print(f"\n\n{frame} frame(s) memorized.")
-        print("\nCan you describe what you just did?\n")
-        rawMoveName = input("> ")
-        moveName = rawMoveName.replace(" ", "_")
-        recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
-        moveFullPath = os.path.join(recordingsPath, moveName + ".txt")
-        with open(moveFullPath, "w") as moveFile:
-            moveFile.write(f"{float(refreshRate)}")
-            for frameData in moveTimeline:
-                framestring = str(frameData).replace("'", '"')
-                moveFile.write(f"\n{framestring}")
-        newRecording = Recording(moveName)
-        newRecording.timeline = moveTimeline
-        brain.recordedMovements[moveName] = newRecording
-        print("\nCool! Armold now knows how to " + rawMoveName + ".")
-        return
+            armoldGUI.window.update()
+        armoldGUI.stopRecording()
     
+    # save latest recorded movement to file
+    def saveRecordedMovement(brain, name, refreshRate):
+        try:
+            recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
+            moveFullPath = os.path.join(recordingsPath, name + ".txt")
+            with open(moveFullPath, "w") as moveFile:
+                moveFile.write(f"{float(refreshRate)}")
+                for frameData in brain.newMoveTimeline:
+                    framestring = str(frameData).replace("'", '"')
+                    moveFile.write(f"\n{framestring}")
+            newRecording = Recording(name)
+            newRecording.timeline = brain.newMoveTimeline
+            newRecording.originalRate = refreshRate
+            brain.newMoveTimeline = []
+            brain.recordedMovements[name] = newRecording
+            return
+        except Exception as error:
+            print(f"Can't save recording\n{error}")
+    
+    # delete a movement from storage
     def deleteMovement(brain, moveName):
         try:
             recordingsPath = "//home//pi//Armold//Code_Files//Recordings//"
@@ -156,6 +171,11 @@ def handleConnectionError():
     armoldGUI.state = "disabled"
     armoldGUI.stateText = "Arm found! Armold is ready to go!\n"
     armoldGUI.updateGraphics()
+    time.sleep(1)
+    armoldGUI.state = "disabled"
+    armoldGUI.stateText = "Returning Armold\nto home positions..."
+    armoldGUI.updateGraphics()
+    brain.robot.goHome()
     time.sleep(1)
     armoldGUI.state = "idle"
     armoldGUI.stateText = "Nothing in progress\n"
@@ -631,8 +651,8 @@ class ArmoldGUI():
         recordingframeborder.pack(side="top", expand=True, fill="both")
         recordingInfoLabelBorder = tk.Frame(recordingframeborder, background="#FFFFFF", height=0.25*self.screenheight)
         recordingInfoLabelBorder.pack(side="top", expand=False, fill="both", padx=self.borderPadding, pady=(0.25*self.screenheight,self.borderPadding))
-        infoLabel = ctk.CTkLabel(recordingInfoLabelBorder, text="Nice! Your recording is complete...\nWhat did you just teach Armold to do?", font=("Courier Prime", 52), text_color="#000000")
-        infoLabel.pack(side="top", expand=False, fill="both")
+        self.infoLabel = ctk.CTkLabel(recordingInfoLabelBorder, text="Nice! Your recording is complete...\nWhat did you just teach Armold to do?", font=("Courier Prime", 52), text_color="#000000")
+        self.infoLabel.pack(side="top", expand=False, fill="both")
         recordingEntriesBorder = tk.Frame(recordingframeborder, background="#FFFFFF", height=0.1*self.screenheight)
         recordingEntriesBorder.pack(side="top", expand=False, fill="both", padx=5*self.borderPadding, pady=self.borderPadding)
         recordingName = tk.StringVar()
@@ -649,14 +669,21 @@ class ArmoldGUI():
         recordingNameEntry.focus_force()
     
     def acceptRecording(self, name):
-        # TODO save recording data
+        if(name.len() < 1):
+            return
+        if(not name.isalnum()):
+            self.infoLabel.configure(text="Please make sure to only include\nalphanumeric characters in your name!")
+            self.window.update()
+            return
+        name = name.replace(" ", "_")
+        brain.saveRecordedMovement(name, REFRESH_RATE)
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
         self.fillWindow()
     
     def cancelRecording(self):
-        # TODO cancel save recording data
+        brain.newMoveTimeline = []
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
