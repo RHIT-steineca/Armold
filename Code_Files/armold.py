@@ -241,7 +241,7 @@ class TestEnvironment:
             testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
         testenv.screenwidth = root.winfo_screenwidth()
-        testenv.window.geometry(f'450x380+{screenwidth - 450}+0')
+        testenv.window.geometry(f'450x380+{testenv.screenwidth - 450}+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
     
