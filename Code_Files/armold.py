@@ -255,7 +255,7 @@ class TestEnvironment:
         for actuatorName, actuatorVal in testenv.valpairs.items():
             if actuatorName in testenv.labelpairs.keys():
                 label = testenv.labelpairs[actuatorName]
-                label.config(text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees")
+                label.config(text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees", font=("CourierPrime Regular", 24))
                 label.pack()
         testenv.frame.pack()
         testenv.window.update()
