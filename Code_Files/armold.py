@@ -335,8 +335,8 @@ class Connection:
 
 class ArmoldGUI():
     def __init__(self):
-        self.state = "idle"
-        self.stateText = "Nothing in progress\n"
+        self.state = "disabled"
+        self.stateText = "Armold is awake! \nNow looking for its arm..."
         self.playing = "NONE"
         self.playbackLoop = False
         # window setup
