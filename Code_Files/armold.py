@@ -5,7 +5,6 @@ import customtkinter as ctk
 from PIL import Image
 from PIL import ImageTk
 import pyfirmata
-import subprocess
 
 # joint mapping
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":25,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
@@ -312,7 +311,7 @@ class ArmoldGUI():
         self.borderPadding = 0.01 * self.screenheight
         self.window.geometry(f'{self.screenwidth}x{self.screenheight}+0+0')
         self.window.resizable(False, False)
-        # self.window.attributes('-fullscreen', True)
+        self.window.attributes('-fullscreen', True)
         self.window.protocol("WM_DELETE_WINDOW", lambda : self.closeWindow())
         self.fillWindow()
 
@@ -619,7 +618,6 @@ class ArmoldGUI():
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
         recordingNameEntry.focus_force()
-        subprocess.Popen(['onboard'])
     
     def acceptRecording(self, name):
         # TODO save recording data
