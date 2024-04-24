@@ -374,7 +374,7 @@ class ArmoldGUI():
         
         if(self.state == "idle"):
             # playback buttons
-            for rn, rec in self.brain.recordedMovements.items():
+            for rn, rec in brain.recordedMovements.items():
                 name = rn.replace("_", " ")
                 durationsecs = math.floor(len(rec.timeline) * (1.0 / rec.originalRate))
                 displaysecs = durationsecs%60
@@ -411,7 +411,7 @@ class ArmoldGUI():
             self.mirrorButtonCanvas.create_oval(0,0,3*self.borderPadding,3*self.borderPadding, fill="#BABFC9", outline="#FFFFFF")
         elif(self.state == "mirror"):
             # playback buttons
-            for rn, rec in self.brain.recordedMovements.items():
+            for rn, rec in brain.recordedMovements.items():
                 name = rn.replace("_", " ")
                 durationsecs = math.floor(len(rec.timeline) * (1.0 / rec.originalRate))
                 displaysecs = durationsecs%60
@@ -459,7 +459,7 @@ class ArmoldGUI():
                 self.loopButton = ctk.CTkButton(self.loopButtonMargin, image=loopButtonImage, text="Loop", font=("Courier New Bold", 32), text_color="#000000", fg_color="#FFFFFF", bg_color="#EAF1FF", hover_color="#FFD9A0", border_color="#DDDDDD", border_width=self.borderPadding, corner_radius=15, command=lambda : self.toggleLoop())
             self.loopButton.pack(side="right", expand=False, fill="both")
             # playback buttons
-            for rn, rec in self.brain.recordedMovements.items():
+            for rn, rec in brain.recordedMovements.items():
                 name = rn.replace("_", " ")
                 durationsecs = math.floor(len(rec.timeline) * (1.0 / rec.originalRate))
                 displaysecs = durationsecs%60
@@ -512,7 +512,7 @@ class ArmoldGUI():
             self.mirrorButtonCanvas.create_oval(0,0,3*self.borderPadding,3*self.borderPadding, fill="#BABFC9", outline="#FFFFFF")
         elif(self.state == "recording"):
             # playback buttons
-            for rn, rec in self.brain.recordedMovements.items():
+            for rn, rec in brain.recordedMovements.items():
                 name = rn.replace("_", " ")
                 durationsecs = math.floor(len(rec.timeline) * (1.0 / rec.originalRate))
                 displaysecs = durationsecs%60
