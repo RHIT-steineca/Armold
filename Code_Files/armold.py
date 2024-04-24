@@ -672,10 +672,10 @@ class ArmoldGUI():
         name = self.recordingName.get()
         # if(name.len() < 1):
         #     return
-        if(not name.isalnum()):
-            self.infoLabel.configure(text="Please make sure to only include\nalphanumeric characters in your name!")
-            self.window.update()
-            return
+        # if(not name.isalnum()):
+        #     self.infoLabel.configure(text="Please make sure to only include\nalphanumeric characters in your name!")
+        #     self.window.update()
+        #     return
         name = name.replace(" ", "_")
         brain.saveRecordedMovement(name, REFRESH_RATE)
         for child in self.window.winfo_children():
@@ -690,6 +690,8 @@ class ArmoldGUI():
         for child in self.window.winfo_children():
             child.destroy()
         testEnv.setupWindow()
+        self.state = "idle"
+        self.stateText = "Nothing in progress\n"
         self.fillWindow()
     
     def startMirror(self):
