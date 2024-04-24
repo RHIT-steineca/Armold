@@ -73,41 +73,46 @@ class ArmoldBrain:
         return
     
     # playback movement on robot
-    def playbackMovement(brain, moveName, refreshRate, loop):
-        print("  (Press Ctrl+C to stop)")
-        print()
+    def playbackMovement(brain, moveName, refreshRate):
         frame = 0
         secDone = 0
         movement = brain.recordedMovements[moveName]
-        recLen = round(len(movement.timeline) * (1.0 / refreshRate), 2)
-        try:
-            while True:
-                lastFrame = time.time()
-                while(frame < len(movement.timeline)):
-                    if (time.time() - lastFrame >= 1.0 / refreshRate):
-                        lastFrame = time.time()
-                        if (frame % refreshRate == 0):
-                            print(f"{round(recLen - secDone, 1)} second(s) left...")
-                            secDone += 1
-                        try:
-                            brain.robot.setActuators(movement.getActuatorsAtTime(frame), refreshRate)
-                        except Exception as error:
-                            raise error
-                        frame += 1
-                if loop:
-                    frame = 0
-                    secDone = 0
+        recLen = math.floor(len(movement.timeline) * (1.0 / refreshRate))
+        while (armoldGUI.state == "playback"):
+            lastFrame = time.time()
+            while(frame < len(movement.timeline)):
+                if (time.time() - lastFrame >= 1.0 / refreshRate):
+                    lastFrame = time.time()
+                    if (frame % refreshRate == 0):
+                        secDone += 1
                     try:
-                        brain.robot.setActuators(movement.getActuatorsAtTime(0), 0.5)
+                        brain.robot.setActuators(movement.getActuatorsAtTime(frame), refreshRate)
                     except Exception as error:
-                        raise error
-                    print(f"Looping to {moveName} start...")
-                    time.sleep(1)
-                else:
-                    break
-        except KeyboardInterrupt:
-            pass
-        print(f"\nArmold is done performing '{moveName}!'")
+                        handleConnectionError()
+                        return
+                    frame += 1
+            if armoldGUI.playbackLoop:
+                frame = 0
+                secDone = 0
+                try:
+                    brain.robot.setActuators(movement.getActuatorsAtTime(0), 0.5)
+                except Exception as error:
+                    handleConnectionError()
+                    return
+                time.sleep(1)
+            else:
+                return
+            curLen = math.floor(frame * (1.0 / refreshRate))
+            displaysecs = curLen%60
+            if(displaysecs < 10):
+                displaysecs = f"0{displaysecs}"
+            current = f"{math.floor(curLen/60)}:{displaysecs}"
+            displaysecs = recLen%60
+            if(displaysecs < 10):
+                displaysecs = f"0{displaysecs}"
+            duration = f"{math.floor(recLen/60)}:{displaysecs}"
+            armoldGUI.updatePlaybackDuration(f"{current}\n/{duration}")
+            armoldGUI.window.update()
         return
 
     # follow user movements on robot
@@ -208,6 +213,14 @@ class Robot:
             print("-frame dropped-")
             pass 
         return
+    
+    def goHome(robot):
+        defaultRobotVals = dict()
+        for actuatorName in robot.actuatorPins:
+            defaultRobotVals[actuatorName] = 0.0
+            if("finger" in actuatorName):
+                defaultRobotVals[actuatorName] = 1.0
+        robot.setActuators(brain.convertToActuatorVals(defaultRobotVals), 4)
 
 class Controller:
     # initialization
@@ -406,10 +419,10 @@ class ArmoldGUI():
                 durationLabel = ctk.CTkLabel(playbackFrame, text=duration, font=("CourierPrime Regular", 32), text_color="#000000")
                 durationLabel.pack(side="right")
                 playButtonImage = ctk.CTkImage(Image.open("gui_icons/play.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-                playButton = ctk.CTkButton(playbackButtonsFrame, image=playButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.startPlayback(name))
+                playButton = ctk.CTkButton(playbackButtonsFrame, image=playButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.startPlayback(rn))
                 playButton.pack(side="left", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
                 deleteButtonImage = ctk.CTkImage(Image.open("gui_icons/delete.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-                deleteButton = ctk.CTkButton(playbackButtonsFrame, image=deleteButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.deleteRecording(name))
+                deleteButton = ctk.CTkButton(playbackButtonsFrame, image=deleteButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.deleteRecording(rn))
                 deleteButton.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
             # record button
             recordButtonImage = ctk.CTkImage(Image.open("gui_icons/record.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
@@ -443,10 +456,10 @@ class ArmoldGUI():
                 durationLabel = ctk.CTkLabel(playbackFrame, text=duration, font=("CourierPrime Regular", 32), text_color="#000000")
                 durationLabel.pack(side="right")
                 playButtonImage = ctk.CTkImage(Image.open("gui_icons/play.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-                playButton = ctk.CTkButton(playbackButtonsFrame, image=playButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.startPlayback(name))
+                playButton = ctk.CTkButton(playbackButtonsFrame, image=playButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.startPlayback(rn))
                 playButton.pack(side="left", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
                 deleteButtonImage = ctk.CTkImage(Image.open("gui_icons/delete.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-                deleteButton = ctk.CTkButton(playbackButtonsFrame, image=deleteButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.deleteRecording(name))
+                deleteButton = ctk.CTkButton(playbackButtonsFrame, image=deleteButtonImage, width=7*round(self.borderPadding), text="", fg_color="#FFFFFF", bg_color="#DDDDDD", hover_color="#EAF1FF", corner_radius=15, command=lambda name=name: self.deleteRecording(rn))
                 deleteButton.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
             # record button
             recordButtonImage = ctk.CTkImage(Image.open("gui_icons/record.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
@@ -610,6 +623,11 @@ class ArmoldGUI():
         pass
     
     def stopRecording(self):
+        armoldGUI.state = "disabled"
+        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.updateGraphics()
+        brain.robot.goHome()
+        time.sleep(1)
         self.state = "idle"
         self.stateText = "Nothing in progress\n"
         for child in self.window.winfo_children():
@@ -657,23 +675,32 @@ class ArmoldGUI():
         brain.realtimeMovement(REFRESH_RATE)
     
     def stopMirror(self):
+        armoldGUI.state = "disabled"
+        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.updateGraphics()
+        brain.robot.goHome()
+        time.sleep(1)
         self.state = "idle"
         self.stateText = "Nothing in progress\n"
         self.updateGraphics()
     
     def startPlayback(self, name):
         self.state = "playback"
-        self.stateText = f"Playing\n{name}"
+        self.stateText = f"Playing\n{name.replace("_", " ")}"
         self.playing = name
         self.updateGraphics()
-        pass
+        brain.playbackMovement(name, REFRESH_RATE)
     
     def stopPlayback(self):
+        armoldGUI.state = "disabled"
+        armoldGUI.stateText = "Returning Armold to home positions...\n"
+        armoldGUI.updateGraphics()
+        brain.robot.goHome()
+        time.sleep(1)
         self.state = "idle"
         self.stateText = "Nothing in progress\n"
         self.playing = "NONE"
         self.updateGraphics()
-        pass
     
     def deleteRecording(self, name):
         for child in self.window.winfo_children():
@@ -740,12 +767,7 @@ while True:
         armoldGUI.stateText = "Armold is awake! \nNow looking for its arm..."
         armoldGUI.updateGraphics()
         connection = Connection()
-        defaultRobotVals = dict()
-        for actuatorName in brain.robot.actuatorPins:
-            defaultRobotVals[actuatorName] = 0.0
-            if("finger" in actuatorName):
-                defaultRobotVals[actuatorName] = 1.0
-        brain.robot.setActuators(brain.convertToActuatorVals(defaultRobotVals), 4)
+        brain.robot.goHome()
         time.sleep(2)
         armoldGUI.state = "disabled"
         armoldGUI.stateText = "Arm found! Armold is ready to go!\n"
