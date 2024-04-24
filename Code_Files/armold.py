@@ -743,6 +743,7 @@ while True:
 
 while True:
     try:
+        armoldGUI.window.update()
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
