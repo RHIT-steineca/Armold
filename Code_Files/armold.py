@@ -406,7 +406,7 @@ class ArmoldGUI():
                 duration = f"{math.floor(durationsecs/60)}:{displaysecs}"
                 playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#FFFFFF", bg_color="#BABFC9", corner_radius=15)
                 playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 22), text_color="#000000", justify="left")
+                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#000000", justify="left")
                 nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                 playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#DDDDDD", bg_color="#FFFFFF", border_color="#DDDDDD", border_width=self.borderPadding, corner_radius=15)
                 playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -443,7 +443,7 @@ class ArmoldGUI():
                 duration = f"{math.floor(durationsecs/60)}:{displaysecs}"
                 playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#FFFFFF", bg_color="#BABFC9", corner_radius=15)
                 playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 22), text_color="#000000", justify="left")
+                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#000000", justify="left")
                 nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                 playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#DDDDDD", bg_color="#FFFFFF", border_color="#DDDDDD", border_width=self.borderPadding, corner_radius=15)
                 playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -492,7 +492,7 @@ class ArmoldGUI():
                 if(name == self.playing):
                     playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#EAF1FF", bg_color="#BABFC9", corner_radius=15)
                     playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 22), text_color="#000000", justify="left")
+                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#000000", justify="left")
                     nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                     playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#EAF1FF", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                     playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -507,7 +507,7 @@ class ArmoldGUI():
                 else:
                     playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#DADADA", bg_color="#BABFC9", corner_radius=15)
                     playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 22), text_color="#BDBDBD", justify="left")
+                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#BDBDBD", justify="left")
                     nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                     playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                     playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -544,7 +544,7 @@ class ArmoldGUI():
                 duration = f"{math.floor(durationsecs/60)}:{displaysecs}"
                 playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#DADADA", bg_color="#BABFC9", corner_radius=15)
                 playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 22), text_color="#BDBDBD", justify="left")
+                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#BDBDBD", justify="left")
                 nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                 playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                 playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -581,11 +581,11 @@ class ArmoldGUI():
                 duration = f"{math.floor(durationsecs/60)}:{displaysecs}"
                 playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#DADADA", bg_color="#BABFC9", corner_radius=15)
                 playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 32), text_color="#BDBDBD", justify="left")
+                nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#BDBDBD", justify="left")
                 nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                 playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                 playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
-                durationLabel = ctk.CTkLabel(playbackFrame, text=duration, font=("Courier Prime", 32), text_color="#BDBDBD")
+                durationLabel = ctk.CTkLabel(playbackFrame, text=duration, font=("Courier Prime", 24), text_color="#BDBDBD")
                 durationLabel.pack(side="right")
                 playButtonImage = ctk.CTkImage(Image.open("gui_icons/no_play.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
                 playButton = ctk.CTkButton(playbackButtonsFrame, image=playButtonImage, width=7*round(self.borderPadding), text="", fg_color="#DADADA", bg_color="#BDBDBD", hover_color="#DADADA", corner_radius=15)
@@ -595,14 +595,14 @@ class ArmoldGUI():
                 deleteButton.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
             # record button
             recordButtonImage = ctk.CTkImage(Image.open("gui_icons/no_record.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-            self.recordButton = ctk.CTkButton(self.recordButtonMargin, image=recordButtonImage, text="New Recording", font=("Courier Prime", 32), text_color="#BDBDBD", fg_color="#DADADA", bg_color="#DADADA", hover_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
+            self.recordButton = ctk.CTkButton(self.recordButtonMargin, image=recordButtonImage, text="New Recording", font=("Courier Prime", 28), text_color="#BDBDBD", fg_color="#DADADA", bg_color="#DADADA", hover_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
             self.recordButton.pack(side="left", expand=True, fill="both")
             self.recordButtonCanvas = tk.Canvas(self.recordButtonMargin, width=3*self.borderPadding, height=3*self.borderPadding, bd=0, highlightthickness=0, background="#FFFFFF")
             self.recordButtonCanvas.pack(side="right", padx=(self.borderPadding, 2*self.borderPadding), expand=False, fill="none")
             self.recordButtonCanvas.create_oval(0,0,3*self.borderPadding,3*self.borderPadding, fill="#BABFC9", outline="#FFFFFF")
             # mirror button
             mirrorButtonImage = ctk.CTkImage(Image.open("gui_icons/no_mirror.png"), size=(7*round(self.borderPadding),7*round(self.borderPadding)))
-            self.mirrorButton = ctk.CTkButton(self.mirrorButtonMargin, image=mirrorButtonImage, text="Live Control", font=("Courier Prime", 32), text_color="#BDBDBD", fg_color="#DADADA", bg_color="#DADADA", hover_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
+            self.mirrorButton = ctk.CTkButton(self.mirrorButtonMargin, image=mirrorButtonImage, text="Live Control", font=("Courier Prime", 28), text_color="#BDBDBD", fg_color="#DADADA", bg_color="#DADADA", hover_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
             self.mirrorButton.pack(side="left", expand=True, fill="both")
             self.mirrorButtonCanvas = tk.Canvas(self.mirrorButtonMargin, width=3*self.borderPadding, height=3*self.borderPadding, bd=0, highlightthickness=0, background="#FFFFFF")
             self.mirrorButtonCanvas.pack(side="right", padx=(self.borderPadding, 2*self.borderPadding), expand=False, fill="none")
