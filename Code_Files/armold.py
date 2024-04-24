@@ -598,7 +598,7 @@ class ArmoldGUI:
         self.state = "recording"
         self.stateText = "Recording in progress\n"
         self.updateGraphics()
-        pass
+        brain.recordMovement(REFRESH_RATE)
     
     def stopRecording(self):
         armoldGUI.state = "disabled"
