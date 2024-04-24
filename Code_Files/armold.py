@@ -744,11 +744,16 @@ while True:
         armoldGUI.stateText = "Sorry, Armold is having trouble\nfinding its arm... trying again..."
         armoldGUI.updateGraphics()
         time.sleep(1)
+        
+def stay_on_top():
+    testEnv.window.lift()
+    testEnv.window.after(2000, stay_on_top)
+stay_on_top()
 
 while True:
     try:
         armoldGUI.window.update()
-        testEnv.window.lift()
+        
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
