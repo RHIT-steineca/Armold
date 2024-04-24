@@ -233,14 +233,14 @@ class TestEnvironment:
     
     def setupWindow(testenv):
         testenv.window = tk.Toplevel()
-        testenv.window.title("Armold Testing Environment")
+        testenv.window.title("Testing Environment")
         testenv.frame = tk.Frame(testenv.window)
         testenv.frame.pack(side="left", expand=True, fill="both", pady=30)
         for actuatorName, actuatorVal in testenv.valpairs.items():
             label = tk.Label(testenv.frame, text=f"{actuatorName}: {round(testenv.convertAngleToVal(actuatorName, actuatorVal), 1)} Steps, {round(actuatorVal, 1)} Degrees")
             testenv.labelpairs[actuatorName] = label
             label.pack(side="top", pady=2)
-        screenwidth = root.winfo_screenwidth()
+        self.screenwidth = root.winfo_screenwidth()
         testenv.window.geometry(f'450x380+{screenwidth - 450}+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
         testenv.window.withdraw()
@@ -273,6 +273,7 @@ class TestEnvironment:
     def showWindow(testenv):
         testenv.closeWindow()
         testenv.window.deiconify()
+        testenv.window.geometry(f'450x380+{self.screenwidth - 450}+0')
         testenv.updateWindow()
     
     def closeWindow(testenv):
