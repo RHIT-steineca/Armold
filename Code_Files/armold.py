@@ -243,7 +243,6 @@ class TestEnvironment:
         screenwidth = root.winfo_screenwidth()
         testenv.window.geometry(f'450x380+{screenwidth - 450}+0')
         testenv.window.protocol("WM_DELETE_WINDOW", lambda : testenv.forcedWindowClosed())
-        testenv.window.attributes('-topmost',True)
         testenv.window.withdraw()
     
     def updateVals(testenv, newVals):
@@ -744,7 +743,6 @@ while True:
 while True:
     try:
         armoldGUI.window.update()
-        testEnv.window.lift()
         connection.client.client.reinitialise()
         connection.setup()
     except Exception as error:
