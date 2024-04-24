@@ -312,7 +312,7 @@ class ArmoldGUI():
         self.borderPadding = 0.01 * self.screenheight
         self.window.geometry(f'{self.screenwidth}x{self.screenheight}+0+0')
         self.window.resizable(False, False)
-        self.window.attributes('-fullscreen', True)
+        # self.window.attributes('-fullscreen', True)
         self.window.protocol("WM_DELETE_WINDOW", lambda : self.closeWindow())
         self.fillWindow()
 
