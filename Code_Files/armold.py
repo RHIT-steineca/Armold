@@ -5,6 +5,7 @@ import customtkinter as ctk
 from PIL import Image
 from PIL import ImageTk
 import pyfirmata
+import subprocess
 
 # joint mapping
 limitedMinDegs = {"shoulderCB":0,"shoulderR":0,"shoulderLR":0,"elbow":25,"wrist":0,"fingerPTR":0,"fingerMDL":0,"fingerRNG":0,"fingerPKY":0,"fingerTHM":0}
@@ -617,7 +618,8 @@ class ArmoldGUI():
         acceptButton = ctk.CTkButton(recordingEntriesBorder, image=acceptImage, text="Accept", font=("CourierPrime Regular", 32), text_color="#34B801", fg_color="#42F65E", bg_color="#FFFFFF", hover_color="#42F65E", border_color="#34B801", border_width=self.borderPadding, corner_radius=15, command=lambda : self.acceptRecording(recordingName.get()))
         acceptButton.pack(side="right", expand=False, fill="both")
         self.window.update()
-        # recordingNameEntry.focus_force()
+        recordingNameEntry.focus_force()
+        subprocess.Popen(['onboard'])
     
     def acceptRecording(self, name):
         # TODO save recording data
