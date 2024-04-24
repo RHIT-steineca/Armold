@@ -297,8 +297,7 @@ class Connection:
         pass
 
 class ArmoldGUI():
-    def __init__(self, brain):
-        self.brain = brain
+    def __init__(self):
         self.state = "idle"
         self.stateText = "Nothing in progress\n"
         self.playing = "NONE"
