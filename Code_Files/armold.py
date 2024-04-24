@@ -360,7 +360,7 @@ class ArmoldGUI():
         logoImg = Image.open("gui_icons/armold_logo_glow.png")
         logoImg = logoImg.resize((round(canvas.winfo_width()),round(canvas.winfo_width())), Image.ANTIALIAS)
         canvas.logo = ImageTk.PhotoImage(logoImg)
-        canvas.create_image(canvas.winfo_width()/2, canvas.winfo_height()/2, anchor="nw", image=canvas.logo)
+        canvas.create_image(0,0, anchor="nw", image=canvas.logo)
         self.controlsframe = ctk.CTkFrame(self.controlsframeborder, width=self.controlsFrameWidth, fg_color="#BABFC9", corner_radius=15)
         self.controlsframe.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=True, fill="both")
         # controls area elements
@@ -378,11 +378,11 @@ class ArmoldGUI():
         tekButtonMargin = ctk.CTkFrame(self.controlsframe, width=self.controlsFrameWidth, fg_color="#BABFC9", corner_radius=15)
         tekButtonMargin.pack(side="bottom", padx=self.borderPadding, pady=self.borderPadding, expand=False, fill="both")
         debugButtonImage = ctk.CTkImage(Image.open("gui_icons/debug.png"), size=(3*round(self.borderPadding),3*round(self.borderPadding)))
-        debugButton = ctk.CTkButton(tekButtonMargin, height=5*self.borderPadding, image=debugButtonImage, text="Open Debug Window", font=("Courier Prime", 18), text_color="#000000", fg_color="#FFFFFF", bg_color="transparent", hover_color="#EAF1FF", corner_radius=15, command=lambda : self.showDebugWindow())
-        debugButton.pack(side="left", expand=True, fill="y")
+        debugButton = ctk.CTkButton(tekButtonMargin, height=5*self.borderPadding, image=debugButtonImage, text="Show Debug Info", font=("Courier Prime", 18), text_color="#000000", fg_color="#FFFFFF", bg_color="transparent", hover_color="#EAF1FF", corner_radius=15, command=lambda : self.showDebugWindow())
+        debugButton.pack(side="left", expand=False, fill="y")
         powerButtonImage = ctk.CTkImage(Image.open("gui_icons/power.png"), size=(3*round(self.borderPadding),3*round(self.borderPadding)))
         closeButton = ctk.CTkButton(tekButtonMargin, height=5*self.borderPadding, image=powerButtonImage, text="Shut Down", font=("Courier Prime", 18), text_color="#000000", fg_color="#FFFFFF", bg_color="transparent", hover_color="#EAF1FF", corner_radius=15, command=lambda : self.closeWindow())
-        closeButton.pack(side="right", expand=True, fill="y")
+        closeButton.pack(side="right", expand=False, fill="y")
 
         self.updateGraphics()
         
