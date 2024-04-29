@@ -679,8 +679,8 @@ class ArmoldGUI:
     
     def startPlayback(self, name):
         self.state = "playback"
-        name = name.replace("_", " ")
-        self.stateText = f"Playing\n{name}"
+        niceName = name.replace("_", " ")
+        self.stateText = f"Playing\n{niceName}"
         self.playing = name
         self.updateGraphics()
         brain.playbackMovement(name, REFRESH_RATE)
