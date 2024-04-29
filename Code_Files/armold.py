@@ -467,16 +467,16 @@ class ArmoldGUI:
             self.loopButton.pack(side="right", expand=False, fill="both")
             # playback buttons
             for rn, rec in brain.recordedMovements.items():
-                name = rn.replace("_", " ")
+                niceName = rn.replace("_", " ")
                 durationsecs = math.floor(len(rec.timeline) * (1.0 / rec.originalRate))
                 displaysecs = durationsecs%60
                 if(displaysecs < 10):
                     displaysecs = f"0{displaysecs}"
                 duration = f"{math.floor(durationsecs/60)}:{displaysecs}"
-                if(name == self.playing):
+                if(rn == self.playing):
                     playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#EAF1FF", bg_color="#BABFC9", corner_radius=15)
                     playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#000000", justify="left")
+                    nameLabel = ctk.CTkLabel(playbackFrame, text=niceName, font=("Courier Prime", 26), text_color="#000000", justify="left")
                     nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                     playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#EAF1FF", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                     playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
@@ -491,7 +491,7 @@ class ArmoldGUI:
                 else:
                     playbackFrame = ctk.CTkFrame(self.recordingsList, fg_color="#DADADA", bg_color="#BABFC9", corner_radius=15)
                     playbackFrame.pack(side="top", expand=False, fill="x", padx=(0,self.borderPadding), pady=self.borderPadding)
-                    nameLabel = ctk.CTkLabel(playbackFrame, text=name, font=("Courier Prime", 26), text_color="#BDBDBD", justify="left")
+                    nameLabel = ctk.CTkLabel(playbackFrame, text=niceName, font=("Courier Prime", 26), text_color="#BDBDBD", justify="left")
                     nameLabel.pack(side="left", expand=False, fill="x", padx=self.borderPadding, pady=self.borderPadding)
                     playbackButtonsFrame = ctk.CTkFrame(playbackFrame, fg_color="#BDBDBD", bg_color="#DADADA", border_color="#BDBDBD", border_width=self.borderPadding, corner_radius=15)
                     playbackButtonsFrame.pack(side="right", expand=False, fill="none", padx=self.borderPadding, pady=self.borderPadding)
