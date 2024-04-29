@@ -744,8 +744,7 @@ class ArmoldGUI:
     def closeWindow(self):
         self.window.destroy()
         sys.exit()
-        # TODO uncomment this when all done!
-        # os.system("sudo reboot")
+        os.system("sudo poweroff")
 
 class Connection:
     def __init__(connection):
