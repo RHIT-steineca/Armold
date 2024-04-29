@@ -146,7 +146,7 @@ class ArmoldBrain:
             minDeg = limitedMinDegs[name]
             calcAngle = (val * limitedMaxDegs[name]) - minDeg
             # reverse directions
-            if ("fingerTHM" in name):
+            if ("fingerTHM" in name or "shoulderLR" in name or "elbow" in name):
                 calcAngle = limitedMaxDegs[name] - calcAngle
             # # finger open/closed only
             # if ("finger" in name):
