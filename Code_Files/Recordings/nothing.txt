@@ -1,4 +1,0 @@
-20.0
-{"shoulderCB": 0.0, "shoulderLR": 81.027, "elbow": 193.1425, "wrist": 0.0, "fingerPTR": 105.57000000000001, "fingerMDL": 106.632, "fingerRNG": 73.368, "fingerPKY": 73.368, "fingerTHM": 40.76}
-{"shoulderCB": 0.0, "shoulderLR": 81.027, "elbow": 193.1425, "wrist": 0.0, "fingerPTR": 105.39, "fingerMDL": 106.81200000000001, "fingerRNG": 73.18799999999999, "fingerPKY": 73.18799999999999, "fingerTHM": 40.86}
-{"shoulderCB": 0.0, "shoulderLR": 80.75699999999999, "elbow": 193.1425, "wrist": 0.0, "fingerPTR": 105.39, "fingerMDL": 106.632, "fingerRNG": 73.368, "fingerPKY": 73.368, "fingerTHM": 40.86}

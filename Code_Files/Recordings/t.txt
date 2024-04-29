@@ -1,6 +1,0 @@
-20.0
-{"shoulderCB": 1500, "elbow": 500, "wrist": 1400}
-{"shoulderCB": 2500, "elbow": 600, "wrist": 1500}
-{"shoulderCB": 2400, "elbow": 1200, "wrist": 2500}
-{"shoulderCB": 1200, "elbow": 1100, "wrist": 700}
-{"shoulderCB": 500, "elbow": 700, "wrist": 800}
